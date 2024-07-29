@@ -1,3 +1,4 @@
+import 'package:delivery_taxi/data/socialLogin.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
@@ -9,6 +10,7 @@ import '../../main.dart';
 class LoginController extends GetxController {
 
   bool isTaxi = false;
+  SocialLogin socialLogin = SocialLogin();
 
   @override
   void onInit() {
@@ -25,9 +27,11 @@ class LoginController extends GetxController {
   getKakaoLogin() async {
     if(isTaxi){
       isTaxiUser= true;
-      Get.toNamed('/taxiSignUpView');
+      socialLogin.signInWithKakao(isTaxiUser);
+      // Get.toNamed('/taxiSignUpView');
     } else {
-      Get.toNamed('/signUpView');
+      socialLogin.signInWithKakao(isTaxiUser);
+      // Get.toNamed('/signUpView');
     }
 
   }

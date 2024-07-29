@@ -21,7 +21,9 @@ import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
+import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart' as kakao;
 
+import 'firebase_options.dart';
 import 'model/myInfo.dart';
 
 
@@ -30,6 +32,10 @@ late MyInfo myInfo ;
 bool isTaxiUser = false;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  kakao.KakaoSdk.init(nativeAppKey: 'd468c2ed0fcb419fddce6d63dd21b1c7');
   await NaverMapSdk.instance.initialize(clientId: "3ds1y6zz0h");
   await initializeDateFormatting('ko_KR', null);
   runApp(MyApp());
