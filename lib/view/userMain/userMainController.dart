@@ -73,6 +73,8 @@ class UserMainController extends GetxController {
       return;
     }
     CallHistory callHistory = CallHistory(
+        documentId: '',
+        taxiDocumentId: '',
         startingPostcode: startingPostcode.value,
         startingAddress: startingAddress.value,
         startingAddressDetail:startingAddressDetailController.text,

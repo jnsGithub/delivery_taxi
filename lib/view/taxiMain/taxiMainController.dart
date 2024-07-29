@@ -28,6 +28,8 @@ class TaxiMainController extends GetxController {
   void onInit() {
     super.onInit();
     callHistory.add(CallHistory(
+      taxiDocumentId: '',
+      documentId: '',
       startingPostcode: '06112',
       startingAddress: '서울 강남구 논현로123길 4-1',
       startingAddressDetail: '101호',
@@ -48,6 +50,8 @@ class TaxiMainController extends GetxController {
     ));
 
     callHistory.add(CallHistory(
+      taxiDocumentId: '',
+      documentId: '',
       startingPostcode: '06112',
       startingAddress: '서울 강남구 논현로123길 4-1',
       startingAddressDetail: '101호',
@@ -67,6 +71,8 @@ class TaxiMainController extends GetxController {
       createDate: Timestamp.now(),
     ));
     callHistory.add(CallHistory(
+      taxiDocumentId: '',
+      documentId: '',
       startingPostcode: '06112',
       startingAddress: '서울 강남구 논현로123길 4-1',
       startingAddressDetail: '101호',
@@ -86,6 +92,8 @@ class TaxiMainController extends GetxController {
       createDate: Timestamp.now(),
     ));
     callHistory.add(CallHistory(
+      taxiDocumentId: '',
+      documentId: '',
       startingPostcode: '06112',
       startingAddress: '서울 강남구 논현로123길 4-1',
       startingAddressDetail: '101호',

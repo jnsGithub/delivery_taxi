@@ -61,6 +61,8 @@ class UseNotifyController extends GetxController with GetTickerProviderStateMixi
       createDate: Timestamp.now(),
     ));
     callHistory.add(CallHistory(
+      documentId: '',
+      taxiDocumentId: '',
       startingPostcode: '06112',
       startingAddress: '서울 강남구 논현로123길 4-1',
       startingAddressDetail:'101호',
@@ -80,6 +82,8 @@ class UseNotifyController extends GetxController with GetTickerProviderStateMixi
       createDate: Timestamp.now(),
     ));
     callHistory.add(CallHistory(
+      documentId: '',
+      taxiDocumentId: '',
       startingPostcode: '06112',
       startingAddress: '서울 강남구 논현로123길 4-1',
       startingAddressDetail:'101호',
@@ -99,6 +103,8 @@ class UseNotifyController extends GetxController with GetTickerProviderStateMixi
       createDate: Timestamp.now(),
     ));
     callHistory.add(CallHistory(
+      documentId: '',
+      taxiDocumentId: '',
       startingPostcode: '06112',
       startingAddress: '서울 강남구 논현로123길 4-1',
       startingAddressDetail:'101호',
@@ -118,6 +124,8 @@ class UseNotifyController extends GetxController with GetTickerProviderStateMixi
       createDate: Timestamp.now(),
     ));
     callHistory.add(CallHistory(
+      documentId: '',
+      taxiDocumentId: '',
       startingPostcode: '06112',
       startingAddress: '서울 강남구 논현로123길 4-1',
       startingAddressDetail:'101호',

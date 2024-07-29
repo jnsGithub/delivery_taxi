@@ -22,9 +22,11 @@ import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 
+import 'model/myInfo.dart';
 
 
 
+late MyInfo myInfo ;
 bool isTaxiUser = false;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
