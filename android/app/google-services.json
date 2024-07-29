@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "980629005995",
+    "project_id": "delivery-taxy-a186f",
+    "storage_bucket": "delivery-taxy-a186f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:980629005995:android:5bffd19e56dc839e7df9ee",
+        "android_client_info": {
+          "package_name": "com.delivery.taxi"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyApmhQwdL5kXBxtbZJqbRLMVaFu9saFHmk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
