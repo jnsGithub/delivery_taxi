@@ -17,10 +17,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -28,15 +25,9 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return windows;
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -50,19 +41,49 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyApmhQwdL5kXBxtbZJqbRLMVaFu9saFHmk',
-    appId: '1:980629005995:android:5bffd19e56dc839e7df9ee',
-    messagingSenderId: '980629005995',
-    projectId: 'delivery-taxy-a186f',
-    storageBucket: 'delivery-taxy-a186f.appspot.com',
+    apiKey: 'AIzaSyAUySn1IGiLg30IaLtig_43FPLTjl_Zb8E',
+    appId: '1:822658824377:android:75240d1575d14b099fc368',
+    messagingSenderId: '822658824377',
+    projectId: 'delivery-taxi-17959',
+    storageBucket: 'delivery-taxi-17959.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCyB0DPwL1_vgK7x4TTYbOhMwldPib1DjQ',
-    appId: '1:980629005995:ios:ac0d35e78b1cbc867df9ee',
-    messagingSenderId: '980629005995',
-    projectId: 'delivery-taxy-a186f',
-    storageBucket: 'delivery-taxy-a186f.appspot.com',
+    apiKey: 'AIzaSyC0EOonXemaPS5gYofM3QmJ5JrL_U6vPis',
+    appId: '1:822658824377:ios:5eb4b6f50692fa489fc368',
+    messagingSenderId: '822658824377',
+    projectId: 'delivery-taxi-17959',
+    storageBucket: 'delivery-taxi-17959.appspot.com',
     iosBundleId: 'com.delivery.taxi',
   );
+
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyBnOce21T6t8uWWDaRVO9Lru5BtRwZ811w',
+    appId: '1:822658824377:web:60ddf0a4f23650929fc368',
+    messagingSenderId: '822658824377',
+    projectId: 'delivery-taxi-17959',
+    authDomain: 'delivery-taxi-17959.firebaseapp.com',
+    storageBucket: 'delivery-taxi-17959.appspot.com',
+    measurementId: 'G-0GPP4J3KTZ',
+  );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyC0EOonXemaPS5gYofM3QmJ5JrL_U6vPis',
+    appId: '1:822658824377:ios:13154ee1185440f49fc368',
+    messagingSenderId: '822658824377',
+    projectId: 'delivery-taxi-17959',
+    storageBucket: 'delivery-taxi-17959.appspot.com',
+    iosBundleId: 'com.example.deliveryTaxi',
+  );
+
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: 'AIzaSyBnOce21T6t8uWWDaRVO9Lru5BtRwZ811w',
+    appId: '1:822658824377:web:5b5053b8bf51de5f9fc368',
+    messagingSenderId: '822658824377',
+    projectId: 'delivery-taxi-17959',
+    authDomain: 'delivery-taxi-17959.firebaseapp.com',
+    storageBucket: 'delivery-taxi-17959.appspot.com',
+    measurementId: 'G-STE048XS72',
+  );
+
 }
