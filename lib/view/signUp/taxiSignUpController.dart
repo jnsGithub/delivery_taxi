@@ -285,6 +285,7 @@ class TaxiSignUpController extends GetxController {
   bottomSet(){
     showModalBottomSheet(
       isScrollControlled:true,
+      enableDrag: false,
       isDismissible:false,
       context: Get.context!,
       clipBehavior: Clip.hardEdge,
