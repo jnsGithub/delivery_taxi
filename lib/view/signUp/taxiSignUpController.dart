@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:delivery_taxi/data/myInfoData.dart';
+import 'package:delivery_taxi/model/myInfo.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +10,7 @@ import 'package:get/get_rx/get_rx.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../component/lineContainer.dart';
 import '../../component/main_box.dart';
@@ -36,6 +39,7 @@ class TaxiSignUpController extends GetxController {
   TextEditingController taxiNumber = TextEditingController();
   TextEditingController hpAuthController = TextEditingController();
   TextEditingController hpController = TextEditingController();
+
 
   final ImagePicker picker = ImagePicker();
   // final List<String> cities = [
@@ -86,6 +90,23 @@ class TaxiSignUpController extends GetxController {
   }
   signUp() async {
     signUpCheck.value = true;
+    MyInfomation myInfomation = MyInfomation();
+    MyInfo myInfo = MyInfo(
+        documentId: uid,
+        type: 'taxi',
+        name: taxiName.text,
+        hp: hpController.text,
+        address1: city.value,
+        address2: district.value,
+        taxiNumber: taxiNumber.text,
+        taxiType: selectedOption.value,
+        taxiImage: await MyInfomation().licenseUploadImage(XFile(taxiImage.path)),
+        isAuth: false,
+        createDate: Timestamp.now()
+    );
+    myInfomation.setUser(myInfo);
+
+    print('완료 누룸');
     update();
   }
   allCheck(){
@@ -218,14 +239,17 @@ class TaxiSignUpController extends GetxController {
                     ),
                     controller.getImageCheck.value ?
                     GestureDetector(
-                      onTap: (){
+                      onTap: () async {
+                        saving(context);
                         controller.signUp();
                       },
                         child: MainBox(text: controller.signUpCheck.value?'홈으로':'완료', color: mainColor)
                     ):
                         /// 홈으로 보내는 테스트 버튼이라 기능 개발중에는 버튼 지워야함
                     GestureDetector(
-                      onTap: (){Get.toNamed('/taxiMainView');},
+                      onTap: () async {
+                        Get.toNamed('/taxiMainView');
+                      },
                         child: MainBox(text: '완료', color: gray100)
                     ),
                   ],

@@ -27,6 +27,7 @@ import 'firebase_options.dart';
 import 'model/myInfo.dart';
 
 
+String uid = '';
 
 late MyInfo myInfo ;
 bool isTaxiUser = false;

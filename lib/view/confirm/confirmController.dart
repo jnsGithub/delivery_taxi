@@ -111,6 +111,7 @@ class ConfirmController extends GetxController {
   naverPay() async {
     callHistory.state = '호출중';
     callHistory.price = taxiFare.value;
+
     Get.toNamed('/useNotifyView');
   }
   kakaoPay() async {
