@@ -1,6 +1,7 @@
 
 
 import 'package:delivery_taxi/component/lineContainer.dart';
+import 'package:delivery_taxi/data/payments.dart';
 import 'package:delivery_taxi/view/confirm/confirmController.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
@@ -75,7 +76,8 @@ class ConfirmView extends GetView<ConfirmController> {
                           margin: const EdgeInsets.only(top: 16),
                           child: ElevatedButton(
                             onPressed: () {
-                              controller.naverPay();
+                              // controller.naverPay();
+                              Payments().bootpayTest(context, 'naverpay', 1000, '테스트');
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xff03C75A),
@@ -95,6 +97,7 @@ class ConfirmView extends GetView<ConfirmController> {
                           child: ElevatedButton(
                             onPressed: () {
                               controller.kakaoPay();
+                              // Payments().bootpayTest(context, '카카오', 1000, '테스트');
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xffF9E001),

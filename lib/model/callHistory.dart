@@ -19,7 +19,7 @@ class CallHistory {
   String paymentType; // 카카오 or 네이버
   String state;
   int price;// 가격
-  final Timestamp createDate;
+  Timestamp createDate;
 
   CallHistory({
     required this.documentId,

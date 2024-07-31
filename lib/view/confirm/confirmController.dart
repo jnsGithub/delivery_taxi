@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:delivery_taxi/data/callHistroyData.dart';
 import 'package:delivery_taxi/global.dart';
 import 'package:delivery_taxi/model/callHistory.dart';
@@ -124,6 +125,8 @@ class ConfirmController extends GetxController {
   kakaoPay() async {
     callHistory.state = '호출중';
     callHistory.price = taxiFare.value;
+    callHistory.createDate = Timestamp.now();
+
     bool check = await callHistoryData.addItem(callHistory);
     if(check){
       Get.snackbar('알림', '호출이 완료되었습니다.');
