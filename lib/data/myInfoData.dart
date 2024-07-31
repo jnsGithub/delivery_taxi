@@ -11,12 +11,30 @@ import '../global.dart';
 
 class MyInfomation{
   final db = FirebaseFirestore.instance;
-
+  final userCollection = FirebaseFirestore.instance.collection('users');
   Future setUser(MyInfo a) async {
     await db.collection('users').doc(uid).set(a.toMap());
     Get.back();
   }
+  Future login() async {
+    try{
+      DocumentSnapshot documentSnapshot = await userCollection.doc(uid).get();
+      MyInfo myInfo = MyInfo.fromFirestore(documentSnapshot);
+      // DocumentReference documentRef = userCollection.doc(data['documentId']);
+      // documentRef.update({
+      //   "fcmToken":  await FirebaseMessaging.instance.getToken(),
+      // });
 
+      if(myInfo.documentId == uid){
+        return myInfo;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
   Future<String> licenseUploadImage(XFile _image) async {
     try {
       final storage = FirebaseStorage.instance;

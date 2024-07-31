@@ -1,5 +1,8 @@
-import 'dart:io';
 
+import 'dart:convert';
+import 'dart:io';
+import 'dart:math';
+import 'package:crypto/crypto.dart';
 import 'package:delivery_taxi/data/myInfoData.dart';
 import 'package:delivery_taxi/model/myInfo.dart';
 import 'package:dotted_border/dotted_border.dart';
@@ -11,7 +14,7 @@ import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+import 'package:http/http.dart' as http;
 import '../../component/lineContainer.dart';
 import '../../component/main_box.dart';
 import '../../global.dart';
@@ -33,6 +36,7 @@ class TaxiSignUpController extends GetxController {
   RxString selectedOption = '개인'.obs;
   RxString city = '선택해주세요'.obs;
   RxString district = '선택해주세요'.obs;
+  RxString authNum = ''.obs;
 
   XFile taxiImage = XFile('');
   TextEditingController taxiName = TextEditingController();
@@ -105,8 +109,6 @@ class TaxiSignUpController extends GetxController {
         createDate: Timestamp.now()
     );
     myInfomation.setUser(myInfo);
-
-    print('완료 누룸');
     update();
   }
   allCheck(){
@@ -137,10 +139,43 @@ class TaxiSignUpController extends GetxController {
     } else if (index == 5) {
       check5.value = !check5.value;
     }
-    if(check1.value && check2.value && check3.value && check4.value && check5.value){
+    if(check1.value && check2.value && check3.value && check4.value && check5.value) {
       allCheckBool.value = true;
     } else {
       allCheckBool.value = false;
+    }
+  }
+  void sendSMS() async{
+    const String baseUrl = "http://biz.moashot.com/EXT/URLASP/mssendUTF.asp";
+    var rng = Random();
+    // 6자리 숫자 생성
+    String randomNumber = (100000 + rng.nextInt(900000)).toString();
+    authNum.value = randomNumber;
+    final Map<String, String> queryParams = {
+      'uid': 'thwjdgn',
+      'pwd': '0843faco!@',
+      'sendType': '3',
+      'toNumber': hpController.text,
+      'fromNumber': '01096005193',
+      'contents': '[딜리버리티] 인증번호는 $randomNumber 입니다.'
+    };
+
+
+    final uri = Uri.parse(baseUrl).replace(queryParameters: queryParams);
+
+    try {
+      final response = await http.get(uri);
+
+      if (response.statusCode == 200) {
+        sendSms.value = true;
+        Get.snackbar('휴대폰인증', '전송되었습니다.');
+      } else {
+        sendSms.value = false;
+        Get.snackbar('휴대폰인증', '전송에 실패했습니다.');
+      }
+    } catch (e) {
+      sendSms.value = false;
+      Get.snackbar('휴대폰인증', '전송에 실패했습니다.');
     }
   }
   imageUpload(){
@@ -217,7 +252,7 @@ class TaxiSignUpController extends GetxController {
                             ),
                           ),
                         ),
-                        controller.signUpCheck.value ?Column(
+                        controller.signUpCheck.value ? const Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             SizedBox(height: 26,),
@@ -237,21 +272,17 @@ class TaxiSignUpController extends GetxController {
                         ):Container(),
                       ],
                     ),
-                    controller.getImageCheck.value ?
                     GestureDetector(
                       onTap: () async {
-                        saving(context);
-                        controller.signUp();
+                        if(controller.signUpCheck.value){
+                          Get.toNamed('/enterView');
+                        } else {
+                          saving(context);
+                          controller.signUp();
+                        }
                       },
                         child: MainBox(text: controller.signUpCheck.value?'홈으로':'완료', color: mainColor)
-                    ):
-                        /// 홈으로 보내는 테스트 버튼이라 기능 개발중에는 버튼 지워야함
-                    GestureDetector(
-                      onTap: () async {
-                        Get.toNamed('/taxiMainView');
-                      },
-                        child: MainBox(text: '완료', color: gray100)
-                    ),
+                    )
                   ],
                 ),
               );

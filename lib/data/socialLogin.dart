@@ -1,16 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:delivery_taxi/main.dart';
+import 'package:delivery_taxi/model/myInfo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart' as kakaoAuth;
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import '../global.dart';
+import 'myInfoData.dart';
 
 class SocialLogin{
 
   FirebaseFirestore db = FirebaseFirestore.instance;
   FirebaseAuth auth = FirebaseAuth.instance;
-
+  MyInfomation myInfomation = MyInfomation();
   Future<void> signInWithKakao(bool isTaxi) async{
     try{
       var provider = OAuthProvider("oidc.kakao");
@@ -27,13 +30,21 @@ class SocialLogin{
 
       User user = await firebaseCredential.user!;
       uid = user.uid;
-      print('uid : ' + uid);
-      if(isTaxi){
-        Get.toNamed('/taxiSignUpView');
+      var a = await myInfomation.login();
+      if(a.runtimeType == MyInfo){
+        myInfo = a as MyInfo;
+        if(myInfo.type == 'taxi'){
+          Get.toNamed('/taxiMainView');
+        } else {
+          Get.toNamed('/userMainView');
+        }
       } else {
-        Get.toNamed('/signUpView');
+        if(isTaxi){
+          Get.toNamed('/taxiSignUpView');
+        } else {
+          Get.toNamed('/signUpView');
+        }
       }
-
     } catch(e){
       print(e);
     }
