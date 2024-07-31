@@ -1,3 +1,4 @@
+import 'package:delivery_taxi/data/myInfoData.dart';
 import 'package:delivery_taxi/view/confirm/confirmView.dart';
 import 'package:delivery_taxi/view/enter/enterView.dart';
 import 'package:delivery_taxi/view/login/loginView.dart';
@@ -22,14 +23,18 @@ import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart' as kakao;
-
+import 'package:firebase_auth/firebase_auth.dart';
 import 'firebase_options.dart';
 import 'model/myInfo.dart';
 
 
+String uid = '';
+bool isLogin = false;
 
+late MyInfo myInfo ;
 
 bool isTaxiUser = false;
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -38,6 +43,18 @@ void main() async {
   kakao.KakaoSdk.init(nativeAppKey: 'd468c2ed0fcb419fddce6d63dd21b1c7');
   await NaverMapSdk.instance.initialize(clientId: "3ds1y6zz0h");
   await initializeDateFormatting('ko_KR', null);
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  if(_auth.currentUser != null){
+    uid = _auth.currentUser!.uid;
+    isLogin = true;
+    print('메인 호출시 불러들이는 uid : $uid');
+  }
+  myInfo =  await MyInfomation().getUser(uid);
+  print(myInfo.type);
+  isTaxiUser = myInfo.type == 'taxi' ? true : false;
+
+
   runApp(MyApp());
 }
 
