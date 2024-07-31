@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import 'model/myInfo.dart';
+
 const mainColor = Color(0xffFF4500);
 const mainColor2 = Color(0xff141269);
 const font2020 = Color(0xff202020);
@@ -20,6 +22,7 @@ const gray100 = Color(0xffE5E5EA);
 const gray200 = Color(0xffD4D4D4);
 const bg = Color(0xffF7F7FA);
 String uid = '';
+late MyInfo myInfo ;
 int cash = 0;
 String formatTimestamp(Timestamp timestamp) {
   DateTime dateTime = timestamp.toDate();

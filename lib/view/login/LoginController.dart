@@ -26,11 +26,10 @@ class LoginController extends GetxController {
 
   getKakaoLogin() async {
     if(isTaxi){
-      isTaxiUser= true;
-      socialLogin.signInWithKakao(isTaxiUser);
+      socialLogin.signInWithKakao(isTaxi);
       // Get.toNamed('/taxiSignUpView');
     } else {
-      socialLogin.signInWithKakao(isTaxiUser);
+      socialLogin.signInWithKakao(isTaxi);
       // Get.toNamed('/signUpView');
     }
 

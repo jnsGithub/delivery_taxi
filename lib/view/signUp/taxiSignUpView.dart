@@ -130,7 +130,7 @@ class TaxiSignUpView extends GetView<TaxiSignUpController> {
                   ),
                   GestureDetector(
                     onTap: (){
-                      // controller.checkHp();
+                      controller.sendSMS();
                     },
                     child: Container(
                       width: size.width*0.2590,
@@ -178,8 +178,15 @@ class TaxiSignUpView extends GetView<TaxiSignUpController> {
                   ),
                   GestureDetector(
                     onTap: (){
-                      // controller.signInWithPhoneNumber();
-                      // signUp.checkHP(controller.hpController.value.text, controller.hpAuthController.value.text);
+                      if(controller.hpAuthController.text == controller.authNum.value) {
+                        controller.sendSms.value = true;
+                        controller.hpAuthCheck.value = true;
+                      } else {
+                        controller.sendSms.value = false;
+                        controller.hpAuthCheck.value = false;
+                        controller.hpAuthController.text == '';
+                        Get.snackbar('인증번호 오류', '인증번호가 일치하지 않습니다.');
+                      }
                     },
                     child: Container(
                       width: size.width*0.2590,
@@ -198,6 +205,7 @@ class TaxiSignUpView extends GetView<TaxiSignUpController> {
                 ],
               ),//
               const SizedBox(height: 18,),
+              Obx(()=>controller.hpAuthCheck.value ? const Text('인증완료',style: TextStyle(color: Colors.blue,fontWeight: FontWeight.w700),):const SizedBox()),
               const SizedBox(
                 height: 25,
               ),

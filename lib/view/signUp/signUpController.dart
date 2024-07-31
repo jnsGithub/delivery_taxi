@@ -1,6 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
+
+import '../../data/myInfoData.dart';
+import '../../global.dart';
+import '../../model/myInfo.dart';
 
 
 
@@ -57,5 +62,23 @@ class SignUpController extends GetxController {
     } else {
       allCheckBool.value = false;
     }
+  }
+  signUp() async {
+    MyInfomation myInfomation = MyInfomation();
+    MyInfo myInfo = MyInfo(
+        documentId: uid,
+        type: 'customer',
+        name: '',
+        hp: '',
+        address1: '',
+        address2: '',
+        taxiNumber: '',
+        taxiType: '',
+        taxiImage: '',
+        isAuth: false,
+        createDate: Timestamp.now()
+    );
+    myInfomation.setUser(myInfo);
+    update();
   }
 }
