@@ -25,13 +25,13 @@ import 'package:intl/intl.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart' as kakao;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'firebase_options.dart';
+import 'global.dart';
 import 'model/myInfo.dart';
 
 
-String uid = '';
+
 bool isLogin = false;
 
-late MyInfo myInfo ;
 
 bool isTaxiUser = false;
 

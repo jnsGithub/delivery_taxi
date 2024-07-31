@@ -44,7 +44,19 @@ class NoticeController extends GetxController {
         isAuth: false,
         createDate: Timestamp.now()
     );
-    myInfomation.setUser(my);
+    Map<String, dynamic> data = {
+      'type': 'customer',
+      'name': '',
+      'hp': '',
+      'address1': '',
+      'address2': '',
+      'taxiNumber': '',
+      'taxiType': '',
+      'taxiImage': '',
+      'isAuth': false,
+      'createDate': Timestamp.now()
+    };
+    myInfomation.setUser(data);
     myInfo = my;
     Get.toNamed('/userMainView');
     update();

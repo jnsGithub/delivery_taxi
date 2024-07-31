@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:delivery_taxi/data/callHistroyData.dart';
 import 'package:delivery_taxi/global.dart';
 import 'package:delivery_taxi/model/callHistory.dart';
 import 'package:flutter/cupertino.dart';
@@ -22,11 +23,11 @@ class ConfirmController extends GetxController {
   RxString formatted = ''.obs;
   late CallHistory callHistory;
   late NaverMapController mapController;
+  final CallHistoryData  callHistoryData = CallHistoryData();
   @override
   void onInit() {
     super.onInit();
     callHistory = Get.arguments;
-
   }
   @override
   void onClose(){
@@ -111,12 +112,24 @@ class ConfirmController extends GetxController {
   naverPay() async {
     callHistory.state = '호출중';
     callHistory.price = taxiFare.value;
+    bool check = await callHistoryData.addItem(callHistory);
+    if(check){
+      Get.snackbar('알림', '호출이 완료되었습니다.');
+      Get.toNamed('/useNotifyView');
+    } else {
+      Get.snackbar('알림', '호출이 실패되었습니다.');
+    }
 
-    Get.toNamed('/useNotifyView');
   }
   kakaoPay() async {
     callHistory.state = '호출중';
     callHistory.price = taxiFare.value;
-    Get.toNamed('/useNotifyView');
+    bool check = await callHistoryData.addItem(callHistory);
+    if(check){
+      Get.snackbar('알림', '호출이 완료되었습니다.');
+      Get.toNamed('/useNotifyView');
+    } else {
+      Get.snackbar('알림', '호출이 실패되었습니다.');
+    }
   }
 }

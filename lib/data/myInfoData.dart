@@ -7,7 +7,6 @@ import 'package:delivery_taxi/model/myInfo.dart';
 import 'package:get/get.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
-import '';
 import '../global.dart';
 
 class MyInfomation{
@@ -34,13 +33,26 @@ class MyInfomation{
     }
   }
 
-  Future setUser(MyInfo a) async {
-    await db.collection('users').doc(uid).set(a.toMap());
-    Get.back();
+  Future setUser(a) async {
+    print(uid);
+    try{
+      await userCollection.doc(uid).set(a);
+
+    } catch(e){
+      print(e);
+      return false;
+    }
+
   }
   Future login() async {
     try{
+      if(uid == ''){
+        return false;
+      }
       DocumentSnapshot documentSnapshot = await userCollection.doc(uid).get();
+      if(!documentSnapshot.exists){
+        return false;
+      }
       MyInfo myInfo = MyInfo.fromFirestore(documentSnapshot);
       // DocumentReference documentRef = userCollection.doc(data['documentId']);
       // documentRef.update({
