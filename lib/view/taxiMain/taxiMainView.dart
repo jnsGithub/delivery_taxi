@@ -65,7 +65,32 @@ class TaxiMainView extends GetView<TaxiMainController> {
                     ),
                   ),
                   const SizedBox(height: 18,),
-                  Obx(()=> controller.delivery.value ?  deliveryWidget(size):controller.newCall.value?gotCall(size,controller.callHistory.last) :readyToCall(size)),
+                  Obx(()=>
+                    controller.isDone.value?Container():
+                    StreamBuilder<Map<String, dynamic>>(
+                      stream: controller.getLatestDocumentStream(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const CircularProgressIndicator();
+                        } else if (snapshot.hasError) {
+                          return Text('Error: ${snapshot.error}');
+                        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                          return Text('No data available');
+                        } else {
+                          var data = snapshot.data!;
+                          print(data);
+                          CallHistory callHistory = CallHistory.fromMap(data);
+                          if(!controller.newCall.value){
+                            print('asd');
+                            controller.changeItem(callHistory);
+                          }
+
+                          // return Container();
+                          return controller.delivery.value ?  deliveryWidget(size,controller.lastCallItem):controller.newCall.value?gotCall(size,controller.lastCallItem) :readyToCall(size);
+                        }
+                      },
+                    ),
+                  ),
                   const SizedBox(height: 32,),
                   Obx(()=>
                   controller.delivery.value ?Container():GestureDetector(
@@ -121,12 +146,7 @@ class TaxiMainView extends GetView<TaxiMainController> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            GestureDetector(
-                onTap: (){
-                  controller.newCall.value = !controller.newCall.value;
-                },
-                child: const Text('콜 대기중',style: TextStyle(fontSize: 30,fontWeight: FontWeight.w500,color: Colors.white),)
-            ),
+            const Text('콜 대기중',style: TextStyle(fontSize: 30,fontWeight: FontWeight.w500,color: Colors.white),),
             Container(
               width:193,
               height: 53,
@@ -158,23 +178,18 @@ class TaxiMainView extends GetView<TaxiMainController> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Expanded(
-            child: GestureDetector(
-              onTap: (){
-                controller.newCall.value = !controller.newCall.value;
-              },
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(type,style: const TextStyle(fontSize: 24,fontWeight: FontWeight.w500),),
-                  const SizedBox(height: 24,),
-                  Text(controller.callHistory.last.startingAddress,style: const TextStyle(fontSize: 24,fontWeight: FontWeight.w500),),
-                  const SizedBox(height: 24,),
-                  const Icon(Icons.keyboard_arrow_down,size: 40,color: gray300,),
-                  const SizedBox(height: 24,),
-                  Text(controller.callHistory.last.endingAddress,style: const TextStyle(fontSize: 24,fontWeight: FontWeight.w500),),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(type,style: const TextStyle(fontSize: 24,fontWeight: FontWeight.w500),),
+                const SizedBox(height: 24,),
+                Text(item.startingAddress,style: const TextStyle(fontSize: 24,fontWeight: FontWeight.w500),),
+                const SizedBox(height: 24,),
+                const Icon(Icons.keyboard_arrow_down,size: 40,color: gray300,),
+                const SizedBox(height: 24,),
+                Text(item.endingAddress,style: const TextStyle(fontSize: 24,fontWeight: FontWeight.w500),),
 
-                ],
-              ),
+              ],
             ),
           ),
           Row(
@@ -216,8 +231,7 @@ class TaxiMainView extends GetView<TaxiMainController> {
       ),
     );
   }
-  Widget deliveryWidget(size) {
-    CallHistory item =controller.callItem;
+  Widget deliveryWidget(size,CallHistory item) {
     String typeEng = item.selectedOption;
     String type =typeEng =='small'? '소형': typeEng == 'medium'? '중형':'대형';
     return GetBuilder<TaxiMainController>(

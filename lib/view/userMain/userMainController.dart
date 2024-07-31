@@ -93,6 +93,8 @@ class UserMainController extends GetxController {
         state: '호출전',
         createDate: Timestamp.now()
     );
+    print(callHistory.startingAddress);
+    print('aㅔ인');
     Get.toNamed('/confirmView',arguments: callHistory);
   }
 

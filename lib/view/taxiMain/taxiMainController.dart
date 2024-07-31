@@ -22,101 +22,44 @@ class TaxiMainController extends GetxController {
   RxList<CallHistory> callHistory = <CallHistory>[].obs;
 
   TextEditingController price = TextEditingController();
-
+  CallHistory lastCallItem = CallHistory(startingPostcode: '', startingAddress: '', startingAddressDetail: '',startingName: '', startingHp: '', endingPostcode: '', endingAddress: '', endingAddressDetail: '', endingName: '', endingHp: '', selectedOption: '', caution: '', price: 0, userDocumentId: '', paymentType: '', state: '', createDate: Timestamp.now(), documentId: '', taxiDocumentId: '',);
   late CallHistory callItem;
   @override
   void onInit() {
     super.onInit();
-    callHistory.add(CallHistory(
-      taxiDocumentId: '',
-      documentId: '',
-      startingPostcode: '06112',
-      startingAddress: '서울 강남구 논현로123길 4-1',
-      startingAddressDetail: '101호',
-      startingName: '김깡똥',
-      startingHp: '01096005193',
-      endingPostcode: '07705',
-      endingAddress: '서울 강서구 강서로45다길 12-12',
-      endingAddressDetail: '102호',
-      endingName: '이야오',
-      endingHp: '01012345678',
-      selectedOption: 'large',
-      caution: '깨짐 주의',
-      price: 10000,
-      userDocumentId: '',
-      paymentType: '네이버페이',
-      state: '호출중',
-      createDate: Timestamp.now(),
-    ));
-
-    callHistory.add(CallHistory(
-      taxiDocumentId: '',
-      documentId: '',
-      startingPostcode: '06112',
-      startingAddress: '서울 강남구 논현로123길 4-1',
-      startingAddressDetail: '101호',
-      startingName: '김깡똥',
-      startingHp: '01096005193',
-      endingPostcode: '07705',
-      endingAddress: '서울 강서구 강서로45다길 12-12',
-      endingAddressDetail: '102호',
-      endingName: '이야오',
-      endingHp: '01012345678',
-      selectedOption: 'large',
-      caution: '깨짐 주의',
-      userDocumentId: '',
-      paymentType: '카카오페이',
-      price: 345000,
-      state: '배송중',
-      createDate: Timestamp.now(),
-    ));
-    callHistory.add(CallHistory(
-      taxiDocumentId: '',
-      documentId: '',
-      startingPostcode: '06112',
-      startingAddress: '서울 강남구 논현로123길 4-1',
-      startingAddressDetail: '101호',
-      startingName: '김깡똥',
-      startingHp: '01096005193',
-      endingPostcode: '07705',
-      endingAddress: '서울 강서구 강서로45다길 12-12',
-      endingAddressDetail: '102호',
-      endingName: '이야오',
-      endingHp: '01012345678',
-      selectedOption: 'large',
-      caution: '깨짐 주의',
-      price: 5000,
-      userDocumentId: '',
-      paymentType: '카카오페이',
-      state: '배송완료',
-      createDate: Timestamp.now(),
-    ));
-    callHistory.add(CallHistory(
-      taxiDocumentId: '',
-      documentId: '',
-      startingPostcode: '06112',
-      startingAddress: '서울 강남구 논현로123길 4-1',
-      startingAddressDetail: '101호',
-      startingName: '김깡똥',
-      startingHp: '01096005193',
-      endingPostcode: '07705',
-      endingAddress: '서울 강서구 강서로45다길 12-12',
-      endingAddressDetail: '102호',
-      endingName: '이야오',
-      endingHp: '01012345678',
-      selectedOption: 'large',
-      caution: '깨짐 주의',
-      price: 30000,
-      userDocumentId: '',
-      paymentType: '카카오페이',
-      state: '배정완료',
-      createDate: Timestamp.now(),
-    ));
   }
 
   @override
   void onClose() {
     super.onClose();
+  }
+  changeItem(item){
+    try{
+      if(lastCallItem.documentId == item.documentId){
+        newCall.value = false;
+      } else {
+        newCall.value = true;
+        lastCallItem = item;
+      }
+    } catch(e){
+      print(e);
+    }
+  }
+  Stream<Map<String, dynamic>> getLatestDocumentStream() {
+    return FirebaseFirestore.instance
+        .collection('callHistory')
+        .orderBy('createDate', descending: true) // timestamp 필드로 정렬
+        .limit(1) // 최신 문서 하나만 가져옴
+        .snapshots()
+        .map((snapshot) {
+      if (snapshot.docs.isNotEmpty) {
+        Map<String, dynamic> data = snapshot.docs.first.data();
+        data['documentId'] = snapshot.docs.first.id;
+        return data;
+      } else {
+        return {}; // 문서가 없을 때 빈 맵 반환
+      }
+    });
   }
   changeState(size,pay) {
     bool isDoneDelivery = callItem.state == '배송중'? true : false;

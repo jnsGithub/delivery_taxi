@@ -126,7 +126,6 @@ class ConfirmController extends GetxController {
     callHistory.state = '호출중';
     callHistory.price = taxiFare.value;
     callHistory.createDate = Timestamp.now();
-
     bool check = await callHistoryData.addItem(callHistory);
     if(check){
       Get.snackbar('알림', '호출이 완료되었습니다.');
