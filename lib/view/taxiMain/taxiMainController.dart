@@ -15,7 +15,7 @@ import '../../model/callHistory.dart';
 
 class TaxiMainController extends GetxController {
 
-  RxBool isDone = false.obs;
+  RxBool isDone = true.obs;
   RxBool newCall = false.obs;
   RxBool delivery = false.obs;
 

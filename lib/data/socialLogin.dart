@@ -31,11 +31,15 @@ class SocialLogin{
 
       User user = await firebaseCredential.user!;
       uid = user.uid;
-      var a = await myInfomation.login();
-      if(a.runtimeType == MyInfo){
+      var a = await myInfomation.getUser();
+      if(a.documentId != ''){
         myInfo = a as MyInfo;
         if(myInfo.type == 'taxi'){
-          Get.toNamed('/taxiMainView');
+          if(a.isAuth){
+            Get.toNamed('/taxiMainView');
+          } else {
+            Get.snackbar('로그인', '승인을 위해 검토중입니다');
+          }
         } else {
           Get.toNamed('/userMainView');
         }
