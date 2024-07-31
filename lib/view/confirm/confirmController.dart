@@ -113,10 +113,12 @@ class ConfirmController extends GetxController {
   naverPay() async {
     callHistory.state = '호출중';
     callHistory.price = taxiFare.value;
+    callHistory.createDate = Timestamp.now();
     bool check = await callHistoryData.addItem(callHistory);
     if(check){
       Get.snackbar('알림', '호출이 완료되었습니다.');
       Get.toNamed('/useNotifyView');
+      onClose();
     } else {
       Get.snackbar('알림', '호출이 실패되었습니다.');
     }
@@ -130,6 +132,7 @@ class ConfirmController extends GetxController {
     if(check){
       Get.snackbar('알림', '호출이 완료되었습니다.');
       Get.toNamed('/useNotifyView');
+      onClose();
     } else {
       Get.snackbar('알림', '호출이 실패되었습니다.');
     }
