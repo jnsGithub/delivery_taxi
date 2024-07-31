@@ -63,22 +63,5 @@ class SignUpController extends GetxController {
       allCheckBool.value = false;
     }
   }
-  signUp() async {
-    MyInfomation myInfomation = MyInfomation();
-    MyInfo myInfo = MyInfo(
-        documentId: uid,
-        type: 'customer',
-        name: '',
-        hp: '',
-        address1: '',
-        address2: '',
-        taxiNumber: '',
-        taxiType: '',
-        taxiImage: '',
-        isAuth: false,
-        createDate: Timestamp.now()
-    );
-    myInfomation.setUser(myInfo);
-    update();
-  }
+
 }

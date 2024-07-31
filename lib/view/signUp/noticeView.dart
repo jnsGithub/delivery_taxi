@@ -47,7 +47,7 @@ class NoticeView extends GetView<NoticeController> {
           child: GestureDetector(
             onTap: (){
               if( controller.isBottom.value){
-                Get.toNamed('/userMainView');
+                controller.signUp();
               }
             },
             child: Container(
