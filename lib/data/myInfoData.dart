@@ -34,10 +34,9 @@ class MyInfomation{
   }
 
   Future setUser(a) async {
-    print(uid);
     try{
       await userCollection.doc(uid).set(a);
-
+      return true;
     } catch(e){
       print(e);
       return false;
