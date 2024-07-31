@@ -110,6 +110,7 @@ class TaxiSignUpController extends GetxController {
     );
     myInfomation.setUser(myInfo);
     update();
+    Get.back();
   }
   allCheck(){
     allCheckBool.value = !allCheckBool.value;

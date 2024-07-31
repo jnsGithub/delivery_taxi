@@ -13,7 +13,21 @@ class MyInfomation{
   final db = FirebaseFirestore.instance;
   final userCollection = FirebaseFirestore.instance.collection('users');
 
-  Future<MyInfo> getUser(String uid) async {
+  Future<MyInfo> getUser() async {
+    if(uid == ''){
+      return MyInfo(
+          documentId: '',
+          type: '',
+          name: '',
+          hp: '',
+          address1: '',
+          address2: '',
+          taxiNumber: '',
+          taxiType: '',
+          taxiImage: '',
+          isAuth: false,
+          createDate: Timestamp.now());
+    }
     final snapshot = await db.collection('users').doc(uid).get();
     if(snapshot.exists){
       return MyInfo.fromFirestore(snapshot);
@@ -33,9 +47,9 @@ class MyInfomation{
     }
   }
 
-  Future setUser(a) async {
+  Future setUser(MyInfo a) async {
     try{
-      await userCollection.doc(uid).set(a);
+      await userCollection.doc(uid).set(a.toMap());
       return true;
     } catch(e){
       print(e);
@@ -43,31 +57,7 @@ class MyInfomation{
     }
 
   }
-  Future login() async {
-    try{
-      if(uid == ''){
-        return false;
-      }
-      DocumentSnapshot documentSnapshot = await userCollection.doc(uid).get();
-      if(!documentSnapshot.exists){
-        return false;
-      }
-      MyInfo myInfo = MyInfo.fromFirestore(documentSnapshot);
-      // DocumentReference documentRef = userCollection.doc(data['documentId']);
-      // documentRef.update({
-      //   "fcmToken":  await FirebaseMessaging.instance.getToken(),
-      // });
 
-      if(myInfo.documentId == uid){
-        return myInfo;
-      } else {
-        return false;
-      }
-    } catch (e) {
-      print(e);
-      return false;
-    }
-  }
   Future<String> licenseUploadImage(XFile _image) async {
     try {
       final storage = FirebaseStorage.instance;

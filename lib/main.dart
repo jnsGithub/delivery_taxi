@@ -31,8 +31,6 @@ import 'model/myInfo.dart';
 
 
 bool isLogin = false;
-
-
 bool isTaxiUser = false;
 
 void main() async {
@@ -47,14 +45,13 @@ void main() async {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   if(_auth.currentUser != null){
     uid = _auth.currentUser!.uid;
-    isLogin = true;
+    myInfo =  await MyInfomation().getUser();
     print('메인 호출시 불러들이는 uid : $uid');
+    if(myInfo.documentId != ''){
+      isTaxiUser = myInfo.type == 'taxi' ? true : false;
+      isLogin = true;
+    }
   }
-  myInfo =  await MyInfomation().getUser(uid);
-  print(myInfo.type);
-  isTaxiUser = myInfo.type == 'taxi' ? true : false;
-
-
   runApp(MyApp());
 }
 
@@ -84,7 +81,7 @@ class MyApp extends StatelessWidget {
             ), elevation:0
           )
       ),
-      initialRoute: '/enterView',
+      initialRoute:!isLogin? '/enterView': isTaxiUser? '/taxiMainView':'/userMainView',
       getPages: [
         GetPage(name: '/enterView', page: () => const EnterView()),
         GetPage(name: '/loginView', page: ()=> const LoginView()),
