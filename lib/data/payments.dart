@@ -10,14 +10,19 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
+import '../model/callHistory.dart';
+import 'callHistroyData.dart';
+
 class Payments{
   String webApplicationId = '6678ebc6bd077d0720f8768b';
   String androidApplicationId = '6678ebc6bd077d0720f8768c';
   String iosApplicationId = '6678ebc6bd077d0720f8768d';
 
 
-  void bootpayTest(BuildContext context, String pg, int price, String orderName) {
+  void bootpayTest(BuildContext context, String pg, int price, String orderName, CallHistory callHistory) {
+    final CallHistoryData  callHistoryData = CallHistoryData();
     Payload payload = getPayload(pg, price, orderName);
+    bool check = false;
     if(kIsWeb) {
       payload.extra?.openType = "iframe";
     }
@@ -36,6 +41,12 @@ class Payments{
       onClose: () {
         print('------- onClose');
         Bootpay().dismiss(context); //명시적으로 부트페이 뷰 종료 호출
+        if(check){
+          Get.snackbar('알림', '호출이 완료되었습니다.');
+          Get.offAllNamed('/useNotifyView');
+        } else {
+          Get.snackbar('알림', '호출이 실패되었습니다.');
+        }
         //TODO - 원하시는 라우터로 페이지 이동
       },
       onIssued: (String data) {
@@ -58,26 +69,28 @@ class Payments{
         // checkQtyFromServer(data);
         return true;
       },
-      onDone: (String data) {
+      onDone: (String data) async {
         print('------- onDone: $data');
+        check = await callHistoryData.addItem(callHistory);
+
       },
     );
   }
 
   Payload getPayload(String pg, int price, String orderName) {
     Payload payload = Payload();
-    Item item1 = Item();
-    item1.name = "미키 '마우스"; // 주문정보에 담길 상품명
-    item1.qty = 1; // 해당 상품의 주문 수량
-    item1.id = "ITEM_CODE_MOUSE"; // 해당 상품의 고유 키
-    item1.price = 500; // 상품의 가격
-
-    Item item2 = Item();
-    item2.name = "키보드"; // 주문정보에 담길 상품명
-    item2.qty = 1; // 해당 상품의 주문 수량
-    item2.id = "ITEM_CODE_KEYBOARD"; // 해당 상품의 고유 키
-    item2.price = 500; // 상품의 가격
-    List itemList = [item1, item2];
+    // Item item1 = Item();
+    // item1.name = "미키 '마우스"; // 주문정보에 담길 상품명
+    // item1.qty = 1; // 해당 상품의 주문 수량
+    // item1.id = "ITEM_CODE_MOUSE"; // 해당 상품의 고유 키
+    // item1.price = 500; // 상품의 가격
+    //
+    // Item item2 = Item();
+    // item2.name = "키보드"; // 주문정보에 담길 상품명
+    // item2.qty = 1; // 해당 상품의 주문 수량
+    // item2.id = "ITEM_CODE_KEYBOARD"; // 해당 상품의 고유 키
+    // item2.price = 500; // 상품의 가격
+    // List itemList = [item1, item2];
 
     payload.webApplicationId = webApplicationId; // web application id
     payload.androidApplicationId = androidApplicationId; // android application id
@@ -101,7 +114,7 @@ class Payments{
       "callbackParam3" : "value56",
       "callbackParam4" : "value78",
     }; // 전달할 파라미터, 결제 후 되돌려 주는 값
-    payload.items = itemList.cast<Item>(); // 상품정보 배열
+    // payload.items = itemList.cast<Item>(); // 상품정보 배열
 
     User user = User(); // 구매자 정보
     user.username = myInfo.documentId;

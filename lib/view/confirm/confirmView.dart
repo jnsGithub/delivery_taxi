@@ -78,8 +78,8 @@ class ConfirmView extends GetView<ConfirmController> {
                             margin: const EdgeInsets.only(top: 16),
                             child: ElevatedButton(
                               onPressed: () {
-                                // controller.naverPay();
-                                Payments().bootpayTest(context, 'naverpay', 1000, '테스트');
+                                controller.naverPay(context);
+                                // Payments().bootpayTest(context, 'naverpay', 1000, '테스트');
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: const Color(0xff03C75A),
@@ -98,7 +98,7 @@ class ConfirmView extends GetView<ConfirmController> {
                             margin: const EdgeInsets.only(top: 16),
                             child: ElevatedButton(
                               onPressed: () {
-                                controller.kakaoPay();
+                                controller.kakaoPay(context);
                                 // Payments().bootpayTest(context, '카카오', 1000, '테스트');
                               },
                               style: ElevatedButton.styleFrom(
