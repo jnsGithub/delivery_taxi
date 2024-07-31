@@ -1,6 +1,7 @@
 import 'package:delivery_taxi/component/main_box.dart';
 import 'package:delivery_taxi/model/callHistory.dart';
 import 'package:delivery_taxi/view/taxiMain/taxiMainController.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -66,27 +67,28 @@ class TaxiMainView extends GetView<TaxiMainController> {
                   ),
                   const SizedBox(height: 18,),
                   Obx(()=>
-                    controller.isDone.value?Container():
+                    controller.isDone.value?readyToCall(size):
                     StreamBuilder<Map<String, dynamic>>(
                       stream: controller.getLatestDocumentStream(),
                       builder: (context, snapshot) {
                         if (snapshot.connectionState == ConnectionState.waiting) {
-                          return const CircularProgressIndicator();
+                          return Container();
                         } else if (snapshot.hasError) {
-                          return Text('Error: ${snapshot.error}');
+                          return Container();
                         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                          return Text('No data available');
+                          return Container();
                         } else {
                           var data = snapshot.data!;
-                          print(data);
                           CallHistory callHistory = CallHistory.fromMap(data);
-                          if(!controller.newCall.value){
-                            print('asd');
-                            controller.changeItem(callHistory);
+                          bool check1 = callHistory.startingAddress.contains(myInfo.address1);
+                          bool check2 = callHistory.startingAddress.contains(myInfo.address2);
+                          if(callHistory.state =='호출중' && check1 && check2){
+                            if(!controller.newCall.value){
+                              controller.changeItem(callHistory);
+                            }
                           }
-
                           // return Container();
-                          return controller.delivery.value ?  deliveryWidget(size,controller.lastCallItem):controller.newCall.value?gotCall(size,controller.lastCallItem) :readyToCall(size);
+                          return Obx(()=> controller.delivery.value ?  deliveryWidget(size,controller.lastCallItem):controller.newCall.value?gotCall(size,controller.lastCallItem) :readyToCall(size));
                         }
                       },
                     ),
@@ -95,7 +97,9 @@ class TaxiMainView extends GetView<TaxiMainController> {
                   Obx(()=>
                   controller.delivery.value ?Container():GestureDetector(
                       onTap: (){
-                        Get.toNamed('/taxiCallList');
+                        if(!controller.isDone.value){
+                          controller.getList();
+                        }
                       },
                       child: const Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -148,14 +152,15 @@ class TaxiMainView extends GetView<TaxiMainController> {
           children: [
             const Text('콜 대기중',style: TextStyle(fontSize: 30,fontWeight: FontWeight.w500,color: Colors.white),),
             Container(
-              width:193,
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              width: size.width*0.8,
               height: 53,
               alignment: Alignment.center,
               decoration: BoxDecoration(
                   borderRadius: const BorderRadius.all(Radius.circular(30)),
                   border: Border.all(color: mainColor,width: 1)
               ),
-              child: const Text('서울 영등포구 >',style: TextStyle(fontSize: 20,color: mainColor),),
+              child: Text('${myInfo.address1} ${myInfo.address2} >',style: TextStyle(fontSize: 20,color: mainColor),),
             )
           ],
         ),
@@ -229,6 +234,71 @@ class TaxiMainView extends GetView<TaxiMainController> {
           )
         ],
       ),
+    );
+  }
+  Widget comfirm(size) {
+    return GetBuilder<TaxiMainController>(
+        builder: (controller) {
+          return Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16,vertical: 20),
+              decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(14)),
+                  color: Colors.white
+              ),
+              child:Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(
+                    height: 25,
+                  ),
+                  const Text('운행 금액 입력', style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                  ),),
+                  const SizedBox(
+                    height: 9,
+                  ),
+                  Container(
+                    width: 358,
+                    height: 50,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(6),
+                        color: const Color(0xfff6f6fa)),
+                    child: TextField(
+                      controller: controller.price,
+                      keyboardType:  TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        ThousandsSeparatorInputFormatter(),
+                      ],
+                      style: const TextStyle(
+                          fontSize: 22,fontWeight: FontWeight.w500
+                      ),
+                      decoration:   const InputDecoration(
+                        hintStyle: TextStyle(fontSize: 17,
+                            fontWeight: FontWeight.w400,
+                            color: Color(0xffAEAEB2)),
+                        border: InputBorder.none,
+                        // 밑줄 없애기
+                        contentPadding:EdgeInsets.only(left: 20,top:0),
+                        // TextField 내부의 패딩 적용
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(width: 1.5, color: mainColor),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20,),
+                  GestureDetector(
+                      onTap: (){
+                        controller.changeState(size,true);
+                      },
+                      child: const MainBox(text: '결제 요청하기', color: mainColor)
+                  )
+                ],
+              )
+          );
+        }
     );
   }
   Widget deliveryWidget(size,CallHistory item) {

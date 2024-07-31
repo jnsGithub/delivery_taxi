@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:delivery_taxi/component/lineContainer.dart';
+import 'package:delivery_taxi/data/callHistroyData.dart';
 import 'package:delivery_taxi/global.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +21,7 @@ class TaxiMainController extends GetxController {
   RxBool delivery = false.obs;
 
   RxList<CallHistory> callHistory = <CallHistory>[].obs;
-
+  CallHistoryData callHistoryData = CallHistoryData();
   TextEditingController price = TextEditingController();
   CallHistory lastCallItem = CallHistory(startingPostcode: '', startingAddress: '', startingAddressDetail: '',startingName: '', startingHp: '', endingPostcode: '', endingAddress: '', endingAddressDetail: '', endingName: '', endingHp: '', selectedOption: '', caution: '', price: 0, userDocumentId: '', paymentType: '', state: '', createDate: Timestamp.now(), documentId: '', taxiDocumentId: '',);
   late CallHistory callItem;
@@ -35,6 +36,8 @@ class TaxiMainController extends GetxController {
   }
   changeItem(item){
     try{
+      print(lastCallItem.documentId);
+      print(item.documentId);
       if(lastCallItem.documentId == item.documentId){
         newCall.value = false;
       } else {
@@ -44,6 +47,10 @@ class TaxiMainController extends GetxController {
     } catch(e){
       print(e);
     }
+  }
+  getList() async {
+    callHistory.value = await callHistoryData.getItem();
+    Get.toNamed('/taxiCallList');
   }
   Stream<Map<String, dynamic>> getLatestDocumentStream() {
     return FirebaseFirestore.instance
@@ -393,14 +400,15 @@ class TaxiMainController extends GetxController {
                         ),
                         GestureDetector(
                           onTap: (){
-
                             callItem = item;
                             delivery.value = true;
+                            callItem.state ='배정완료';
+                            callHistoryData.updateItem(callItem);
+                            lastCallItem = callItem;
                             Get.back();
                             if(isList){
                               Get.back();
                             }
-                            callItem.state ='배정완료';
                             update();
                           },
                           child: Container(
