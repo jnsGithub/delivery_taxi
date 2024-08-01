@@ -82,13 +82,12 @@ class Payments{
         var dataJson = jsonDecode(data);
         print(dataJson['data']['receipt_id']);
         check = await callHistoryData.addItem(callHistory, dataJson['data']['receipt_id']);
-        setBillingKey(callHistory, dataJson['data']['receipt_id']);
-
+        setBillingKey(callHistory, dataJson['data']['receipt_id'], pg);
       },
     );
   }
 
-  Future setBillingKey(CallHistory callHistory, String receiptId) async{
+  Future setBillingKey(CallHistory callHistory, String receiptId, String paymentType) async{
     try{
       FirebaseFirestore db = FirebaseFirestore.instance;
       DocumentSnapshot snapshot = await db.collection('callHistory').doc(receiptId).get();
@@ -97,6 +96,9 @@ class Payments{
           'createDate': Timestamp.now(),
           'userDocumentId': myInfo.documentId,
           'callHistoryId': snapshot.id,
+        });
+        db.collection('callHistory').doc(receiptId).update({
+          'paymentType': paymentType
         });
 
     } catch(e){
@@ -167,12 +169,12 @@ class Payments{
     payload.subscriptionId = DateTime.now().millisecondsSinceEpoch.toString(); //주문번호, 개발사에서 고유값으로 지정해야함
 
 
-    payload.metadata = {
-      "callbackParam1" : "value12",
-      "callbackParam2" : "value34",
-      "callbackParam3" : "value56",
-      "callbackParam4" : "value78",
-    }; // 전달할 파라미터, 결제 후 되돌려 주는 값
+    // payload.metadata = {
+    //   "callbackParam1" : "value12",
+    //   "callbackParam2" : "value34",
+    //   "callbackParam3" : "value56",
+    //   "callbackParam4" : "value78",
+    // }; // 전달할 파라미터, 결제 후 되돌려 주는 값
     // payload.items = itemList.cast<Item>(); // 상품정보 배열
 
     User user = User(); // 구매자 정보

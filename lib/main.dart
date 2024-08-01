@@ -28,6 +28,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'firebase_options.dart';
 import 'global.dart';
 import 'model/myInfo.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 
 
@@ -53,6 +54,15 @@ void main() async {
       isLogin = true;
     }
   }
+  FirebaseMessaging.instance.getToken().then((value) {
+    print('token : $value');
+  });
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    print("onMessage: $message");
+  });
+  FirebaseMessaging.onBackgroundMessage((message) async {
+    print("onBackgroundMessage: $message");
+  });
   runApp(MyApp());
 }
 

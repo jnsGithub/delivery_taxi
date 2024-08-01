@@ -145,7 +145,7 @@ class UsingDetailView extends GetView<UsingDetailController> {
                           child: Text('결제 수단',style: TextStyle(color: gray500),),
                         ),
                         Expanded(
-                          child: Text(controller.callHistory.paymentType),
+                          child: Text(controller.callHistory.paymentType == '카카오' ? '카카오페이' : '네이버페이'),
                         ),
                       ],
                     ),

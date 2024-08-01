@@ -126,9 +126,8 @@ class ConfirmController extends GetxController {
     // Payments().bootpayTest(context, '카카오', taxiFare.value, '테스트', callHistory);
     bool check = await callHistoryData.addItem(callHistory,'asdf');
     if(check){
-      Payments().getBillingKey('1');
       Get.snackbar('알림', '호출이 완료되었습니다.');
-      // Get.offAllNamed('/useNotifyView');
+      Get.offAllNamed('/useNotifyView');
       onClose();
     } else {
       Get.snackbar('알림', '호출이 실패되었습니다.');
