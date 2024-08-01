@@ -65,8 +65,11 @@ class TaxiMainView extends GetView<TaxiMainController> {
                         child: MainBox(text:controller.isDone.value? '출근 (배정 ON)':'퇴근 (배정 OFF)', color: controller.isDone.value?mainColor:gray700)
                     ),
                   ),
-                  const SizedBox(height: 18,),
                   Obx(()=>
+                  controller.nowPay.value?confirm(size):Container()
+                  ),
+                  const SizedBox(height: 18,),
+                  Obx(()=> controller.nowPay.value? Container():
                     controller.isDone.value?readyToCall(size):
                     StreamBuilder<Map<String, dynamic>>(
                       stream: controller.getLatestDocumentStream(),
@@ -313,58 +316,7 @@ class TaxiMainView extends GetView<TaxiMainController> {
               borderRadius: BorderRadius.all(Radius.circular(14)),
               color: Colors.white
           ),
-          child:isDone?Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(
-                height: 25,
-              ),
-              const Text('운행 금액 입력', style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600,
-              ),),
-              const SizedBox(
-                height: 9,
-              ),
-              Container(
-                width: 358,
-                height: 50,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(6),
-                    color: const Color(0xfff6f6fa)),
-                child: TextField(
-                  controller: controller.price,
-                  keyboardType:  TextInputType.number,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.digitsOnly,
-                    ThousandsSeparatorInputFormatter(),
-                  ],
-                  style: const TextStyle(
-                    fontSize: 22,fontWeight: FontWeight.w500
-                  ),
-                  decoration:   const InputDecoration(
-                    hintStyle: TextStyle(fontSize: 17,
-                        fontWeight: FontWeight.w400,
-                        color: Color(0xffAEAEB2)),
-                    border: InputBorder.none,
-                    // 밑줄 없애기
-                    contentPadding:EdgeInsets.only(left: 20,top:0),
-                    // TextField 내부의 패딩 적용
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(width: 1.5, color: mainColor),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20,),
-              GestureDetector(
-                onTap: (){
-                  controller.changeState(size,true);
-                },
-                  child: const MainBox(text: '결제 요청하기', color: mainColor)
-              )
-            ],
-          ): Column(
+          child:Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(

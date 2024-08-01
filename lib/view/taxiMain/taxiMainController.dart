@@ -19,6 +19,7 @@ class TaxiMainController extends GetxController {
   RxBool isDone = true.obs;
   RxBool newCall = false.obs;
   RxBool delivery = false.obs;
+  RxBool nowPay = false.obs;
 
   RxList<CallHistory> callHistory = <CallHistory>[].obs;
   CallHistoryData callHistoryData = CallHistoryData();
@@ -36,8 +37,6 @@ class TaxiMainController extends GetxController {
   }
   changeItem(item){
     try{
-      print(lastCallItem.documentId);
-      print(item.documentId);
       if(lastCallItem.documentId == item.documentId){
         newCall.value = false;
       } else {
@@ -84,12 +83,12 @@ class TaxiMainController extends GetxController {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(pay ? '최종 ${formatNumber(int.parse(result))}을\n결제요청 하시겠습니까?':isDoneDelivery ?'화물 전달 후 배송을\n완료하시겠습니까?':'화물 수령후 배송을\n시작하시겠습니까?', style: TextStyle(
+              Text(pay ? '최종 ${formatNumber(int.parse(result))}을\n결제요청 하시겠습니까?':isDoneDelivery ?'화물 전달 후 배송을\n완료하시겠습니까?':'화물 수령후 배송을\n시작하시겠습니까?', style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w600, color: font3030
               ),),
-              SizedBox(height: 10),
-              isDoneDelivery?Container():Text(
+              const SizedBox(height: 10),
+              isDoneDelivery?Container():const Text(
                 '(배송 시작 이후 미터기를 켜주세요.)', style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w600, color: mainColor
@@ -144,14 +143,21 @@ class TaxiMainController extends GetxController {
                           isDone.value = false;
                           newCall.value = false;
                           delivery.value = false;
+                          nowPay.value = false;
+                          callItem.price = int.parse(result);
+                          price.text = '';
+                          callHistoryData.updateItem(callItem,false);
                           Get.back();
                         } else {
                           /// 여가서 callitme db 업데이트 해주세융
                           if(isDoneDelivery){
                             callItem.state = '배송완료';
+                            callHistoryData.updateItem(callItem,false);
+                            nowPay.value = true;
                             Get.back();
                           } else {
                             callItem.state = '배송중';
+                            callHistoryData.updateItem(callItem,false);
                             update();
                             Get.back();
                           }
@@ -403,7 +409,7 @@ class TaxiMainController extends GetxController {
                             callItem = item;
                             delivery.value = true;
                             callItem.state ='배정완료';
-                            callHistoryData.updateItem(callItem);
+                            callHistoryData.updateItem(callItem,true);
                             lastCallItem = callItem;
                             Get.back();
                             if(isList){

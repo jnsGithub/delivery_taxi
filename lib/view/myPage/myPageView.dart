@@ -29,6 +29,25 @@ class MyPageView extends GetView<MyPageController> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  myInfo.type =='taxi' ?GestureDetector(
+                    onTap: () async{
+                      Get.toNamed('/taxiAccountView');
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: mainColor),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 20,horizontal: 15),
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('계좌 등록',style: TextStyle(fontSize: 15),),
+                          Icon(Icons.navigate_next,color:gray200,)
+                        ],
+                      ),
+                    ),
+                  ):Container(),
                   GestureDetector(
                     onTap: () async{
                       Get.toNamed('/contactUs');

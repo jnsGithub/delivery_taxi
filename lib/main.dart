@@ -4,6 +4,7 @@ import 'package:delivery_taxi/view/enter/enterView.dart';
 import 'package:delivery_taxi/view/login/loginView.dart';
 import 'package:delivery_taxi/view/myPage/contactUs.dart';
 import 'package:delivery_taxi/view/myPage/myPageView.dart';
+import 'package:delivery_taxi/view/myPage/taxiAccountView.dart';
 import 'package:delivery_taxi/view/signUp/noticeView.dart';
 import 'package:delivery_taxi/view/signUp/signUpView.dart';
 import 'package:delivery_taxi/view/signUp/taxiImageUploadView.dart';
@@ -99,7 +100,7 @@ class MyApp extends StatelessWidget {
         GetPage(name:'/taxiCallList',page:()=> const TaxiCallList()),
         GetPage(name: '/taxiNotifyView', page:() => const TaxiNotifyView()),
         GetPage(name: '/taxiAreaView', page: () => const TaxiAreaView()),
-        // GetPage(name: '/InquiryPage', page: () => const InquiryPage()),
+        GetPage(name: '/taxiAccountView', page: () => const TaxiAccountView()),
         // GetPage(name: '/inquiryWrite', page: () => const InquiryWrite()),
         // GetPage(name:'/storeEdit',page:()=> const StoreEdit()),
         // GetPage(name:'/shoppingCartPage',page:()=> const ShoppingCartPage()),

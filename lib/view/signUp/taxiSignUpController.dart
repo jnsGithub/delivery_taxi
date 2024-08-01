@@ -253,6 +253,8 @@ class TaxiSignUpController extends GetxController {
                             ),
                           ),
                         ),
+                        const SizedBox(height: 50,),
+                        const Text('회원가입 승인후\n마이페이지에서 계좌 번호를 등록해주세요\n미등록시 정산이 안될 수 있습니다.',style: TextStyle(color: Colors.red,fontWeight:FontWeight.w600,fontSize: 17),),
                         controller.signUpCheck.value ? const Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
