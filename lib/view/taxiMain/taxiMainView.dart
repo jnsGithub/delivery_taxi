@@ -236,7 +236,7 @@ class TaxiMainView extends GetView<TaxiMainController> {
       ),
     );
   }
-  Widget comfirm(size) {
+  Widget confirm(size) {
     return GetBuilder<TaxiMainController>(
         builder: (controller) {
           return Container(
