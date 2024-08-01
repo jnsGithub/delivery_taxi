@@ -12,7 +12,7 @@ class GetUsage{
       QuerySnapshot querySnapshot = await db.collection('callHistory').where('userDocumentId', isEqualTo: uid).orderBy('createDate', descending: true).get();
       for (QueryDocumentSnapshot document in querySnapshot.docs) {
         Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-        // data['documentId'] = document.id;
+        data['documentId'] = document.id;
         callHistory.add(CallHistory.fromMap(data));
       }
       return callHistory;

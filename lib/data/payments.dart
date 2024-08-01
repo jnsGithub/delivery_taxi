@@ -1,15 +1,18 @@
 import 'package:bootpay/bootpay.dart';
+import 'package:bootpay/bootpay_api.dart';
 import 'package:bootpay/model/extra.dart';
 import 'package:bootpay/model/item.dart';
 import 'package:bootpay/model/payload.dart';
 import 'package:bootpay/model/user.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:delivery_taxi/global.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:bootpay_api/bootpay_api.dart';
+import 'package:http/http.dart' as http;
 
 import '../model/callHistory.dart';
 import 'callHistroyData.dart';
@@ -18,9 +21,9 @@ class Payments{
   String webApplicationId = '6678ebc6bd077d0720f8768b';
   String androidApplicationId = '6678ebc6bd077d0720f8768c';
   String iosApplicationId = '6678ebc6bd077d0720f8768d';
+  String restApplicationId = '6678ebc6bd077d0720f8768e';
+  String privateApplicationId = 'nbHljmWEqNX6rp73V14pkSMVxWaqHDT86zc5H/VaAKs=';
 
-  BootpayApi d = BootpayApi();
-  
 
   void bootpayTest(BuildContext context, String pg, int price, String orderName, CallHistory callHistory) {
     final CallHistoryData  callHistoryData = CallHistoryData();
@@ -56,6 +59,8 @@ class Payments{
         print('------- onIssued: $data');
       },
       onConfirm: (String data) {
+        var json = jsonDecode(data);
+
         /**
             1. 바로 승인하고자 할 때
             return true;
@@ -74,10 +79,61 @@ class Payments{
       },
       onDone: (String data) async {
         print('------- onDone: $data');
-        check = await callHistoryData.addItem(callHistory);
+        var dataJson = jsonDecode(data);
+        print(dataJson['data']['receipt_id']);
+        check = await callHistoryData.addItem(callHistory, dataJson['data']['receipt_id']);
+        setBillingKey(callHistory, dataJson['data']['receipt_id']);
 
       },
     );
+  }
+
+  Future setBillingKey(CallHistory callHistory, String receiptId) async{
+    try{
+      FirebaseFirestore db = FirebaseFirestore.instance;
+      DocumentSnapshot snapshot = await db.collection('callHistory').doc(receiptId).get();
+        db.collection('billingKey').doc(snapshot.id).set({
+          'billingKey': await getBillingKey(receiptId),
+          'createDate': Timestamp.now(),
+          'userDocumentId': myInfo.documentId,
+          'callHistoryId': snapshot.id,
+        });
+
+    } catch(e){
+      print(e);
+    }
+  }
+
+  Future getBillingKey(String receiptId) async {
+    try {
+
+      String url = 'https://api.bootpay.co.kr/v2/subscribe/billing_key/${receiptId}';
+      String urll = 'https://api.bootpay.co.kr/v2/request/token';
+      Uri uri = Uri.parse(url);
+      Uri urii = Uri.parse(urll);
+      Map<String, dynamic> a = {
+        'application_id' : restApplicationId,
+        'private_key' : privateApplicationId
+      };
+      var body = jsonEncode(a);
+      var responss = await http.post(
+          urii,
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: body,
+      );
+      var b = jsonDecode(responss.body);
+      print(responss.body);
+      var respons = await http.get(uri,headers: {'Authorization': 'Bearer ${b['access_token']}'});
+      print(respons.body);
+      var c = jsonDecode(respons.body);
+      print(c['billing_key']);
+      return c['billing_key'];
+    } catch (e) {
+      print(e);
+      return '';
+    }
   }
 
   Payload getPayload(String pg, int price, String orderName) {
