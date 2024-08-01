@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:bootpay_api/bootpay_api.dart';
 
 import '../model/callHistory.dart';
 import 'callHistroyData.dart';
@@ -18,6 +19,8 @@ class Payments{
   String androidApplicationId = '6678ebc6bd077d0720f8768c';
   String iosApplicationId = '6678ebc6bd077d0720f8768d';
 
+  BootpayApi d = BootpayApi();
+  
 
   void bootpayTest(BuildContext context, String pg, int price, String orderName, CallHistory callHistory) {
     final CallHistoryData  callHistoryData = CallHistoryData();

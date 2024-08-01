@@ -49,7 +49,7 @@ class TaxiMainController extends GetxController {
     }
   }
   getList() async {
-    callHistory.value = await callHistoryData.getItem();
+    callHistory.value = await callHistoryData.getTaxiItem();
     Get.toNamed('/taxiCallList');
   }
   Stream<Map<String, dynamic>> getLatestDocumentStream() {
