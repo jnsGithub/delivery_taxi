@@ -29,11 +29,19 @@ import 'firebase_options.dart';
 import 'global.dart';
 import 'model/myInfo.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 
 
 bool isLogin = false;
 bool isTaxiUser = false;
+
+Future setFcmToken(String token) async{
+  final FirebaseFirestore _db = FirebaseFirestore.instance;
+  await _db.collection('users').doc(uid).update({
+    'fcmToken': token
+  });
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -56,6 +64,7 @@ void main() async {
   }
   FirebaseMessaging.instance.getToken().then((value) {
     print('token : $value');
+    setFcmToken(value!);
   });
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     print("onMessage: $message");
