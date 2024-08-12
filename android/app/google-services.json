@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "822658824377",
+    "project_id": "delivery-taxi-17959",
+    "storage_bucket": "delivery-taxi-17959.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:822658824377:android:75240d1575d14b099fc368",
+        "android_client_info": {
+          "package_name": "com.delivery.taxi"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAUySn1IGiLg30IaLtig_43FPLTjl_Zb8E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
