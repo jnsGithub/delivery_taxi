@@ -1,5 +1,10 @@
-import 'dart:io';
 
+import 'dart:convert';
+import 'dart:io';
+import 'dart:math';
+import 'package:crypto/crypto.dart';
+import 'package:delivery_taxi/data/myInfoData.dart';
+import 'package:delivery_taxi/model/myInfo.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +13,8 @@ import 'package:get/get_rx/get_rx.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:image_picker/image_picker.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:http/http.dart' as http;
 import '../../component/lineContainer.dart';
 import '../../component/main_box.dart';
 import '../../global.dart';
@@ -30,12 +36,14 @@ class TaxiSignUpController extends GetxController {
   RxString selectedOption = '개인'.obs;
   RxString city = '선택해주세요'.obs;
   RxString district = '선택해주세요'.obs;
+  RxString authNum = ''.obs;
 
   XFile taxiImage = XFile('');
   TextEditingController taxiName = TextEditingController();
   TextEditingController taxiNumber = TextEditingController();
   TextEditingController hpAuthController = TextEditingController();
   TextEditingController hpController = TextEditingController();
+
 
   final ImagePicker picker = ImagePicker();
   // final List<String> cities = [
@@ -51,17 +59,17 @@ class TaxiSignUpController extends GetxController {
   //   '제주시', '서귀포시'
   // ];
   final List<String> cities =[
-    '서울특별시', '부산광역시', '대구광역시', '인천광역시', '광주광역시', '대전광역시', '울산광역시','천안시'
+    '서울', '부산', '대구', '인천', '광주', '대전', '울산','천안시'
   ];
 
   final Map<String, List<String>> districts = {
-    '서울특별시': ['강남구', '강동구', '강북구', '강서구', '관악구', '광진구', '구로구', '금천구', '노원구', '도봉구', '동대문구', '동작구', '마포구', '서대문구', '서초구', '성동구', '성북구', '송파구', '양천구', '영등포구', '용산구', '은평구', '종로구', '중구', '중랑구'],
-    '부산광역시': ['강서구', '금정구', '기장군', '남구', '동구', '동래구', '부산진구', '북구', '사상구', '사하구', '서구', '수영구', '연제구', '영도구', '중구', '해운대구'],
-    '대구광역시': ['남구', '달서구', '달성군', '동구', '북구', '서구', '수성구', '중구'],
-    '인천광역시': ['강화군', '계양구', '남동구', '동구', '미추홀구', '부평구', '서구', '연수구', '옹진군', '중구'],
-    '광주광역시': ['광산구', '남구', '동구', '북구', '서구'],
-    '대전광역시': ['대덕구', '동구', '서구', '유성구', '중구'],
-    '울산광역시': ['남구', '동구', '북구', '울주군', '중구'],
+    '서울': ['강남구', '강동구', '강북구', '강서구', '관악구', '광진구', '구로구', '금천구', '노원구', '도봉구', '동대문구', '동작구', '마포구', '서대문구', '서초구', '성동구', '성북구', '송파구', '양천구', '영등포구', '용산구', '은평구', '종로구', '중구', '중랑구'],
+    '부산': ['강서구', '금정구', '기장군', '남구', '동구', '동래구', '부산진구', '북구', '사상구', '사하구', '서구', '수영구', '연제구', '영도구', '중구', '해운대구'],
+    '대구': ['남구', '달서구', '달성군', '동구', '북구', '서구', '수성구', '중구'],
+    '인천': ['강화군', '계양구', '남동구', '동구', '미추홀구', '부평구', '서구', '연수구', '옹진군', '중구'],
+    '광주': ['광산구', '남구', '동구', '북구', '서구'],
+    '대전': ['대덕구', '동구', '서구', '유성구', '중구'],
+    '울산': ['남구', '동구', '북구', '울주군', '중구'],
     '천안시': ['동남구', '서북구'],
   };
   @override
@@ -86,7 +94,23 @@ class TaxiSignUpController extends GetxController {
   }
   signUp() async {
     signUpCheck.value = true;
+    MyInfomation myInfomation = MyInfomation();
+    MyInfo myInfo = MyInfo(
+        documentId: uid,
+        type: 'taxi',
+        name: taxiName.text,
+        hp: hpController.text,
+        address1: city.value,
+        address2: district.value,
+        taxiNumber: taxiNumber.text,
+        taxiType: selectedOption.value,
+        taxiImage: await MyInfomation().licenseUploadImage(XFile(taxiImage.path)),
+        isAuth: false,
+        createDate: Timestamp.now()
+    );
+    myInfomation.setUser(myInfo);
     update();
+    Get.back();
   }
   allCheck(){
     allCheckBool.value = !allCheckBool.value;
@@ -116,10 +140,43 @@ class TaxiSignUpController extends GetxController {
     } else if (index == 5) {
       check5.value = !check5.value;
     }
-    if(check1.value && check2.value && check3.value && check4.value && check5.value){
+    if(check1.value && check2.value && check3.value && check4.value && check5.value) {
       allCheckBool.value = true;
     } else {
       allCheckBool.value = false;
+    }
+  }
+  void sendSMS() async{
+    const String baseUrl = "http://biz.moashot.com/EXT/URLASP/mssendUTF.asp";
+    var rng = Random();
+    // 6자리 숫자 생성
+    String randomNumber = (100000 + rng.nextInt(900000)).toString();
+    authNum.value = randomNumber;
+    final Map<String, String> queryParams = {
+      'uid': 'thwjdgn',
+      'pwd': '0843faco!@',
+      'sendType': '3',
+      'toNumber': hpController.text,
+      'fromNumber': '01096005193',
+      'contents': '[딜리버리티] 인증번호는 $randomNumber 입니다.'
+    };
+
+
+    final uri = Uri.parse(baseUrl).replace(queryParameters: queryParams);
+
+    try {
+      final response = await http.get(uri);
+
+      if (response.statusCode == 200) {
+        sendSms.value = true;
+        Get.snackbar('휴대폰인증', '전송되었습니다.');
+      } else {
+        sendSms.value = false;
+        Get.snackbar('휴대폰인증', '전송에 실패했습니다.');
+      }
+    } catch (e) {
+      sendSms.value = false;
+      Get.snackbar('휴대폰인증', '전송에 실패했습니다.');
     }
   }
   imageUpload(){
@@ -196,7 +253,9 @@ class TaxiSignUpController extends GetxController {
                             ),
                           ),
                         ),
-                        controller.signUpCheck.value ?Column(
+                        const SizedBox(height: 50,),
+                        const Text('회원가입 승인후\n마이페이지에서 계좌 번호를 등록해주세요\n미등록시 정산이 안될 수 있습니다.',style: TextStyle(color: Colors.red,fontWeight:FontWeight.w600,fontSize: 17),),
+                        controller.signUpCheck.value ? const Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             SizedBox(height: 26,),
@@ -216,18 +275,17 @@ class TaxiSignUpController extends GetxController {
                         ):Container(),
                       ],
                     ),
-                    controller.getImageCheck.value ?
                     GestureDetector(
-                      onTap: (){
-                        controller.signUp();
+                      onTap: () async {
+                        if(controller.signUpCheck.value){
+                          Get.toNamed('/enterView');
+                        } else {
+                          saving(context);
+                          controller.signUp();
+                        }
                       },
                         child: MainBox(text: controller.signUpCheck.value?'홈으로':'완료', color: mainColor)
-                    ):
-                        /// 홈으로 보내는 테스트 버튼이라 기능 개발중에는 버튼 지워야함
-                    GestureDetector(
-                      onTap: (){Get.toNamed('/taxiMainView');},
-                        child: MainBox(text: '완료', color: gray100)
-                    ),
+                    )
                   ],
                 ),
               );

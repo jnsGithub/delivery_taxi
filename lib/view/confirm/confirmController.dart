@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:delivery_taxi/data/callHistroyData.dart';
 import 'package:delivery_taxi/global.dart';
 import 'package:delivery_taxi/model/callHistory.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,6 +11,8 @@ import 'package:get/get_rx/get_rx.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:http/http.dart' as http;
+
+import '../../data/payments.dart';
 
 
 class ConfirmController extends GetxController {
@@ -22,11 +26,11 @@ class ConfirmController extends GetxController {
   RxString formatted = ''.obs;
   late CallHistory callHistory;
   late NaverMapController mapController;
+  final CallHistoryData  callHistoryData = CallHistoryData();
   @override
   void onInit() {
     super.onInit();
     callHistory = Get.arguments;
-
   }
   @override
   void onClose(){
@@ -108,14 +112,25 @@ class ConfirmController extends GetxController {
       formatted.value = '예상시간 ${hours == 0?'':"${hours.toString().padLeft(2, '0')}시간"} ${minutes.toString().padLeft(2, '0')}분';
     }
   }
-  naverPay() async {
+  naverPay(BuildContext context) async {
     callHistory.state = '호출중';
     callHistory.price = taxiFare.value;
-    Get.toNamed('/useNotifyView');
+    callHistory.userDocumentId = uid;
+    callHistory.createDate = Timestamp.now();
+    Payments().bootpayTest(context, 'naverpay', taxiFare.value, '테스트', callHistory);
   }
-  kakaoPay() async {
+  kakaoPay(BuildContext context) async {
     callHistory.state = '호출중';
     callHistory.price = taxiFare.value;
-    Get.toNamed('/useNotifyView');
+    callHistory.createDate = Timestamp.now();
+    // Payments().bootpayTest(context, '카카오', taxiFare.value, '테스트', callHistory);
+    bool check = await callHistoryData.addItem(callHistory,'asdf');
+    if(check){
+      Get.snackbar('알림', '호출이 완료되었습니다.');
+      Get.offAllNamed('/useNotifyView');
+      onClose();
+    } else {
+      Get.snackbar('알림', '호출이 실패되었습니다.');
+    }
   }
 }

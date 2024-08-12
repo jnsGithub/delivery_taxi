@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:delivery_taxi/component/lineContainer.dart';
+import 'package:delivery_taxi/data/callHistroyData.dart';
 import 'package:delivery_taxi/global.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -15,108 +16,56 @@ import '../../model/callHistory.dart';
 
 class TaxiMainController extends GetxController {
 
-  RxBool isDone = false.obs;
+  RxBool isDone = true.obs;
   RxBool newCall = false.obs;
   RxBool delivery = false.obs;
+  RxBool nowPay = false.obs;
 
   RxList<CallHistory> callHistory = <CallHistory>[].obs;
-
+  CallHistoryData callHistoryData = CallHistoryData();
   TextEditingController price = TextEditingController();
-
+  CallHistory lastCallItem = CallHistory(startingPostcode: '', startingAddress: '', startingAddressDetail: '',startingName: '', startingHp: '', endingPostcode: '', endingAddress: '', endingAddressDetail: '', endingName: '', endingHp: '', selectedOption: '', caution: '', price: 0, userDocumentId: '', paymentType: '', state: '', createDate: Timestamp.now(), documentId: '', taxiDocumentId: '',);
   late CallHistory callItem;
   @override
   void onInit() {
     super.onInit();
-    callHistory.add(CallHistory(
-      taxiDocumentId: '',
-      documentId: '',
-      startingPostcode: '06112',
-      startingAddress: '서울 강남구 논현로123길 4-1',
-      startingAddressDetail: '101호',
-      startingName: '김깡똥',
-      startingHp: '01096005193',
-      endingPostcode: '07705',
-      endingAddress: '서울 강서구 강서로45다길 12-12',
-      endingAddressDetail: '102호',
-      endingName: '이야오',
-      endingHp: '01012345678',
-      selectedOption: 'large',
-      caution: '깨짐 주의',
-      price: 10000,
-      userDocumentId: '',
-      paymentType: '네이버페이',
-      state: '호출중',
-      createDate: Timestamp.now(),
-    ));
-
-    callHistory.add(CallHistory(
-      taxiDocumentId: '',
-      documentId: '',
-      startingPostcode: '06112',
-      startingAddress: '서울 강남구 논현로123길 4-1',
-      startingAddressDetail: '101호',
-      startingName: '김깡똥',
-      startingHp: '01096005193',
-      endingPostcode: '07705',
-      endingAddress: '서울 강서구 강서로45다길 12-12',
-      endingAddressDetail: '102호',
-      endingName: '이야오',
-      endingHp: '01012345678',
-      selectedOption: 'large',
-      caution: '깨짐 주의',
-      userDocumentId: '',
-      paymentType: '카카오페이',
-      price: 345000,
-      state: '배송중',
-      createDate: Timestamp.now(),
-    ));
-    callHistory.add(CallHistory(
-      taxiDocumentId: '',
-      documentId: '',
-      startingPostcode: '06112',
-      startingAddress: '서울 강남구 논현로123길 4-1',
-      startingAddressDetail: '101호',
-      startingName: '김깡똥',
-      startingHp: '01096005193',
-      endingPostcode: '07705',
-      endingAddress: '서울 강서구 강서로45다길 12-12',
-      endingAddressDetail: '102호',
-      endingName: '이야오',
-      endingHp: '01012345678',
-      selectedOption: 'large',
-      caution: '깨짐 주의',
-      price: 5000,
-      userDocumentId: '',
-      paymentType: '카카오페이',
-      state: '배송완료',
-      createDate: Timestamp.now(),
-    ));
-    callHistory.add(CallHistory(
-      taxiDocumentId: '',
-      documentId: '',
-      startingPostcode: '06112',
-      startingAddress: '서울 강남구 논현로123길 4-1',
-      startingAddressDetail: '101호',
-      startingName: '김깡똥',
-      startingHp: '01096005193',
-      endingPostcode: '07705',
-      endingAddress: '서울 강서구 강서로45다길 12-12',
-      endingAddressDetail: '102호',
-      endingName: '이야오',
-      endingHp: '01012345678',
-      selectedOption: 'large',
-      caution: '깨짐 주의',
-      price: 30000,
-      userDocumentId: '',
-      paymentType: '카카오페이',
-      state: '배정완료',
-      createDate: Timestamp.now(),
-    ));
   }
 
   @override
   void onClose() {
     super.onClose();
+  }
+  changeItem(item){
+    try{
+      if(lastCallItem.documentId == item.documentId){
+        newCall.value = false;
+      } else {
+        newCall.value = true;
+        lastCallItem = item;
+      }
+    } catch(e){
+      print(e);
+    }
+  }
+  getList() async {
+    callHistory.value = await callHistoryData.getTaxiItem();
+    Get.toNamed('/taxiCallList');
+  }
+  Stream<Map<String, dynamic>> getLatestDocumentStream() {
+    return FirebaseFirestore.instance
+        .collection('callHistory')
+        .orderBy('createDate', descending: true) // timestamp 필드로 정렬
+        .limit(1) // 최신 문서 하나만 가져옴
+        .snapshots()
+        .map((snapshot) {
+      if (snapshot.docs.isNotEmpty) {
+        Map<String, dynamic> data = snapshot.docs.first.data();
+        data['documentId'] = snapshot.docs.first.id;
+        return data;
+      } else {
+        return {}; // 문서가 없을 때 빈 맵 반환
+      }
+    });
   }
   changeState(size,pay) {
     bool isDoneDelivery = callItem.state == '배송중'? true : false;
@@ -134,12 +83,12 @@ class TaxiMainController extends GetxController {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(pay ? '최종 ${formatNumber(int.parse(result))}을\n결제요청 하시겠습니까?':isDoneDelivery ?'화물 전달 후 배송을\n완료하시겠습니까?':'화물 수령후 배송을\n시작하시겠습니까?', style: TextStyle(
+              Text(pay ? '최종 ${formatNumber(int.parse(result))}을\n결제요청 하시겠습니까?':isDoneDelivery ?'화물 전달 후 배송을\n완료하시겠습니까?':'화물 수령후 배송을\n시작하시겠습니까?', style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w600, color: font3030
               ),),
-              SizedBox(height: 10),
-              isDoneDelivery?Container():Text(
+              const SizedBox(height: 10),
+              isDoneDelivery?Container():const Text(
                 '(배송 시작 이후 미터기를 켜주세요.)', style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w600, color: mainColor
@@ -194,14 +143,21 @@ class TaxiMainController extends GetxController {
                           isDone.value = false;
                           newCall.value = false;
                           delivery.value = false;
+                          nowPay.value = false;
+                          callItem.price = int.parse(result);
+                          price.text = '';
+                          callHistoryData.updateItem(callItem,false);
                           Get.back();
                         } else {
                           /// 여가서 callitme db 업데이트 해주세융
                           if(isDoneDelivery){
                             callItem.state = '배송완료';
+                            callHistoryData.updateItem(callItem,false);
+                            nowPay.value = true;
                             Get.back();
                           } else {
                             callItem.state = '배송중';
+                            callHistoryData.updateItem(callItem,false);
                             update();
                             Get.back();
                           }
@@ -450,14 +406,15 @@ class TaxiMainController extends GetxController {
                         ),
                         GestureDetector(
                           onTap: (){
-
                             callItem = item;
                             delivery.value = true;
+                            callItem.state ='배정완료';
+                            callHistoryData.updateItem(callItem,true);
+                            lastCallItem = callItem;
                             Get.back();
                             if(isList){
                               Get.back();
                             }
-                            callItem.state ='배정완료';
                             update();
                           },
                           child: Container(

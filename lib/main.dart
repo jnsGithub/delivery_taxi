@@ -1,8 +1,10 @@
+import 'package:delivery_taxi/data/myInfoData.dart';
 import 'package:delivery_taxi/view/confirm/confirmView.dart';
 import 'package:delivery_taxi/view/enter/enterView.dart';
 import 'package:delivery_taxi/view/login/loginView.dart';
 import 'package:delivery_taxi/view/myPage/contactUs.dart';
 import 'package:delivery_taxi/view/myPage/myPageView.dart';
+import 'package:delivery_taxi/view/myPage/taxiAccountView.dart';
 import 'package:delivery_taxi/view/signUp/noticeView.dart';
 import 'package:delivery_taxi/view/signUp/signUpView.dart';
 import 'package:delivery_taxi/view/signUp/taxiImageUploadView.dart';
@@ -22,14 +24,25 @@ import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart' as kakao;
-
+import 'package:firebase_auth/firebase_auth.dart';
 import 'firebase_options.dart';
+import 'global.dart';
 import 'model/myInfo.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 
 
-late MyInfo myInfo ;
+bool isLogin = false;
 bool isTaxiUser = false;
+
+Future setFcmToken(String token) async{
+  final FirebaseFirestore _db = FirebaseFirestore.instance;
+  await _db.collection('users').doc(uid).update({
+    'fcmToken': token
+  });
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -38,6 +51,27 @@ void main() async {
   kakao.KakaoSdk.init(nativeAppKey: 'd468c2ed0fcb419fddce6d63dd21b1c7');
   await NaverMapSdk.instance.initialize(clientId: "3ds1y6zz0h");
   await initializeDateFormatting('ko_KR', null);
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  if(_auth.currentUser != null){
+    uid = _auth.currentUser!.uid;
+    myInfo =  await MyInfomation().getUser();
+    print('메인 호출시 불러들이는 uid : $uid');
+    if(myInfo.documentId != ''){
+      isTaxiUser = myInfo.type == 'taxi' ? true : false;
+      isLogin = true;
+    }
+  }
+  FirebaseMessaging.instance.getToken().then((value) {
+    print('token : $value');
+    setFcmToken(value!);
+  });
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    print("onMessage: $message");
+  });
+  FirebaseMessaging.onBackgroundMessage((message) async {
+    print("onBackgroundMessage: $message");
+  });
   runApp(MyApp());
 }
 
@@ -67,7 +101,7 @@ class MyApp extends StatelessWidget {
             ), elevation:0
           )
       ),
-      initialRoute: '/enterView',
+      initialRoute:!isLogin? '/enterView': isTaxiUser? '/taxiMainView':'/userMainView',
       getPages: [
         GetPage(name: '/enterView', page: () => const EnterView()),
         GetPage(name: '/loginView', page: ()=> const LoginView()),
@@ -85,7 +119,7 @@ class MyApp extends StatelessWidget {
         GetPage(name:'/taxiCallList',page:()=> const TaxiCallList()),
         GetPage(name: '/taxiNotifyView', page:() => const TaxiNotifyView()),
         GetPage(name: '/taxiAreaView', page: () => const TaxiAreaView()),
-        // GetPage(name: '/InquiryPage', page: () => const InquiryPage()),
+        GetPage(name: '/taxiAccountView', page: () => const TaxiAccountView()),
         // GetPage(name: '/inquiryWrite', page: () => const InquiryWrite()),
         // GetPage(name:'/storeEdit',page:()=> const StoreEdit()),
         // GetPage(name:'/shoppingCartPage',page:()=> const ShoppingCartPage()),

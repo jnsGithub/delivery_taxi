@@ -14,12 +14,12 @@ class CallHistory {
   final String endingAddressDetail;
   final String selectedOption;
   final String caution;
-  final String userDocumentId;
-  final String taxiDocumentId;
+  String userDocumentId;
+  String taxiDocumentId;
   String paymentType; // 카카오 or 네이버
   String state;
   int price;// 가격
-  final Timestamp createDate;
+  Timestamp createDate;
 
   CallHistory({
     required this.documentId,

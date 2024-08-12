@@ -1,6 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
+
+import '../../data/myInfoData.dart';
+import '../../global.dart';
+import '../../model/myInfo.dart';
 
 
 
@@ -58,4 +63,5 @@ class SignUpController extends GetxController {
       allCheckBool.value = false;
     }
   }
+
 }

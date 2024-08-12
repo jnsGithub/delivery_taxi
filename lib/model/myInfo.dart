@@ -1,14 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class MyInfo {
-  final String documentId;
-  final String type;
+  final String documentId;    // 일반유저
+  final String type;          // 일반유저
   final String name;
   final String hp;
   final String address1;
   final String address2;
   final String taxiNumber;
-  final String taxiType;
+  final String taxiType; // ??
   String taxiImage;
   bool isAuth;
   final Timestamp createDate;
