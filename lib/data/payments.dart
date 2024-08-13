@@ -80,11 +80,71 @@ class Payments{
       onDone: (String data) async {
         print('------- onDone: $data');
         var dataJson = jsonDecode(data);
-        print(dataJson['data']['receipt_id']);
+        print(dataJson['data']['receipt_data']['receipt_id']);
         check = await callHistoryData.addItem(callHistory, dataJson['data']['receipt_id']);
         setBillingKey(callHistory, dataJson['data']['receipt_id'], pg);
       },
     );
+  }
+
+  Future rePayment(CallHistory callHistory, num price) async{
+    String bootPayUrl = 'https://api.bootpay.co.kr/v2/subscribe/payment';
+    String tokenUrl = 'https://api.bootpay.co.kr/v2/request/token';
+    String cancelUrl = 'https://api.bootpay.co.kr/v2/cancel';
+    print(callHistory.documentId);
+    String billingKey = await getBillingKey(callHistory.documentId);
+    Map<String, dynamic> a = {
+      "billing_key": billingKey,
+      // 'billing_key': '66b08980a8e646c2ca886dfa',
+      "order_id": "가맹점 주문번호",
+      "order_name": "딜리버리티 최종결제금액",
+      "price": price,
+    };
+    Map<String, dynamic> b = {
+      'application_id' : restApplicationId,
+      'private_key' : privateApplicationId
+    };
+    try{
+      var tokenRespons = await http.post(
+        Uri.parse(tokenUrl),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: jsonEncode(b),
+      );
+
+      var token = jsonDecode(tokenRespons.body);
+
+      var cancelRespons = await http.post(
+          Uri.parse(cancelUrl),
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer ${token['access_token']}"
+          });
+      print('캔슬 코드 : ${cancelRespons.statusCode}');
+      print('캔슬 바디 : ${cancelRespons.body}');
+
+      if(cancelRespons.statusCode == 200){
+        var response = await http.post(
+          Uri.parse(bootPayUrl),
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer ${token['access_token']}"
+          },
+          body: jsonEncode(a),
+        );
+        print('캔슬 성공');
+        print(response.statusCode);
+        print(response.body);
+      } else {
+        print('캔슬 실패');
+      }
+
+
+
+    }catch(e){
+      print('에러코드 $e');
+    }
   }
 
   Future setBillingKey(CallHistory callHistory, String receiptId, String paymentType) async{
@@ -127,6 +187,7 @@ class Payments{
       );
       var b = jsonDecode(responss.body);
       print(responss.body);
+
       var respons = await http.get(uri,headers: {'Authorization': 'Bearer ${b['access_token']}'});
       print(respons.body);
       var c = jsonDecode(respons.body);
@@ -197,6 +258,7 @@ class Payments{
     payload.extra = extra;
     return payload;
   }
+
 
 }
 

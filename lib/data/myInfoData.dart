@@ -79,6 +79,13 @@ class MyInfomation{
 
   }
 
+  Future updateArea(String address1, String address2) async{
+    await db.collection('users').doc(uid).update({
+      'address1': address1,
+      'address2': address2
+    });
+  }
+
   Future<String> licenseUploadImage(XFile _image) async {
     try {
       final storage = FirebaseStorage.instance;

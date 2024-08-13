@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:delivery_taxi/component/lineContainer.dart';
 import 'package:delivery_taxi/data/callHistroyData.dart';
+import 'package:delivery_taxi/data/payments.dart';
 import 'package:delivery_taxi/global.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +27,7 @@ class TaxiMainController extends GetxController {
   TextEditingController price = TextEditingController();
   CallHistory lastCallItem = CallHistory(startingPostcode: '', startingAddress: '', startingAddressDetail: '',startingName: '', startingHp: '', endingPostcode: '', endingAddress: '', endingAddressDetail: '', endingName: '', endingHp: '', selectedOption: '', caution: '', price: 0, userDocumentId: '', paymentType: '', state: '', createDate: Timestamp.now(), documentId: '', taxiDocumentId: '',);
   late CallHistory callItem;
+  Payments payments = Payments();
   @override
   void onInit() {
     super.onInit();
@@ -51,6 +53,13 @@ class TaxiMainController extends GetxController {
     callHistory.value = await callHistoryData.getTaxiItem();
     Get.toNamed('/taxiCallList');
   }
+
+  Future requestPayments() async{
+    List<String> parts = price.text.split(',');
+    String result = parts.join('');
+    await payments.rePayment(callItem, int.parse(result) * 1.3);
+  }
+
   Stream<Map<String, dynamic>> getLatestDocumentStream() {
     return FirebaseFirestore.instance
         .collection('callHistory')

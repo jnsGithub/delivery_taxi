@@ -18,7 +18,11 @@ class BottomNavigationBarController extends GetxController {
         if(pageIndex != 0){
           Get.back();
         }
-        Get.toNamed('/userMainView');
+        // if(isTaxiUser){
+        //   Get.back();
+        // } else {
+        //   Get.toNamed('/userMainView');
+        // }
         break;
       case 1:
         print(isTaxiUser);

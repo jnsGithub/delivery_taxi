@@ -98,7 +98,12 @@ class TaxiAreaView extends GetView<TaxiAreaController> {
                   ),
                 ],
               ),
-              MainBox(text: '저장하기', color: mainColor)
+              GestureDetector(
+                onTap: (){
+                  controller.setArea();
+                },
+                  child: MainBox(text: '저장하기', color: mainColor)
+              )
             ],
           ),
         )

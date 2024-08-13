@@ -295,6 +295,7 @@ class TaxiMainView extends GetView<TaxiMainController> {
                   GestureDetector(
                       onTap: (){
                         controller.changeState(size,true);
+                        controller.requestPayments();
                       },
                       child: const MainBox(text: '결제 요청하기', color: mainColor)
                   )

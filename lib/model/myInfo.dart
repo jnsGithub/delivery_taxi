@@ -5,8 +5,8 @@ class MyInfo {
   final String type;          // 일반유저
   final String name;
   final String hp;
-  final String address1;
-  final String address2;
+  String address1;
+  String address2;
   final String taxiNumber;
   final String taxiType; // ??
   String taxiImage;

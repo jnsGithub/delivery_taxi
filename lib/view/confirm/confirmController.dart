@@ -122,15 +122,16 @@ class ConfirmController extends GetxController {
   kakaoPay(BuildContext context) async {
     callHistory.state = '호출중';
     callHistory.price = taxiFare.value;
+    callHistory.userDocumentId = uid;
     callHistory.createDate = Timestamp.now();
-    // Payments().bootpayTest(context, '카카오', taxiFare.value, '테스트', callHistory);
-    bool check = await callHistoryData.addItem(callHistory,'asdf');
-    if(check){
-      Get.snackbar('알림', '호출이 완료되었습니다.');
-      Get.offAllNamed('/useNotifyView');
-      onClose();
-    } else {
-      Get.snackbar('알림', '호출이 실패되었습니다.');
-    }
+    Payments().bootpayTest(context, '카카오', taxiFare.value, '테스트', callHistory);
+    // bool check = await callHistoryData.addItem(callHistory,'asdf');
+    // if(check){
+    //   Get.snackbar('알림', '호출이 완료되었습니다.');
+    //   Get.offAllNamed('/useNotifyView');
+    //   onClose();
+    // } else {
+    //   Get.snackbar('알림', '호출이 실패되었습니다.');
+    // }
   }
 }
