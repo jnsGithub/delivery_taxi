@@ -5,6 +5,7 @@ import 'package:delivery_taxi/data/myInfoData.dart';
 import 'package:delivery_taxi/view/confirm/confirmView.dart';
 import 'package:delivery_taxi/view/enter/enterView.dart';
 import 'package:delivery_taxi/view/login/loginView.dart';
+import 'package:delivery_taxi/view/login/nomalLoginPage.dart';
 import 'package:delivery_taxi/view/myPage/contactUs.dart';
 import 'package:delivery_taxi/view/myPage/myPageView.dart';
 import 'package:delivery_taxi/view/myPage/taxiAccountView.dart';
@@ -167,8 +168,10 @@ void main() async {
     print(e);
   }
   FlutterNativeSplash.remove();
+  if(_auth.currentUser != null) {
     isLogin = true;
     print('메인 호출시 불러들이는 uid : $uid');
+  }
 
   myInfo =  await MyInfomation().getUser();
   print(myInfo.type);
@@ -223,6 +226,7 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/taxiNotifyView', page:() => const TaxiNotifyView()),
         GetPage(name: '/taxiAreaView', page: () => const TaxiAreaView()),
         GetPage(name: '/taxiAccountView', page: () => const TaxiAccountView()),
+        GetPage(name: '/nomalLoginView', page: () => const NomalLoginPage()),
         // GetPage(name: '/inquiryWrite', page: () => const InquiryWrite()),
         // GetPage(name:'/storeEdit',page:()=> const StoreEdit()),
         // GetPage(name:'/shoppingCartPage',page:()=> const ShoppingCartPage()),

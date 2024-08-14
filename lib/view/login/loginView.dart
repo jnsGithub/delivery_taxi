@@ -36,7 +36,21 @@ class LoginView extends GetView<LoginController> {
                 onTap: (){
                   controller.getAppleLogin();
                   },
-                child: const Image(image: AssetImage('images/apple_login.png'),height: 50,fit: BoxFit.fitHeight))
+                child: const Image(image: AssetImage('images/apple_login.png'),height: 50,fit: BoxFit.fitHeight)),
+            const SizedBox(height: 16),
+            GestureDetector(
+                onTap: (){
+                    Get.toNamed('/nomalLoginView');
+                  },
+                child: Container(
+                  height: 50,
+                  width: size.width * 0.91,
+                  decoration: BoxDecoration(
+                    color: mainColor,
+                    borderRadius: BorderRadius.circular(5)
+                  ),
+                  child: const Center(child: Text('일반 로그인',style: TextStyle(color: Colors.white,fontSize: 16, fontWeight: FontWeight.bold),)),
+                )),
           ],
         ),
       ),

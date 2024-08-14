@@ -28,7 +28,7 @@ class Payments{
   void bootpayTest(BuildContext context, String pg, int price, String orderName, CallHistory callHistory) {
     final CallHistoryData  callHistoryData = CallHistoryData();
     Payload payload = getPayload(pg, price, orderName);
-    bool check = false;
+    late bool check;
     if(kIsWeb) {
       payload.extra?.openType = "iframe";
     }
@@ -44,12 +44,12 @@ class Payments{
       onError: (String data) {
         print('------- onCancel: $data');
       },
-      onClose: () {
+      onClose: () async{
         print('------- onClose');
         Bootpay().dismiss(context); //명시적으로 부트페이 뷰 종료 호출
-        if(check){
+        if(await check){
           Get.snackbar('알림', '호출이 완료되었습니다.');
-          Get.offAllNamed('/useNotifyView');
+          Get.toNamed('/useNotifyView');
         } else {
           Get.snackbar('알림', '호출이 실패되었습니다.');
         }
@@ -81,8 +81,9 @@ class Payments{
         print('------- onDone: $data');
         var dataJson = jsonDecode(data);
         print(dataJson['data']['receipt_data']['receipt_id']);
-        check = await callHistoryData.addItem(callHistory, dataJson['data']['receipt_id']);
-        setBillingKey(callHistory, dataJson['data']['receipt_id'], pg);
+        check = await callHistoryData.addItem(callHistory, dataJson['data']['receipt_data']['receipt_id']);
+        await Future.delayed(Duration(seconds: 2), ()async => await setBillingKey(callHistory, dataJson['data']['receipt_data']['receipt_id'], dataJson['data']['receipt_id'], pg));
+        // setBillingKey(callHistory, dataJson['data']['receipt_data']['receipt_id'], dataJson['data']['receipt_id'], pg);
       },
     );
   }
@@ -92,15 +93,20 @@ class Payments{
     String tokenUrl = 'https://api.bootpay.co.kr/v2/request/token';
     String cancelUrl = 'https://api.bootpay.co.kr/v2/cancel';
     print(callHistory.documentId);
-    String billingKey = await getBillingKey(callHistory.documentId);
-    Map<String, dynamic> a = {
+    String billingKey = await FirebaseFirestore.instance.collection('billingKey').doc(callHistory.documentId).get().then((value) => value['billingKey']);
+    // String qq = await FirebaseFirestore.instance.collection('billingKey').doc(callHistory.documentId).get().then((value) => value['billingKey']);
+    print('billingKey : $billingKey');
+    Map<String, dynamic> rePaymentsMap = {
       "billing_key": billingKey,
-      // 'billing_key': '66b08980a8e646c2ca886dfa',
+      // 'billing_key': '66bc25d5be5ce6894a3b8e31',
       "order_id": "가맹점 주문번호",
       "order_name": "딜리버리티 최종결제금액",
       "price": price,
     };
-    Map<String, dynamic> b = {
+    Map<String, dynamic> cancelMap = {
+      'receipt_id': callHistory.documentId,
+    };
+    Map<String, dynamic> tokenMap = {
       'application_id' : restApplicationId,
       'private_key' : privateApplicationId
     };
@@ -110,7 +116,7 @@ class Payments{
         headers: {
           "Content-Type": "application/json",
         },
-        body: jsonEncode(b),
+        body: jsonEncode(tokenMap),
       );
 
       var token = jsonDecode(tokenRespons.body);
@@ -120,9 +126,10 @@ class Payments{
           headers: {
             "Content-Type": "application/json",
             "Authorization": "Bearer ${token['access_token']}"
-          });
-      print('캔슬 코드 : ${cancelRespons.statusCode}');
-      print('캔슬 바디 : ${cancelRespons.body}');
+          },
+          body: jsonEncode(cancelMap));
+      print('캔슬 상태 코드 : ${cancelRespons.statusCode}');
+      print('캔슬 응답값 : ${cancelRespons.body}');
 
       if(cancelRespons.statusCode == 200){
         var response = await http.post(
@@ -131,11 +138,11 @@ class Payments{
             "Content-Type": "application/json",
             "Authorization": "Bearer ${token['access_token']}"
           },
-          body: jsonEncode(a),
+          body: jsonEncode(rePaymentsMap),
         );
-        print('캔슬 성공');
+        print('재결제 성공');
         print(response.statusCode);
-        print(response.body);
+        print('재결제 응답값 ' + response.body);
       } else {
         print('캔슬 실패');
       }
@@ -147,19 +154,20 @@ class Payments{
     }
   }
 
-  Future setBillingKey(CallHistory callHistory, String receiptId, String paymentType) async{
+  Future setBillingKey(CallHistory callHistory, String docid, String receiptId, String paymentType) async{
     try{
       FirebaseFirestore db = FirebaseFirestore.instance;
-      DocumentSnapshot snapshot = await db.collection('callHistory').doc(receiptId).get();
-        db.collection('billingKey').doc(snapshot.id).set({
-          'billingKey': await getBillingKey(receiptId),
-          'createDate': Timestamp.now(),
-          'userDocumentId': myInfo.documentId,
-          'callHistoryId': snapshot.id,
-        });
-        db.collection('callHistory').doc(receiptId).update({
-          'paymentType': paymentType
-        });
+      DocumentSnapshot snapshot = await db.collection('callHistory').doc(docid).get();
+      String billingKey = await getBillingKey(receiptId);
+      db.collection('billingKey').doc(docid).set({
+        'billingKey': billingKey,
+        'createDate': Timestamp.now(),
+        'userDocumentId': myInfo.documentId,
+        'callHistoryId': snapshot.id,
+      });
+      db.collection('callHistory').doc(docid).update({
+        'paymentType': paymentType
+      });
 
     } catch(e){
       print(e);
@@ -168,33 +176,36 @@ class Payments{
 
   Future getBillingKey(String receiptId) async {
     try {
-
-      String url = 'https://api.bootpay.co.kr/v2/subscribe/billing_key/${receiptId}';
-      String urll = 'https://api.bootpay.co.kr/v2/request/token';
-      Uri uri = Uri.parse(url);
-      Uri urii = Uri.parse(urll);
-      Map<String, dynamic> a = {
+      String billingKeyUrl = 'https://api.bootpay.co.kr/v2/subscribe/billing_key/${receiptId}';
+      String tokenUrl = 'https://api.bootpay.co.kr/v2/request/token';
+      Uri buillingKeyUri = Uri.parse(billingKeyUrl);
+      Uri tokenUri = Uri.parse(tokenUrl);
+      Map<String, dynamic> tokenMap = {
         'application_id' : restApplicationId,
         'private_key' : privateApplicationId
       };
-      var body = jsonEncode(a);
-      var responss = await http.post(
-          urii,
+      var tokenBody = jsonEncode(tokenMap);
+      var tokenReponse = await http.post(
+          tokenUri,
         headers: {
           "Content-Type": "application/json"
         },
-        body: body,
+        body: tokenBody,
       );
-      var b = jsonDecode(responss.body);
-      print(responss.body);
+      var tokenReponseData = jsonDecode(tokenReponse.body);
+      print('토큰 조회 결과' + tokenReponse.body);
+      print('hello world!');
 
-      var respons = await http.get(uri,headers: {'Authorization': 'Bearer ${b['access_token']}'});
-      print(respons.body);
-      var c = jsonDecode(respons.body);
-      print(c['billing_key']);
-      return c['billing_key'];
+      print(receiptId);
+      var billingKeyReponse = await http.get(buillingKeyUri,headers: {'Authorization': 'Bearer ${tokenReponseData['access_token']}'});
+      print('빌링키 조회 결과 : ' + billingKeyReponse.body);
+      var billingKeyResponseData = jsonDecode(billingKeyReponse.body);
+
+      print('빌링키 : ${billingKeyResponseData['billing_key']}');
+      return billingKeyResponseData['billing_key'];
     } catch (e) {
       print(e);
+      print('캐치당함');
       return '';
     }
   }

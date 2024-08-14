@@ -2,6 +2,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart' as url;
 
 import 'model/myInfo.dart';
 
@@ -23,7 +24,16 @@ const gray200 = Color(0xffD4D4D4);
 const bg = Color(0xffF7F7FA);
 String uid = '';
 late MyInfo myInfo ;
+String loginType = '';
 int cash = 0;
+
+Future<void> launchUrl(uri) async {
+  Uri _url = Uri.parse(uri);
+  if (!await url.launchUrl(_url)) {
+    throw Exception('Could not launch $_url');
+  }
+}
+
 String formatTimestamp(Timestamp timestamp) {
   DateTime dateTime = timestamp.toDate();
   DateFormat dateFormat = DateFormat('MM.dd (EEE)', 'ko_KR');

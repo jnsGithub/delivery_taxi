@@ -31,7 +31,6 @@ class CallHistoryData{
       RxList<CallHistory> list = <CallHistory>[].obs;
       for (QueryDocumentSnapshot document in querySnapshot.docs) {
         Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-        data['documentId'] = document.id;
         bool check1 = data['startingAddress'].contains(myInfo.address1);
         bool check2 = data['startingAddress'].contains(myInfo.address2);
         if(data['state'] =='호출중' && check1 && check2){
@@ -51,7 +50,6 @@ class CallHistoryData{
       RxList<CallHistory> list = <CallHistory>[].obs;
       for (QueryDocumentSnapshot document in querySnapshot.docs) {
         Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-        data['documentId'] = document.id;
         list.add(CallHistory.fromMap(data));
       }
       return list;
@@ -97,7 +95,7 @@ class CallHistoryData{
 
   Future pushFcm(String fcmToken, String title, String body, String uid, int pay) async{
     try {
-      final jsonCredentials = await rootBundle.loadString('delivery-taxi-17959-firebase-adminsdk-cvi0s-b5e005a4a3.json');
+      final jsonCredentials = await rootBundle.loadString('assets/delivery-taxi-17959-firebase-adminsdk-cvi0s-b5e005a4a3.json');
       final creds = auth.ServiceAccountCredentials.fromJson(jsonCredentials);
       final client = await auth.clientViaServiceAccount(
         creds,

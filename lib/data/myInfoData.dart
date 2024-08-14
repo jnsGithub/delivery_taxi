@@ -70,7 +70,7 @@ class MyInfomation{
 
   Future setUser(MyInfo a) async {
     try{
-      await userCollection.doc(uid).set(a.toMap());
+      await userCollection.doc('hAO4dLUZWzbGlUz3fJ4f').set(a.toMap());
       return true;
     } catch(e){
       print(e);

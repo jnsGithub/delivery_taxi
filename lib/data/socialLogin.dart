@@ -32,6 +32,7 @@ class SocialLogin{
 
       User user = await firebaseCredential.user!;
       uid = user.uid;
+      loginType = '카카오';
 
       //Fcm Token 발급
       FirebaseMessaging.instance.getToken().then((value) {
@@ -76,7 +77,7 @@ class SocialLogin{
       final UserCredential firebaseCredential = await auth.signInWithCredential(credential);
       User user = await firebaseCredential.user!;
       uid = user.uid;
-
+      loginType = '애플';
       //Fcm Token 발급
       FirebaseMessaging.instance.getToken().then((value) {
         print('token : $value');
@@ -95,22 +96,33 @@ class SocialLogin{
   }
 
   Future<void> signOut() async{
-    await auth.signOut();
-    uid = '';
-    myInfo = MyInfo(
-      documentId: 'doc.id',
-      type: '',
-      name: '',
-      hp: '',
-      address1: '',
-      address2: '',
-      taxiNumber: '',
-      taxiType: '',
-      taxiImage: '',
-      isAuth: false,
-      createDate: Timestamp.now(),
-    );
-    Get.offAllNamed('/enterView');
+    try{
+      if(loginType == '카카오'){
+        await auth.signOut();
+        await kakaoAuth.UserApi.instance.logout();
+      }
+      else{
+        await auth.signOut();
+      }
+      uid = '';
+      myInfo = MyInfo(
+        documentId: 'doc.id',
+        type: '',
+        name: '',
+        hp: '',
+        address1: '',
+        address2: '',
+        taxiNumber: '',
+        taxiType: '',
+        taxiImage: '',
+        isAuth: false,
+        createDate: Timestamp.now(),
+      );
+      Get.offAllNamed('/enterView');
+    } catch(e){
+      print(e);
+    }
+
   }
 
 }

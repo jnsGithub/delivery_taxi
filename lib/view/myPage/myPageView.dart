@@ -1,5 +1,6 @@
 import 'package:delivery_taxi/data/socialLogin.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import '../../data/callHistroyData.dart';
@@ -28,6 +29,15 @@ class MyPageView extends GetView<MyPageController> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(uid.substring(0,8), style: TextStyle(fontWeight: FontWeight.w300),),
+                  IconButton(onPressed: (){
+                    Clipboard.setData(ClipboardData(text: uid.substring(0,8)));
+                  }, icon: Icon(Icons.copy, size: 10,),),
+                ],
+              ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -84,6 +94,7 @@ class MyPageView extends GetView<MyPageController> {
                   Container(width: size.width, height: 1, decoration: const BoxDecoration(color: gray100),),
                   GestureDetector(
                     onTap: () async{
+                      launchUrl('https://electric-fortnight-2a5.notion.site/77b089422d2d4338b7e55cc43fc29f3b?pvs=4');
                     },
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 20,horizontal: 5),
@@ -105,7 +116,7 @@ class MyPageView extends GetView<MyPageController> {
                       child: const Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('위치정보 이용약관',style: TextStyle(fontSize: 15),),
+                          Text('위치정보 이용 약관',style: TextStyle(fontSize: 15),),
                           Icon(Icons.navigate_next,color:gray200,)
                         ],
                       ),
