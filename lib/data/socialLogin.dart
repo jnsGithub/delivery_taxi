@@ -125,4 +125,31 @@ class SocialLogin{
 
   }
 
+  Future deleteAccount() async{
+    try{
+      await auth.currentUser!.delete();
+      await auth.signOut();
+      if(loginType == '카카오'){
+        await kakaoAuth.UserApi.instance.unlink();
+      }
+      await FirebaseFirestore.instance.collection('users').doc(uid).delete();
+      uid = '';
+      myInfo = MyInfo(
+        documentId: 'doc.id',
+        type: '',
+        name: '',
+        hp: '',
+        address1: '',
+        address2: '',
+        taxiNumber: '',
+        taxiType: '',
+        taxiImage: '',
+        isAuth: false,
+        createDate: Timestamp.now(),
+      );
+      Get.offAllNamed('/enterView');
+    } catch(e){
+      print(e);
+    }
+  }
 }

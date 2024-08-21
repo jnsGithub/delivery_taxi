@@ -154,6 +154,9 @@ class MyPageView extends GetView<MyPageController> {
                   Container(width: size.width, height: 1, decoration: const BoxDecoration(color: gray100),),
                   GestureDetector(
                     onTap: () async{
+                      showDialog(context: context, builder: (context){
+                        return controller.checkDeleteAccount();
+                      });
                     },
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 20,horizontal: 5),
