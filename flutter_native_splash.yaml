@@ -14,7 +14,19 @@ flutter_native_splash:
   # of your splash screen to a solid color.  Use background_image to set the background of your
   # splash screen to a png image.  This is useful for gradients. The image will be stretch to the
   # size of the app. Only one parameter can be used, color and background_image cannot both be set.
-  color: "#42a5f5"
+#  image: images/splash.png # 스플래시 스크린으로 사용할 이미지 경로
+#  color: "#ffffff" # 배경 색상 (헥사 색상 문자열)
+#  android: true
+  ios: true
+  image: images/splash.png
+  color: "#ffffff"
+#  android:
+#    image: images/splash.png
+#    color: "#ffffff"
+#  ios:
+#    image: images/splash.png
+#    color: "#ffffff"
+#    boxfit: fitWidth   # iOS의 경우도 마찬가지로 설정할 수 있습니다.
   #background_image: "assets/background.png"
 
   # Optional parameters are listed below.  To enable a parameter, uncomment the line by removing
@@ -57,10 +69,12 @@ flutter_native_splash:
   # 640 pixels in diameter.
   # App icon without an icon background: This should be 1152×1152 pixels, and fit within a circle
   # 768 pixels in diameter.
-  #image: assets/android12splash.png
+    image: images/splogo.png
+#     background_image_android: "images/splash.png"
+#     background_image_dark_android: "assets/dark-background-android.png"
 
   # Splash screen background color.
-  #color: "#42a5f5"
+    color: "#ffffff"
 
   # App icon background color.
   #icon_background_color: "#111111"
@@ -95,7 +109,7 @@ flutter_native_splash:
   #image_dark_ios: assets/splash-invert-ios.png
   #image_web: assets/splash-web.gif
   #image_dark_web: assets/splash-invert-web.gif
-  #background_image_android: "assets/background-android.png"
+#    background_image_android: "images/splash.png"
   #background_image_dark_android: "assets/dark-background-android.png"
   #background_image_ios: "assets/background-ios.png"
   #background_image_dark_ios: "assets/dark-background-ios.png"

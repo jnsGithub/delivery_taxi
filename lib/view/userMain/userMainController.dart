@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:remedi_kopo/remedi_kopo.dart';
+// import 'package:kpostal/kpostal.dart';
 
 import '../../model/callHistory.dart';
 
@@ -25,6 +26,10 @@ class UserMainController extends GetxController {
 
   RxString selectedOption = 'small'.obs;
   TextEditingController caution = TextEditingController();
+
+  RxString inquiryType = ''.obs;
+  List<String> inquiryTypeList = ['일반유저', '택시유저'];
+
   @override
   void onInit() {
     super.onInit();
@@ -41,6 +46,12 @@ class UserMainController extends GetxController {
         builder: (context) => RemediKopo(),
       ),
     );
+    // Kpostal model = await Navigator.push(
+    //     context,
+    //     MaterialPageRoute(
+    //         builder: (_) => KpostalView()
+    //     )
+    // );
     if(model != null){
       if(starting){
         startingAddress.value = model.address!;

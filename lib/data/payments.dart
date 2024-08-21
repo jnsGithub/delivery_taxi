@@ -88,7 +88,7 @@ class Payments{
     );
   }
 
-  Future rePayment(CallHistory callHistory, num price) async{
+  Future rePayment(CallHistory callHistory) async{
     String bootPayUrl = 'https://api.bootpay.co.kr/v2/subscribe/payment';
     String tokenUrl = 'https://api.bootpay.co.kr/v2/request/token';
     String cancelUrl = 'https://api.bootpay.co.kr/v2/cancel';
@@ -101,7 +101,7 @@ class Payments{
       // 'billing_key': '66bc25d5be5ce6894a3b8e31',
       "order_id": "가맹점 주문번호",
       "order_name": "딜리버리티 최종결제금액",
-      "price": price,
+      "price": callHistory.price,
     };
     Map<String, dynamic> cancelMap = {
       'receipt_id': callHistory.documentId,
@@ -154,6 +154,57 @@ class Payments{
     }
   }
 
+  Future cancelPayments(CallHistory callHistory) async {
+    String cancelUrl = 'https://api.bootpay.co.kr/v2/cancel';
+    String tokenUrl = 'https://api.bootpay.co.kr/v2/request/token';
+
+    Map<String, dynamic> cancelMap = {
+      'receipt_id': callHistory.documentId,
+    };
+    Map<String, dynamic> tokenMap = {
+      'application_id' : restApplicationId,
+      'private_key' : privateApplicationId
+    };
+
+    try{
+      var tokenRespons = await http.post(
+        Uri.parse(tokenUrl),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: jsonEncode(tokenMap),
+      );
+
+      var token = jsonDecode(tokenRespons.body);
+
+      var cancelRespons = await http.post(
+          Uri.parse(cancelUrl),
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer ${token['access_token']}"
+          },
+          body: jsonEncode(cancelMap));
+      print('캔슬 상태 코드 : ${cancelRespons.statusCode}');
+      print('캔슬 응답값 : ${cancelRespons.body}');
+      if(cancelRespons.statusCode == 200){
+        await FirebaseFirestore.instance.collection('callHistory').doc(callHistory.documentId).update({
+          'state': '호출취소'
+        });
+        Get.back(result: true);
+        Get.snackbar('결제 취소', '택시 호출이 취소되었습니다.', backgroundColor: mainColor, colorText: Colors.white);
+      }
+      else if(cancelRespons.statusCode == 400){
+        Get.snackbar('결제 취소 실패', '결제 취소가 이미 완료되었습니다.', backgroundColor: mainColor, colorText: Colors.white);
+      }
+      else{
+        Get.snackbar('결제 취소 실패', '관리자에게 문의해주세요.', backgroundColor: mainColor, colorText: Colors.white, onTap: (snack) => Get.toNamed('/contactUs'));
+      }
+    }catch(e){
+      print('에러코드 $e');
+    }
+
+  }
+
   Future setBillingKey(CallHistory callHistory, String docid, String receiptId, String paymentType) async{
     try{
       FirebaseFirestore db = FirebaseFirestore.instance;
@@ -186,7 +237,7 @@ class Payments{
       };
       var tokenBody = jsonEncode(tokenMap);
       var tokenReponse = await http.post(
-          tokenUri,
+        tokenUri,
         headers: {
           "Content-Type": "application/json"
         },

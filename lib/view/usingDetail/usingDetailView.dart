@@ -154,7 +154,14 @@ class UsingDetailView extends GetView<UsingDetailController> {
               ),
               SizedBox(height: 22),
               isTaxiUser ? Container():GestureDetector(
-                onTap: (){},
+                onTap: (){
+                  print(controller.callHistory.state);
+                  if(controller.callHistory.state == '호출중'){
+                    showDialog(context: context, builder: (context){
+                      return controller.checkDialog();
+                    });
+                  }
+                },
                 child:MainBox(text: '결제 취소',color:controller.callHistory.state == '호출중'?  mainColor :gray200),
               ),
             ],

@@ -22,6 +22,9 @@ class TaxiMainController extends GetxController {
   RxBool delivery = false.obs;
   RxBool nowPay = false.obs;
 
+  RxString inquiryType = ''.obs;
+  List<String> inquiryTypeList = ['일반유저', '택시유저'];
+
   RxList<CallHistory> callHistory = <CallHistory>[].obs;
   CallHistoryData callHistoryData = CallHistoryData();
   TextEditingController price = TextEditingController();
@@ -57,7 +60,12 @@ class TaxiMainController extends GetxController {
   Future requestPayments() async{
     List<String> parts = price.text.split(',');
     String result = parts.join('');
-    await payments.rePayment(callItem, int.parse(result) * 1.3);
+    print('로그1');
+    print(price.text);
+    print(parts);
+    print(result);
+    print((int.parse(result) * 1.3).toInt());
+    await payments.rePayment(callItem);
   }
 
   Stream<Map<String, dynamic>> getLatestDocumentStream() {
@@ -153,7 +161,8 @@ class TaxiMainController extends GetxController {
                           newCall.value = false;
                           delivery.value = false;
                           nowPay.value = false;
-                          callItem.price = int.parse(result);
+                          callItem.price = (int.parse(result) * 1.3).toInt();
+                          requestPayments();
                           price.text = '';
                           callHistoryData.updateItem(callItem,false);
                           Get.back();

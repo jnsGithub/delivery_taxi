@@ -380,7 +380,12 @@ class TaxiSignUpController extends GetxController {
                                 Checkbox(value: allCheckBool.value,activeColor: mainColor, onChanged: (value){
                                   allCheck();
                                 }),
-                                const Text('전체 동의',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600,color: font2424),),
+                                GestureDetector(
+                                    onTap: (){
+                                      allCheck();
+                                    },
+                                    child: const Text('전체 동의',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600,color: font2424),)
+                                ),
                               ],
                             ),
                           ),
@@ -388,13 +393,28 @@ class TaxiSignUpController extends GetxController {
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 15),
                             child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Checkbox(value: check1.value,activeColor: mainColor, onChanged: (value){
-                                  check(1);
-                                }),
-                                const SizedBox(
-                                  width: 250,
-                                    child: Text('(필수) 정산처리를 위한 개인정보 제3자 제공 동의',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600,color: font2424),)),
+                                Row(
+                                  children: [
+                                    Checkbox(value: check1.value,activeColor: mainColor, onChanged: (value){
+                                      check(1);
+                                    }),
+                                    GestureDetector(
+                                      onTap: (){
+                                        check(1);
+                                      },
+                                      child: const SizedBox(
+                                        width: 250,
+                                          child: Text('(필수) 정산처리를 위한 개인정보 제3자 제공 동의',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600,color: font2424),)),
+                                    ),
+                                  ],
+                                ),
+                                IconButton(
+                                  onPressed: (){
+                                    launchUrl('https://electric-fortnight-2a5.notion.site/5e251b921e314b1996e86047776a7d64?pvs=4');
+                                  },
+                                  icon: Icon(Icons.arrow_forward_ios, size: 15,),color: font2424,),
                               ],
                             ),
                           ),
@@ -402,47 +422,104 @@ class TaxiSignUpController extends GetxController {
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 15),
                             child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Checkbox(value: check2.value,activeColor: mainColor, onChanged: (value){
-                                  check(2);
-                                }),
-                                const SizedBox(
-                                  width: 250,
-                                    child: Text('(필수) 차량 배차를 위한 개인정보 및 위치정보 제 3자 제공 동의',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600,color: font2424),)
+                                Row(
+                                  children: [
+                                    Checkbox(value: check2.value,activeColor: mainColor, onChanged: (value){
+                                      check(2);
+                                    }),
+                                    GestureDetector(
+                                      onTap: (){
+                                        check(2);
+                                      },
+                                      child: const SizedBox(
+                                        width: 250,
+                                          child: Text('(필수) 차량 배차를 위한 개인정보 및 위치정보 제 3자 제공 동의',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600,color: font2424),)
+                                      ),
+                                    ),
+                                  ],
                                 ),
+                                IconButton(
+                                  onPressed: (){
+                                    launchUrl('https://electric-fortnight-2a5.notion.site/5e251b921e314b1996e86047776a7d64?pvs=4');
+                                  },
+                                  icon: Icon(Icons.arrow_forward_ios, size: 15,),color: font2424,),
                               ],
                             ),
                           ),
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 15),
                             child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Checkbox(value: check3.value,activeColor: mainColor, onChanged: (value){
-                                  check(3);
-                                }),//
-                                const Text('(필수) 위치기반서비스 이용약관 동의',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600,color: font2424),),
+                                Row(
+                                  children: [
+                                    Checkbox(value: check3.value,activeColor: mainColor, onChanged: (value){
+                                      check(3);
+                                    }),
+                                    GestureDetector(
+                                        onTap: (){
+                                          check(3);
+                                        },
+                                        child: const Text('(필수) 위치기반서비스 이용약관 동의',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600,color: font2424),)),
+                                  ],
+                                ),
+                                IconButton(
+                                  onPressed: (){
+                                    launchUrl('https://electric-fortnight-2a5.notion.site/f3c540f6c48b4b0db5f779caae47b768?pvs=4');
+                                  },
+                                  icon: Icon(Icons.arrow_forward_ios, size: 15,),color: font2424,),
                               ],
                             ),
                           ),
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 15),
                             child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Checkbox(value: check4.value,activeColor: mainColor, onChanged: (value){
-                                  check(4);
-                                }),
-                                const Text('(필수) 서비스 이용약관 동의',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600,color: font2424),),
+                                Row(
+                                  children: [
+                                    Checkbox(value: check4.value,activeColor: mainColor, onChanged: (value){
+                                      check(4);
+                                    }),
+                                    GestureDetector(
+                                        onTap: (){
+                                          check(4);
+                                        },
+                                        child: const Text('(필수) 서비스 이용약관 동의',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600,color: font2424),)),
+                                  ],
+                                ),
+                                IconButton(
+                                  onPressed: (){
+                                    launchUrl('https://electric-fortnight-2a5.notion.site/d9032623fa124078832590eafad765cb?pvs=4');
+                                  }, 
+                                  icon: Icon(Icons.arrow_forward_ios, size: 15,),color: font2424,),
                               ],
                             ),
                           ),
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 15),
                             child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Checkbox(value: check5.value,activeColor: mainColor, onChanged: (value){
-                                  check(5);
-                                }),
-                                const Text('(필수) 개인정보 수집 및 이용동의',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600,color: font2424),),
+                                Row(
+                                  children: [
+                                    Checkbox(value: check5.value,activeColor: mainColor, onChanged: (value){
+                                      check(5);
+                                    }),
+                                    GestureDetector(
+                                        onTap: (){
+                                          check(5);
+                                        },
+                                        child: const Text('(필수) 개인정보 수집 및 이용동의',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600,color: font2424),)),
+                                  ],
+                                ),
+                                IconButton(
+                                  onPressed: (){
+                                    launchUrl('https://electric-fortnight-2a5.notion.site/5e251b921e314b1996e86047776a7d64?pvs=4');
+                                  },
+                                  icon: Icon(Icons.arrow_forward_ios, size: 15,),color: font2424,),
                               ],
                             ),
                           ),

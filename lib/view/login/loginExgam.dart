@@ -16,6 +16,7 @@ class LoginExgam{
            myInfo = MyInfo.fromFirestore(value);
            uid = value.id;
            auth.signInAnonymously();
+           loginType = '애플';
            isCheck =  true;
          } else {
            isCheck = false;

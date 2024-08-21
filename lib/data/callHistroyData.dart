@@ -133,6 +133,10 @@ class CallHistoryData{
         },
         body: json.encode(message1),
       );
+      print('token : ${client.credentials.accessToken.data}');
+      print('response : ${response.body}');
+      print('message : $message1');
+      print('url : $url');
 
       if (response.statusCode == 200) {
         NotifyData().setNotify(title, body, uid, pay);

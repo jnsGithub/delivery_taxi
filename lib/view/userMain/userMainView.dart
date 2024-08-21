@@ -25,7 +25,7 @@ class UserMainView extends GetView<UserMainController> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Row(
+          title: Row(
             children: [
               Image(image: AssetImage('images/local_taxi.png'),width: 21, height: 21,),
               SizedBox(width: 10,),
@@ -34,6 +34,51 @@ class UserMainView extends GetView<UserMainController> {
                 fontSize: 19,
                 color: gray500
               ),),
+              myInfo.hp == 'admin' ? Obx(() => Container(
+                width: 150,
+                height: 50,
+                child: DropdownButton(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  menuMaxHeight: 300,
+                  isExpanded: true,
+                  dropdownColor: Color(0xffF7F7FA),
+                  itemHeight: 50,
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                  hint: Text(
+                    "유저타입",
+                    style: TextStyle(
+                        color: Color(0xff000000),
+                        fontFamily: 'nanumRegular'
+                    ),
+                  ),
+                  value: controller.inquiryType.value.isEmpty
+                      ? null
+                      : controller.inquiryType.value,
+                  onChanged: (String? newValue){
+                    if (newValue != null) {
+                      controller.inquiryType.value = newValue;
+                      if(controller.inquiryType.value == '일반유저') {
+                        myInfo.type = 'customer';
+                        Get.toNamed('/userMainView');
+                      }
+                      else{
+                        myInfo.type = 'taxi';
+                        Get.toNamed('/taxiMainView');
+                      }
+                      print(myInfo.type);
+                      print(myInfo.hp);
+                    }
+                    print(controller.inquiryType.value);
+                  },
+                  items: controller.inquiryTypeList.map<DropdownMenuItem<String>>((String value){
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                ),
+              ),
+              ) : Container(),
             ],
           ),
           centerTitle: false,

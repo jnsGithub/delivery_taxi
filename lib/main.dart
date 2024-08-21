@@ -29,7 +29,6 @@ import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart' as kakao;
-import 'package:firebase_auth/firebase_auth.dart';
 import 'firebase_options.dart';
 import 'global.dart';
 import 'model/myInfo.dart';
@@ -66,10 +65,16 @@ void main() async {
   // WidgetsFlutterBinding.ensureInitialized();
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  kakao.KakaoSdk.init(nativeAppKey: 'd468c2ed0fcb419fddce6d63dd21b1c7');
+  // await Firebase.initializeApp(
+  //   options: DefaultFirebaseOptions.currentPlatform,
+  // );
+  if (Firebase.apps.isEmpty) {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  }
+
+  kakao.KakaoSdk.init(nativeAppKey: 'ebec32eed582eeb5ca7e8bf6ee868a13');
   await NaverMapSdk.instance.initialize(clientId: "3ds1y6zz0h");
   await initializeDateFormatting('ko_KR', null);
 
@@ -91,19 +96,6 @@ void main() async {
     }
   }
 
-  // FirebaseInAppMessaging a = FirebaseInAppMessaging.instance;
-  // a.setAutomaticDataCollectionEnabled(true);
-
-  //
-  // if (Platform.isAndroid) {
-  //
-  //   final int sdkInt = (await DeviceInfoPlugin().androidInfo).version.sdkInt;
-  //
-  //   if (sdkInt >= 33) {
-  //
-  //     Permission.notification.request()
-  //   }
-  // }
   if(await Permission.notification.isGranted) {
     print('권한이 허용되어 있습니다.');
   } else {
@@ -112,13 +104,18 @@ void main() async {
   }
 
 
-
-  final FlutterLocalNotificationsPlugin _local = FlutterLocalNotificationsPlugin();
+  // final FlutterLocalNotificationsPlugin _local = FlutterLocalNotificationsPlugin();
 
   const AndroidInitializationSettings initializationSettingsAndroid =
   AndroidInitializationSettings('@drawable/ic_notification');
+  final DarwinInitializationSettings initializationSettingsIOS = DarwinInitializationSettings(
+    onDidReceiveLocalNotification: (int id, String? title, String? body, String? payload) async {
+      // iOS에서 알림을 클릭했을 때 실행할 동작을 정의합니다.
+    },
+  );
   final InitializationSettings initializationSettings = InitializationSettings(
     android: initializationSettingsAndroid,
+    iOS: initializationSettingsIOS,
   );
 
   try{

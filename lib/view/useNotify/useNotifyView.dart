@@ -106,7 +106,11 @@ class UseNotifyView extends GetView<UseNotifyController> {
               ),
               TextButton(
                   onPressed: (){
-                    Get.toNamed('/usingDetailView',arguments: controller.callHistory[index]);
+                    Get.toNamed('/usingDetailView',arguments: controller.callHistory[index])?.then((value) {
+                      if(value == true){
+                        controller.init();
+                      }
+                    });
                   },
                   child: Text('상세보기 >',style:TextStyle(
                     color:gray600,

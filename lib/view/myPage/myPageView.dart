@@ -78,7 +78,11 @@ class MyPageView extends GetView<MyPageController> {
                   Container(width: size.width, height: 1, decoration: const BoxDecoration(color: gray100),),
                   GestureDetector(
                     onTap: () async{
-                      // await CallHistoryData().pushFcm('cRM4YrL3S0WXpqu3itzXrc:APA91bExh3obOm4PdI1LSeo7-AQdPNW1eNLhASl08t_qWZVxUEezswRGygrsDMvT7ZeybtbSRqzoFZ80QaUbz7Pk8DNapgLr_LBvUYhTeGPTmoEGiqNXP0Sk4IHkoCq41iuuZpkqciCE' ,'택시기사님께 콜이 들어왔습니다.','택시기사님께 콜이 들어왔습니다.', uid);
+                      if(myInfo.type == 'taxi'){
+                        launchUrl('https://electric-fortnight-2a5.notion.site/d9032623fa124078832590eafad765cb?pvs=4');
+                      } else {
+                        launchUrl('https://electric-fortnight-2a5.notion.site/d9032623fa124078832590eafad765cb?pvs=4');
+                      }
                     },
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 20,horizontal: 5),
@@ -94,7 +98,11 @@ class MyPageView extends GetView<MyPageController> {
                   Container(width: size.width, height: 1, decoration: const BoxDecoration(color: gray100),),
                   GestureDetector(
                     onTap: () async{
-                      launchUrl('https://electric-fortnight-2a5.notion.site/77b089422d2d4338b7e55cc43fc29f3b?pvs=4');
+                      if(myInfo.type == 'taxi'){
+                        launchUrl('https://electric-fortnight-2a5.notion.site/5e251b921e314b1996e86047776a7d64?pvs=4');
+                      } else {
+                        launchUrl('https://electric-fortnight-2a5.notion.site/77b089422d2d4338b7e55cc43fc29f3b?pvs=4');
+                      }
                     },
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 20,horizontal: 5),
@@ -110,6 +118,11 @@ class MyPageView extends GetView<MyPageController> {
                   Container(width: size.width, height: 1, decoration: const BoxDecoration(color: gray100),),
                   GestureDetector(
                     onTap: () async{
+                      if(myInfo.type == 'taxi'){
+                        launchUrl('https://electric-fortnight-2a5.notion.site/f3c540f6c48b4b0db5f779caae47b768?pvs=4');
+                      } else {
+                        launchUrl('https://electric-fortnight-2a5.notion.site/f3c540f6c48b4b0db5f779caae47b768?pvs=4');
+                      }
                     },
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 20,horizontal: 5),

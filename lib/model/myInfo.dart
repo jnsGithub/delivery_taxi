@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class MyInfo {
   final String documentId;    // 일반유저
-  final String type;          // 일반유저
+  String type;          // 일반유저
   final String name;
   final String hp;
   String address1;

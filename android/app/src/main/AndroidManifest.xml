@@ -6,7 +6,7 @@
 
 
     <application
-        android:label="딜리버리티"
+        android:label="딜리버리티 (디티)"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
@@ -46,7 +46,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <!-- Redirect URI, "kakao${YOUR_NATIVE_APP_KEY}://oauth" 형식 -->
-                <data android:scheme="kakaod468c2ed0fcb419fddce6d63dd21b1c7" android:host="oauth"/>
+                <data android:scheme="kakaoebec32eed582eeb5ca7e8bf6ee868a13" android:host="oauth"/>
             </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.
