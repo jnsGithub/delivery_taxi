@@ -10,7 +10,8 @@ class TextFieldComponent extends StatelessWidget {
   final bool multi;
   final bool typeNumber;
   final Color color;
-  const TextFieldComponent({required this.text,required this.controller,required this.multi,required this.color, required this.typeNumber,Key? key}) : super(key: key);
+  FocusNode? focusNode = FocusNode();
+  TextFieldComponent({required this.text,required this.controller,required this.multi,required this.color, required this.typeNumber,this.focusNode,super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +38,7 @@ class TextFieldComponent extends StatelessWidget {
           child: TextField(
             controller: controller,
             maxLines: multi? 7:1,
+            focusNode: focusNode,
             keyboardType: typeNumber? TextInputType.number:null,
             decoration:   InputDecoration(
               hintStyle: TextStyle(fontSize: 17,

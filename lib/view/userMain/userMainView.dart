@@ -154,6 +154,7 @@ class UserMainView extends GetView<UserMainController> {
                                 color: const Color(0xfff6f6fa)),
                             child: TextField(
                               controller: controller.startingAddressDetailController,
+                              focusNode: controller.startAddressDetail,
                               decoration: const InputDecoration(
                                 hintText: '상세주소를 입력하세요 (ex. 101호 101호)',
                                 hintStyle: TextStyle(
@@ -240,6 +241,7 @@ class UserMainView extends GetView<UserMainController> {
                                 color: const Color(0xfff6f6fa)),
                             child: TextField(
                               controller: controller.endingAddressDetailController,
+                              focusNode: controller.endAddressDetail,
                               decoration: const InputDecoration(
                                 hintText: '상세주소를 입력하세요 (ex. 101호 101호)',
                                 hintStyle: TextStyle(

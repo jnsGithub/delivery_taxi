@@ -12,6 +12,8 @@ import '../../model/callHistory.dart';
 
 
 class UserMainController extends GetxController {
+  FocusNode startAddressDetail = FocusNode();
+  FocusNode endAddressDetail = FocusNode();
   RxString startingPostcode = '우편번호를 검색하세요'.obs;
   RxString startingAddress = ''.obs;
   TextEditingController startingAddressDetailController = TextEditingController();
@@ -56,9 +58,11 @@ class UserMainController extends GetxController {
       if(starting){
         startingAddress.value = model.address!;
         startingPostcode.value = model.zonecode!;
+        FocusScope.of(Get.context!).requestFocus(startAddressDetail);
       } else {
         endingPostcode.value = model.zonecode!;
         endingAddress.value = model.address!;
+        FocusScope.of(Get.context!).requestFocus(endAddressDetail);
       }
     }
   }

@@ -78,7 +78,7 @@ class ConfirmController extends GetxController {
       mapController.addOverlay(startMarker);
       mapController.addOverlay(endMarker);
       mapController.updateCamera(NCameraUpdate.withParams(
-        zoom: 12,
+        zoom: 10,
         target: NLatLng(startLatitude.value, startLongitude.value),
       ));
 
