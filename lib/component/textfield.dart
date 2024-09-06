@@ -9,7 +9,7 @@ class TextFieldComponent extends StatelessWidget {
   final bool multi;
   final bool typeNumber;
   final Color color;
-  FocusNode focusNode = FocusNode();
+  FocusNode? focusNode = FocusNode();
   TextFieldComponent({required this.text,required this.controller,required this.multi,required this.color, required this.typeNumber,this.focusNode,super.key});
 
   @override
