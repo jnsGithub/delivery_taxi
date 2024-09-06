@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../global.dart';
-import '../main.dart';
 
 class TextFieldComponent extends StatelessWidget {
   final String text;

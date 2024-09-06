@@ -1,7 +1,6 @@
 
 
 import 'package:delivery_taxi/component/lineContainer.dart';
-import 'package:delivery_taxi/data/payments.dart';
 import 'package:delivery_taxi/view/confirm/confirmController.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
