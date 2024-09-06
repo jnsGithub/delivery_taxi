@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:delivery_taxi/data/callHistroyData.dart';
@@ -37,6 +38,41 @@ class ConfirmController extends GetxController {
   void onClose(){
     super.onClose();
   }
+  double calculateDistance(lat1, lon1, lat2, lon2) {
+    const double R = 6371e3; // Earth radius in meters
+    double phi1 = lat1 * pi / 180;
+    double phi2 = lat2 * pi / 180;
+    double deltaPhi = (lat2 - lat1) * pi / 180;
+    double deltaLambda = (lon2 - lon1) * pi / 180;
+
+    double a = sin(deltaPhi / 2) * sin(deltaPhi / 2) +
+        cos(phi1) * cos(phi2) * sin(deltaLambda / 2) * sin(deltaLambda / 2);
+    double c = 2 * atan2(sqrt(a), sqrt(1 - a));
+
+    return R * c; // Distance in meters
+  }
+  double getZoomLevel(double distance) {
+    if (distance > 50000) {
+      return 7; // 긴 거리
+    } else if (distance > 20000) {
+      return 9; // 긴 거리
+    }else if (distance > 10000) {
+      return 10; // 긴 거리
+    }else if (distance > 5000) {
+      return 11; // 긴 거리 (5km 이상)
+    } else if (distance > 1000) {
+      return 12; // 중간 거리 (1km ~ 5km)
+    } else if (distance > 100) {
+      return 14; // 짧은 거리 (100m ~ 1km)
+    } else {
+      return 17; // 매우 짧은 거리 (100m 이하)
+    }
+  }
+  NLatLng getMidPoint(NLatLng start, NLatLng end) {
+    double midLatitude = (start.latitude + end.latitude) / 2;
+    double midLongitude = (start.longitude + end.longitude) / 2;
+    return NLatLng(midLatitude, midLongitude);
+  }
   onMapCreated(NaverMapController controller)async {
     try{
       await getLoad();
@@ -72,14 +108,23 @@ class ConfirmController extends GetxController {
         iconTintColor: Colors.black,
 
       );
+      double distance = calculateDistance(
+        startLatitude.value, startLongitude.value,
+        endLatitude.value, endLongitude.value,
+      );
+      NLatLng midPoint = getMidPoint(NLatLng(startLatitude.value, startLongitude.value),NLatLng(endLatitude.value, endLongitude.value),);
+      // 거리에 따른 줌 레벨 계산
+      double zoomLevel = getZoomLevel(distance);
+      // 지도 줌 레벨 설정
+
       mapController.addOverlay(NPathOverlay(id: "test", coords: coords,color: mainColor,outlineWidth:0),);
       // mapController.addOverlay(NPathOverlay(id: "test1", coords: start,color: mainColor,outlineWidth:0),);
       // mapController.addOverlay(NPathOverlay(id: "test2", coords: end,color: mainColor,outlineWidth:0),);
       mapController.addOverlay(startMarker);
       mapController.addOverlay(endMarker);
       mapController.updateCamera(NCameraUpdate.withParams(
-        zoom: 10,
-        target: NLatLng(startLatitude.value, startLongitude.value),
+        zoom: zoomLevel,
+        target:midPoint,
       ));
 
 
