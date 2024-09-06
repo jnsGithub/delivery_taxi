@@ -18,46 +18,51 @@ class UseNotifyView extends GetView<UseNotifyController> {
     Size size = MediaQuery.of(context).size;
     Get.lazyPut(() => UseNotifyController());
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('이용/알림',style: TextStyle(
+      appBar: AppBar(
+        title: const Text('이용/알림',style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w600
-          ),),
-          centerTitle: false,
-          leading: Container(),
-          leadingWidth: 0,
-          bottom: TabBar(
-            controller: controller.tabController,
-            labelColor: Colors.black,
-            unselectedLabelColor: const Color(0xffacb3bf),
-            indicatorPadding: const EdgeInsets.all(0.0),
-            indicatorWeight: 4.0,
-            dividerColor:Colors.white,
-            labelPadding: const EdgeInsets.only(left: 0.0, right: 0.0),
-            indicator: const ShapeDecoration(
-              shape: UnderlineInputBorder(
-                  borderSide: BorderSide(color: mainColor, width: 2, style: BorderStyle.solid)),),
-            tabs: <Widget>[
-              Container(
-                height: 40,
-                alignment: Alignment.center,
-                color: Colors.white,
-                child: const Text("이용내역",style: TextStyle(fontSize: 17),),
-              ),
-              Container(
-                height: 40,
-                alignment: Alignment.center,
-                color: Colors.white,
-                child: const Text("알림 ",style: TextStyle(fontSize: 17),),
-              ),
-            ],
-            onTap:(i){
-              controller.changeTab(i);
-            },
-          ),
+        ),),
+        centerTitle: false,
+        leading: Container(),
+        leadingWidth: 0,
+        bottom: TabBar(
+          controller: controller.tabController,
+          labelColor: Colors.black,
+          unselectedLabelColor: const Color(0xffacb3bf),
+          indicatorPadding: const EdgeInsets.all(0.0),
+          indicatorWeight: 4.0,
+          dividerColor:Colors.white,
+          labelPadding: const EdgeInsets.only(left: 0.0, right: 0.0),
+          indicator: const ShapeDecoration(
+            shape: UnderlineInputBorder(
+                borderSide: BorderSide(color: mainColor, width: 2, style: BorderStyle.solid)),),
+          tabs: <Widget>[
+            Container(
+              height: 40,
+              alignment: Alignment.center,
+              color: Colors.white,
+              child: const Text("이용내역",style: TextStyle(fontSize: 17),),
+            ),
+            Container(
+              height: 40,
+              alignment: Alignment.center,
+              color: Colors.white,
+              child: const Text("알림 ",style: TextStyle(fontSize: 17),),
+            ),
+          ],
+          onTap:(i){
+            controller.changeTab(i);
+          },
         ),
-        body: Obx(() => ListView.separated(
-          scrollDirection:Axis.vertical,
+      ),
+      body: Obx(() => (controller.tabIndex.value == 0  && controller.callHistory.length != 0) || (controller.tabIndex.value != 0  && controller.notify.length != 0) ?
+      RefreshIndicator(
+        onRefresh: () async {
+          controller.init();
+        },
+        child: ListView.separated(
+          scrollDirection: Axis.vertical,
           shrinkWrap:true,
           itemCount: controller.tabIndex.value == 0? controller.callHistory.length:controller. notify.length,
           separatorBuilder: (context, index) {
@@ -67,27 +72,49 @@ class UseNotifyView extends GetView<UseNotifyController> {
           },
           itemBuilder: (context, index) {
             bool isDone = false ;
+            print(controller.tabIndex.value != 0  && controller.notify.length != 0);
             if(controller.tabIndex.value == 0 )isDone = controller.callHistory[index].state == '배송완료';
             return controller.tabIndex.value == 0 ? callHistory(index,isDone):notify(index);
           },
-        ),),
+        ),
+      ) : RefreshIndicator(
+        onRefresh: () async {
+          controller.init();
+        },
+        child: SingleChildScrollView(  // 스크롤 가능한 위젯으로 변경
+          child: Container(
+              // 스크롤을 위해 높이 설정
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(height: size.height*0.2,),
+                  Image.asset('images/close.png', width: size.width * 0.17),
+                  Text('이용 내역이 없습니다.', style: TextStyle(fontSize: 16, color: gray500)),
+                  SizedBox(height: size.height*0.5,)
+                ],
+              ),
+            ),
+          ),
+        ),
+      )),
       bottomNavigationBar: BottomNavi(pageIndex: 1,),
     );
   }
   notify<Widget> (index) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16,vertical: 28),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(controller.notify[index].title,style: TextStyle(fontSize: 18,fontWeight: FontWeight.w500),),
-          SizedBox(height: 8,),
-          Text(controller.notify[index].content,style: TextStyle(fontSize: 16,color: gray600,height: 1.5),textAlign: TextAlign.start),
-          SizedBox(height: 8,),
-          controller.notify[index].pay == 0?Container():
-          Text('이용요금 : ${formatNumber(controller.notify[index].pay)}',style: TextStyle(fontSize: 16,color: Color(0xffF10000)),),
-        ],
-      )
+        padding: EdgeInsets.symmetric(horizontal: 16,vertical: 28),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(controller.notify[index].title,style: TextStyle(fontSize: 18,fontWeight: FontWeight.w500),),
+            SizedBox(height: 8,),
+            Text(controller.notify[index].content,style: TextStyle(fontSize: 16,color: gray600,height: 1.5),textAlign: TextAlign.start),
+            SizedBox(height: 8,),
+            controller.notify[index].pay == 0?Container():
+            Text('이용요금 : ${formatNumber(controller.notify[index].pay)}',style: TextStyle(fontSize: 16,color: Color(0xffF10000)),),
+          ],
+        )
     );
   }
   callHistory<Widget> (index,isDone){

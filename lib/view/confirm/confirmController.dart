@@ -5,6 +5,7 @@ import 'package:delivery_taxi/data/callHistroyData.dart';
 import 'package:delivery_taxi/global.dart';
 import 'package:delivery_taxi/model/callHistory.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
@@ -45,11 +46,42 @@ class ConfirmController extends GetxController {
         NLatLng(startLatitude.value, startLongitude.value),
         NLatLng(endLatitude.value, endLongitude.value),
       ];
-      mapController.addOverlay(NPathOverlay(id: "test", coords: coords,color: mainColor,outlineWidth:0));
+      // List<NLatLng> start = [
+      //   // NLatLng(37.5666102, 126.9783881),
+      //   NLatLng(startLatitude.value, startLongitude.value),
+      //   NLatLng(startLatitude.value + 0.001, startLongitude.value),
+      // ];
+      // List<NLatLng> end = [
+      //   // NLatLng(37.5666102, 126.9783881),
+      //   NLatLng(endLatitude.value, endLongitude.value),
+      //   NLatLng(endLatitude.value + 0.001, endLongitude.value),
+      // ];
+
+      NMarker startMarker = NMarker(
+        id: "start_marker",
+        position: NLatLng(startLatitude.value, startLongitude.value),
+        icon: NOverlayImage.fromAssetImage("images/start.png"),
+        size: NSize(68, 36),
+        iconTintColor: Colors.black,
+      );
+      NMarker endMarker = NMarker(
+        id: "end_marker",
+        position: NLatLng(endLatitude.value, endLongitude.value),
+        icon: NOverlayImage.fromAssetImage("images/end.png"),
+        size: NSize(68, 36),
+        iconTintColor: Colors.black,
+
+      );
+      mapController.addOverlay(NPathOverlay(id: "test", coords: coords,color: mainColor,outlineWidth:0),);
+      // mapController.addOverlay(NPathOverlay(id: "test1", coords: start,color: mainColor,outlineWidth:0),);
+      // mapController.addOverlay(NPathOverlay(id: "test2", coords: end,color: mainColor,outlineWidth:0),);
+      mapController.addOverlay(startMarker);
+      mapController.addOverlay(endMarker);
       mapController.updateCamera(NCameraUpdate.withParams(
         zoom: 12,
         target: NLatLng(startLatitude.value, startLongitude.value),
       ));
+
 
       update();
     }catch(e){

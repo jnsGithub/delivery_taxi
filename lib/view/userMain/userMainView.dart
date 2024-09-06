@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 
 import '../../component/bottom/bottomNavi.dart';
 import '../../component/textfield.dart';
+import '../../main.dart';
 
 
 
@@ -51,19 +52,23 @@ class UserMainView extends GetView<UserMainController> {
                         fontFamily: 'nanumRegular'
                     ),
                   ),
-                  value: controller.inquiryType.value.isEmpty
-                      ? null
-                      : controller.inquiryType.value,
+                  value: controller.inquiryType.value,
                   onChanged: (String? newValue){
+                    print('클릭 시 : ${newValue} ${isTaxiUser}');
                     if (newValue != null) {
                       controller.inquiryType.value = newValue;
+
                       if(controller.inquiryType.value == '일반유저') {
+                        isTaxiUser = false;
                         myInfo.type = 'customer';
-                        Get.toNamed('/userMainView');
+                        if(Get.currentRoute != '/userMainView') Get.back();
+                        print('일반유저 : ${!isTaxiUser}');
                       }
                       else{
+                        isTaxiUser = true;
                         myInfo.type = 'taxi';
                         Get.toNamed('/taxiMainView');
+                        print('택시유저 : ${isTaxiUser}');
                       }
                       print(myInfo.type);
                       print(myInfo.hp);
@@ -318,7 +323,11 @@ class UserMainView extends GetView<UserMainController> {
                     fontSize: 12,fontWeight: FontWeight.w400,color: Color(0xff757575)
                 ),),
                 const SizedBox(height: 10 ,),
-                const Text('고객센터 1234-1234 | 통신판매업신고 ',style: TextStyle(
+                const Text('고객센터 070-8065-0624 | 통신판매업신고 2024-충남천안-1783호',style: TextStyle(
+                    fontSize: 12,fontWeight: FontWeight.w400,color: Color(0xff757575)
+                ),),
+                const SizedBox(height: 10 ,),
+                const Text('이메일 deliveryt445@gmail.com',style: TextStyle(
                     fontSize: 12,fontWeight: FontWeight.w400,color: Color(0xff757575)
                 ),),
                 const SizedBox(height: 20,),

@@ -170,7 +170,11 @@ class TaxiMainView extends GetView<TaxiMainController> {
                       fontSize: 12,fontWeight: FontWeight.w400,color: Color(0xff757575)
                   ),),
                   const SizedBox(height: 10 ,),
-                  const Text('고객센터 1234-1234 | 통신판매업신고 ',style: TextStyle(
+                  const Text('고객센터 070-8065-0624 | 통신판매업신고 : 2024-충남천안-1783호',style: TextStyle(
+                      fontSize: 12,fontWeight: FontWeight.w400,color: Color(0xff757575)
+                  ),),
+                  const SizedBox(height: 10 ,),
+                  const Text('이메일 deliveryt445@gmail.com',style: TextStyle(
                       fontSize: 12,fontWeight: FontWeight.w400,color: Color(0xff757575)
                   ),),
                   const SizedBox(height: 60,),

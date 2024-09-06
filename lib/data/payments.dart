@@ -23,7 +23,7 @@ class Payments{
   String iosApplicationId = '6678ebc6bd077d0720f8768d';
   String restApplicationId = '6678ebc6bd077d0720f8768e';
   String privateApplicationId = 'nbHljmWEqNX6rp73V14pkSMVxWaqHDT86zc5H/VaAKs=';
-
+  var dataJson;
 
   void bootpayTest(BuildContext context, String pg, int price, String orderName, CallHistory callHistory) {
     final CallHistoryData  callHistoryData = CallHistoryData();
@@ -46,8 +46,17 @@ class Payments{
       },
       onClose: () async{
         print('------- onClose');
-        Bootpay().dismiss(context); //명시적으로 부트페이 뷰 종료 호출
-        if(await check){
+
+        Bootpay().dismiss(context); //명시적으로 부트페이 뷰 종료 호출p
+        check = await callHistoryData.addItem(callHistory, dataJson['data']['receipt_data']['receipt_id']);
+        print(check);
+        print('결제완료');
+        saving(context);
+        await Future.delayed(Duration(seconds: 2), ()async => await setBillingKey(callHistory, dataJson['data']['receipt_data']['receipt_id'], dataJson['data']['receipt_id'], pg));
+        print('Close');
+        if(check){
+          Get.back();
+          Get.back(result: true);
           Get.snackbar('알림', '호출이 완료되었습니다.');
           Get.toNamed('/useNotifyView');
         } else {
@@ -79,10 +88,12 @@ class Payments{
       },
       onDone: (String data) async {
         print('------- onDone: $data');
-        var dataJson = jsonDecode(data);
-        print(dataJson['data']['receipt_data']['receipt_id']);
-        check = await callHistoryData.addItem(callHistory, dataJson['data']['receipt_data']['receipt_id']);
-        await Future.delayed(Duration(seconds: 2), ()async => await setBillingKey(callHistory, dataJson['data']['receipt_data']['receipt_id'], dataJson['data']['receipt_id'], pg));
+        dataJson = jsonDecode(data);
+        // print(dataJson['data']['receipt_data']['receipt_id']);
+        // check = await callHistoryData.addItem(callHistory, dataJson['data']['receipt_data']['receipt_id']);
+        // print(check);
+        // print('결제완료');
+        // await Future.delayed(Duration(seconds: 2), ()async => await setBillingKey(callHistory, dataJson['data']['receipt_data']['receipt_id'], dataJson['data']['receipt_id'], pg));
         // setBillingKey(callHistory, dataJson['data']['receipt_data']['receipt_id'], dataJson['data']['receipt_id'], pg);
       },
     );
@@ -160,6 +171,7 @@ class Payments{
 
     Map<String, dynamic> cancelMap = {
       'receipt_id': callHistory.documentId,
+      'cancel_price': callHistory.price - 1000,
     };
     Map<String, dynamic> tokenMap = {
       'application_id' : restApplicationId,
@@ -188,6 +200,7 @@ class Payments{
       print('캔슬 응답값 : ${cancelRespons.body}');
       if(cancelRespons.statusCode == 200){
         await FirebaseFirestore.instance.collection('callHistory').doc(callHistory.documentId).update({
+          'price': 1000,
           'state': '호출취소'
         });
         Get.back(result: true);

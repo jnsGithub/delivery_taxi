@@ -183,6 +183,7 @@ class TaxiSignUpView extends GetView<TaxiSignUpController> {
                     GestureDetector(
                       onTap: (){
                         if(controller.hpAuthController.text == controller.authNum.value) {
+                          print(controller.authNum.value);
                           controller.sendSms.value = true;
                           controller.hpAuthCheck.value = true;
                         } else {
@@ -287,7 +288,18 @@ class TaxiSignUpView extends GetView<TaxiSignUpController> {
                 ),
                 GestureDetector(
                   onTap: (){
-                    controller.imageUpload();
+                    print(controller.authNum.value);
+                    if(controller.hpAuthCheck.value == false){
+                      Get.snackbar('인증번호 오류', '휴대폰 인증을 완료해주세요.');
+                    } else if(controller.city.value == '선택해주세요'){
+                      Get.snackbar('지역선택 오류', '영업지역을 선택해주세요.');
+                    } else if(controller.district.value == '선택해주세요'){
+                      Get.snackbar('지역선택 오류', '영업지역(구)를 선택해주세요.');
+                    } else if(controller.taxiNumber.text == ''){
+                      Get.snackbar('택시번호 오류', '택시번호를 입력해주세요.');
+                    } else {
+                      controller.imageUpload();
+                    }
                   },
                   child:MainBox(text: '다음 으로',color: mainColor ),
                 ),

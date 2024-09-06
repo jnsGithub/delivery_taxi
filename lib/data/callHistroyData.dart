@@ -46,7 +46,7 @@ class CallHistoryData{
   }
   Future<RxList<CallHistory>> getTaxiNotify() async {
     try{
-      QuerySnapshot querySnapshot = await callHistoryCollection.where('taxiDocumentId', isEqualTo: myInfo.documentId).get();
+      QuerySnapshot querySnapshot = await callHistoryCollection.where('taxiDocumentId', isEqualTo: myInfo.documentId).orderBy('createDate', descending: true).get();
       RxList<CallHistory> list = <CallHistory>[].obs;
       for (QueryDocumentSnapshot document in querySnapshot.docs) {
         Map<String, dynamic> data = document.data() as Map<String, dynamic>;
@@ -79,21 +79,24 @@ class CallHistoryData{
       'price':callHistory.price,
     });
 
+    if(callHistory.state == '호출중'){
+      pushFcm(userData['fcmToken'], '딜리버리티 (디티)', '결제가 완료되어, 주변 택시를 호출중입니다.', snapshot.id);
+    }
     if(callHistory.state == '배정완료'){
-      pushFcm(userData['fcmToken'], '배차완료', '택시 배차가 완료되었습니다\n택시번호 : ${myInfo.taxiNumber}\n전화번호 : ${myInfo.hp}', snapshot.id, callHistory.price);
+      pushFcm(userData['fcmToken'], '배차완료', '택시 배차가 완료되었습니다\n택시번호 : ${myInfo.taxiNumber}\n전화번호 : ${myInfo.hp}', snapshot.id, pay: callHistory.price);
     }
     if(callHistory.state == '배송완료'){
-      pushFcm(userData['fcmToken'], '이용 완료', '물품 배달이 완료 되었습니다.', snapshot.id, callHistory.price);
+      pushFcm(userData['fcmToken'], '이용 완료', '물품 배달이 완료 되었습니다.', snapshot.id, pay: callHistory.price);
     }
     else if(callHistory.state == '배송중'){
-      pushFcm(userData['fcmToken'], '픽업 완료', '물건 픽업이 완료되었습니다\n택시번호 : ${myInfo.taxiNumber}\n전화번호 : ${myInfo.hp}', snapshot.id, callHistory.price);
+      pushFcm(userData['fcmToken'], '픽업 완료', '물건 픽업이 완료되었습니다\n택시번호 : ${myInfo.taxiNumber}\n전화번호 : ${myInfo.hp}', snapshot.id, pay: callHistory.price);
     }
     else if(callHistory.state == '배차실패'){
-      pushFcm(userData['fcmToken'], '배차실패', '배차가 실패되었습니다.', snapshot.id, 0);
+      pushFcm(userData['fcmToken'], '배차실패', '배차가 실패되었습니다.', snapshot.id, pay: 0);
     }
   }
 
-  Future pushFcm(String fcmToken, String title, String body, String uid, int pay) async{
+  Future pushFcm(String fcmToken, String title, String body, String uid, {int? pay}) async{
     try {
       final jsonCredentials = await rootBundle.loadString('assets/delivery-taxi-17959-firebase-adminsdk-cvi0s-b5e005a4a3.json');
       final creds = auth.ServiceAccountCredentials.fromJson(jsonCredentials);
@@ -138,7 +141,7 @@ class CallHistoryData{
       print('message : $message1');
       print('url : $url');
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 && pay != null) {
         NotifyData().setNotify(title, body, uid, pay);
         print('Push notification sent to all users successfully');
       } else {

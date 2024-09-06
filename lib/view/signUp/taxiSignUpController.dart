@@ -153,11 +153,11 @@ class TaxiSignUpController extends GetxController {
     String randomNumber = (100000 + rng.nextInt(900000)).toString();
     authNum.value = randomNumber;
     final Map<String, String> queryParams = {
-      'uid': 'thwjdgn',
-      'pwd': '0843faco!@',
+      'uid': 'lsw8089',
+      'pwd': 'dltmddnr445!',
       'sendType': '3',
       'toNumber': hpController.text,
-      'fromNumber': '01096005193',
+      'fromNumber': '01062088089',
       'contents': '[딜리버리티] 인증번호는 $randomNumber 입니다.'
     };
 
@@ -170,6 +170,7 @@ class TaxiSignUpController extends GetxController {
       if (response.statusCode == 200) {
         sendSms.value = true;
         Get.snackbar('휴대폰인증', '전송되었습니다.');
+        print('Response body: ${response.body}');
       } else {
         sendSms.value = false;
         Get.snackbar('휴대폰인증', '전송에 실패했습니다.');

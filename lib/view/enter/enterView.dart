@@ -2,6 +2,8 @@ import 'package:delivery_taxi/global.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../main.dart';
+
 
 
 
@@ -32,6 +34,7 @@ class EnterView extends GetView {
               children: [
                 GestureDetector(
                   onTap: (){
+                    isTaxiUser = true;
                     Get.toNamed('/loginView',arguments: 'taxi');
                   },
                   child: Container(
@@ -61,6 +64,7 @@ class EnterView extends GetView {
                 ),
                 GestureDetector(
                   onTap: (){
+                    isTaxiUser = false;
                     Get.toNamed('/loginView',arguments: 'user');
                   },
                   child: Container(

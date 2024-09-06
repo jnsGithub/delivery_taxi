@@ -17,6 +17,7 @@ import 'package:delivery_taxi/view/taxiMain/taxiAreaView.dart';
 import 'package:delivery_taxi/view/taxiMain/taxiCallList.dart';
 import 'package:delivery_taxi/view/taxiMain/taxiMainView.dart';
 import 'package:delivery_taxi/view/useNotify/taxiNotifyView.dart';
+import 'package:delivery_taxi/view/useNotify/useNotifyController.dart';
 import 'package:delivery_taxi/view/useNotify/useNotifyView.dart';
 import 'package:delivery_taxi/view/userMain/userMainView.dart';
 import 'package:delivery_taxi/view/usingDetail/usingDetailView.dart';
@@ -103,7 +104,6 @@ void main() async {
     print('권한이 허용되어 있지 않습니다.');
   }
 
-
   // final FlutterLocalNotificationsPlugin _local = FlutterLocalNotificationsPlugin();
 
   const AndroidInitializationSettings initializationSettingsAndroid =
@@ -147,7 +147,11 @@ void main() async {
             )
         );
         flutterLocalNotificationsPlugin.initialize(initializationSettings,onDidReceiveNotificationResponse: (payload) async{
-          Get.toNamed('/useNotifyView');
+          if(Get.currentRoute == '/useNotifyView'){
+            Get.find<UseNotifyController>().init();
+          } else {
+            Get.toNamed('/useNotifyView');
+          }
         });
       }
     });
@@ -158,7 +162,11 @@ void main() async {
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) async {
       print('ffpfhpfhpfhpfhdpfhdphfdphfdphfpdhfpdhfasldbvlkasdnvl할ㅇ라ㅣㄴ어라ㅣㄴ얼');
       if(message.data['page'] == 'notify'){
-        Get.toNamed('/useNotifyView');
+        if(Get.currentRoute == '/useNotifyView'){
+          Get.find<UseNotifyController>().init();
+        } else {
+          Get.toNamed('/useNotifyView');
+        }
       }
     });
   } catch(e){

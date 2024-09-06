@@ -35,7 +35,7 @@ class NoticeView extends GetView<NoticeController> {
               width: size.width,
               margin: const EdgeInsets.only(bottom: 100),
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child:const Image(image: AssetImage('images/notice.png'))
+              child:const Image(image: AssetImage('images/notice2.png'))
             ),
           ],
         ),

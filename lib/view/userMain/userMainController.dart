@@ -27,7 +27,7 @@ class UserMainController extends GetxController {
   RxString selectedOption = 'small'.obs;
   TextEditingController caution = TextEditingController();
 
-  RxString inquiryType = ''.obs;
+  RxString inquiryType = '일반유저'.obs;
   List<String> inquiryTypeList = ['일반유저', '택시유저'];
 
   @override
@@ -106,7 +106,20 @@ class UserMainController extends GetxController {
     );
     print(callHistory.startingAddress);
     print('aㅔ인');
-    Get.toNamed('/confirmView',arguments: callHistory);
+    Get.toNamed('/confirmView',arguments: callHistory)!.then((value) {
+      startingPostcode.value = '우편번호를 검색하세요';
+      startingAddress.value = '';
+      startingAddressDetailController.text = '';
+      startingName.text = '';
+      startingHp.text = '';
+      endingPostcode.value = '우편번호를 검색하세요';
+      endingAddress.value = '';
+      endingAddressDetailController.text = '';
+      endingName.text = '';
+      endingHp.text = '';
+      selectedOption.value = 'small';
+      caution.text = '';
+    });
   }
 
   radioBox<Widget>(size,text,subText){

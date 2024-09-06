@@ -2,6 +2,7 @@
 import 'package:delivery_taxi/data/payments.dart';
 import 'package:delivery_taxi/global.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 
@@ -32,20 +33,23 @@ class UsingDetailController extends GetxController {
 
   Widget checkDialog(){
     return CupertinoAlertDialog(
-      title: const Text('택시 이용 취소'),
-      content: const Text('택시 이용을 취소하시겠습니까?'),
+      // title: const Text('택시 이용 취소'),
+
+      content: Text('결제 취소시 1,000원의\n취소 수수료가 발생합니다\n취소하시겠습니까?', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),),
+
       actions: [
         CupertinoDialogAction(
-          child: const Text('취소',style: TextStyle(color: mainColor),),
-          onPressed: () {
+          child: const Text('확인',style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),),
+          onPressed: () async {
+            await cancel(callHistory);
+            callHistory.state = '호출 취소';
+            callHistory.price = 1000;
             Get.back();
           },
         ),
         CupertinoDialogAction(
-          child: const Text('확인',style: TextStyle(color: mainColor)),
-          onPressed: () async {
-            await cancel(callHistory);
-            callHistory.state = '호출 취소';
+          child: const Text('취소',style: TextStyle(color: Colors.black)),
+          onPressed: () {
             Get.back();
           },
         ),

@@ -42,6 +42,7 @@ class UseNotifyController extends GetxController with GetTickerProviderStateMixi
     }
   }
   init() async{
+    callHistory.value = await getUsage.getCallHistory();
     notify.value = await NotifyData().getNotify();
     // notify.add(Notify(
     //   documentId: '',
@@ -64,7 +65,5 @@ class UseNotifyController extends GetxController with GetTickerProviderStateMixi
     //   pay: 8800,
     //   createDate: Timestamp.now(),
     // ));
-
-    callHistory.value = await getUsage.getCallHistory();
   }
 }

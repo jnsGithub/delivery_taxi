@@ -34,6 +34,8 @@ class SocialLogin{
       uid = user.uid;
       loginType = '카카오';
 
+
+
       //Fcm Token 발급
       FirebaseMessaging.instance.getToken().then((value) {
         print('token : $value');

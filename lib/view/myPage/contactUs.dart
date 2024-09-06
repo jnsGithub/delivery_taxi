@@ -46,7 +46,7 @@ class ContactUs extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(Icons.mail,color: mainColor,),
-                Text('  kang234@kakao.com',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w500),)
+                Text('  deliveryt445@gmail.com',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w500),)
               ],
             ),
           ),
@@ -64,7 +64,7 @@ class ContactUs extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(Icons.phone_iphone,color: mainColor,),
-                Text('  kang234@kakao.com',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w500),)
+                Text('  070-8065-0624',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w500),)
               ],
             ),
           )
