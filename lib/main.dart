@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:delivery_taxi/data/myInfoData.dart';
+import 'package:delivery_taxi/data/socialLogin.dart';
 import 'package:delivery_taxi/view/confirm/confirmView.dart';
 import 'package:delivery_taxi/view/enter/enterView.dart';
 import 'package:delivery_taxi/view/login/loginView.dart';
@@ -81,19 +82,22 @@ void main() async {
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   if(_auth.currentUser != null){
-    uid = _auth.currentUser!.uid;
-    myInfo =  await MyInfomation().getUser();
-    // Fcm Token 발급
-    if(FirebaseFirestore.instance.collection('users').doc(uid).get() != null) {
-      FirebaseMessaging.instance.getToken().then((value) {
-        print('token : $value');
-        setFcmToken(value ?? '');
-      });
-    }
-    print('메인 호출시 불러들이는 uid : $uid');
-    if(myInfo.documentId != ''){
-      isTaxiUser = myInfo.type == 'taxi' ? true : false;
-      isLogin = true;
+    if(await SocialLogin().accountCheck(_auth.currentUser!.uid)){
+      SocialLogin().accountCheck(_auth.currentUser!.uid);
+      uid = _auth.currentUser!.uid;
+      myInfo =  await MyInfomation().getUser();
+      // Fcm Token 발급
+      if(FirebaseFirestore.instance.collection('users').doc(uid).get() != null) {
+        FirebaseMessaging.instance.getToken().then((value) {
+          print('token : $value');
+          setFcmToken(value ?? '');
+        });
+      }
+      print('메인 호출시 불러들이는 uid : $uid');
+      if(myInfo.documentId != ''){
+        isTaxiUser = myInfo.type == 'taxi' ? true : false;
+        isLogin = true;
+      }
     }
   }
 

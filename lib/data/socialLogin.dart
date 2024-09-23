@@ -97,6 +97,22 @@ class SocialLogin{
     }
   }
 
+  Future<bool> accountCheck(String uid) async {
+    try{
+     DocumentSnapshot snapshot = await db.collection('users').doc(uid).get();
+     if(!snapshot.exists){
+       await signOut();
+       return false;
+     }
+     else{
+       return true;
+     }
+    } catch(e){
+      print(e);
+      return false;
+    }
+  }
+
   Future<void> signOut() async{
     try{
       if(loginType == '카카오'){
@@ -124,7 +140,6 @@ class SocialLogin{
     } catch(e){
       print(e);
     }
-
   }
 
   Future deleteAccount() async{

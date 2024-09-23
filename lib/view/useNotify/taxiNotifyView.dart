@@ -57,7 +57,7 @@ class TaxiNotifyView extends GetView<TaxiNotifyController> {
               Row(
                 children: [
                   Text('${formatTimestamp(controller.callHistory[index].createDate)} ㆍ ',style: const TextStyle(fontSize: 16),),
-                  Text(controller.callHistory[index].state,style: TextStyle(color: isDone? gray500:mainColor,fontWeight: FontWeight.w500,fontSize: 16),),
+                  Text(controller.callHistory[index].state, style: TextStyle(color: isDone? gray500:mainColor,fontWeight: FontWeight.w500,fontSize: 16),),
                 ],
               ),
               TextButton(
@@ -73,22 +73,22 @@ class TaxiNotifyView extends GetView<TaxiNotifyController> {
 
           Row(
             children: [
-              const Text('출발   ',style: TextStyle(color: gray500,fontSize: 16),),
-              Text(controller.callHistory[index].startingAddress,style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 16),),
+              const Text('출발   ', style: TextStyle(color: gray500,fontSize: 16),),
+              Text(controller.callHistory[index].startingAddress, style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 16),),
             ],
           ),
           const SizedBox(height: 16),
           Row(
             children: [
-              const Text('도착   ',style: TextStyle(color: gray500,fontSize: 16),),
-              Text(controller.callHistory[index].endingAddress,style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 16),),
+              const Text('도착   ', style: TextStyle(color: gray500,fontSize: 16),),
+              Text(controller.callHistory[index].endingAddress, style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 16),),
             ],
           ),
           const SizedBox(height: 16),
           Row(
             children: [
-              const Text('금액   ',style: TextStyle(color: gray500,fontSize: 16),),
-              Text(formatNumber(controller.callHistory[index].price),style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 16),),
+              const Text('금액   ', style: TextStyle(color: gray500, fontSize: 16),),
+              Text(formatNumber(controller.callHistory[index].price), style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 16),),
             ],
           )
         ],
