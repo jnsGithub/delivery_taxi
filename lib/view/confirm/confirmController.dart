@@ -189,12 +189,13 @@ class ConfirmController extends GetxController {
       formatted.value = '예상시간 ${hours == 0?'':"${hours.toString().padLeft(2, '0')}시간"} ${minutes.toString().padLeft(2, '0')}분';
     }
   }
-  naverPay(BuildContext context) async {
+  callTaxi() async {
     callHistory.state = '호출중';
     callHistory.price = taxiFare.value;
     callHistory.userDocumentId = uid;
     callHistory.createDate = Timestamp.now();
-    Payments().bootpayTest(context, 'naverpay', taxiFare.value, '테스트', callHistory);
+    Payments().choicePayment(Get.context!, 'kiwoom', taxiFare.value, '테스트', callHistory);
+    // Payments().bootpayTest(Get.context!, 'kiwoom', taxiFare.value, '테스트', callHistory);
   }
   kakaoPay(BuildContext context) async {
     callHistory.state = '호출중';

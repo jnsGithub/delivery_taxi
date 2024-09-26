@@ -102,9 +102,10 @@ class UserMainController extends GetxController {
         endingHp: endingHp.text,
         selectedOption: selectedOption.value,
         caution: caution.text,
+        billingKey: '',
         price: 0,
         userDocumentId: '',
-        paymentType: '',
+        paymentType: '카드 자동 결제',
         state: '호출전',
         createDate: Timestamp.now()
     );

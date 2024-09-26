@@ -4,7 +4,9 @@ import 'package:bootpay/model/extra.dart';
 import 'package:bootpay/model/item.dart';
 import 'package:bootpay/model/payload.dart';
 import 'package:bootpay/model/user.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:delivery_taxi/component/main_box.dart';
 import 'package:delivery_taxi/global.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -14,17 +16,252 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import '../model/billingInfo.dart';
 import '../model/callHistory.dart';
 import 'callHistroyData.dart';
 
 class Payments{
+  final CallHistoryData  callHistoryData = CallHistoryData();
   String webApplicationId = '6678ebc6bd077d0720f8768b';
   String androidApplicationId = '6678ebc6bd077d0720f8768c';
   String iosApplicationId = '6678ebc6bd077d0720f8768d';
   String restApplicationId = '6678ebc6bd077d0720f8768e';
   String privateApplicationId = 'nbHljmWEqNX6rp73V14pkSMVxWaqHDT86zc5H/VaAKs=';
   var dataJson;
+  billingKeyPay(context, price, orderName, callHistory,billingKey) async {
+    User user = User(); // 구매자 정보
+    user.username = myInfo.documentId;
+    user.id = myInfo.documentId;
+    user.phone = myInfo.hp;
+    String bootPayUrl = 'https://api.bootpay.co.kr/v2/subscribe/payment';
+    String tokenUrl = 'https://api.bootpay.co.kr/v2/request/token';
+    Map<String, dynamic> rePaymentsMap = {
+      "billing_key": billingKey,
+      "order_id": DateTime.now().millisecondsSinceEpoch.toString(),
+      "order_name": orderName,
+      "price": price,
+      "user": {
+        "username": myInfo.documentId,
+        "phone": "01000000000",
+      }
+    };
 
+    Map<String, dynamic> tokenMap = {
+      'application_id' : restApplicationId,
+      'private_key' : privateApplicationId
+    };
+    try{
+      var tokenRespons = await http.post(
+        Uri.parse(tokenUrl),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: jsonEncode(tokenMap),
+      );
+
+      var token = jsonDecode(tokenRespons.body);
+
+
+
+        var response = await http.post(
+          Uri.parse(bootPayUrl),
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer ${token['access_token']}"
+          },
+          body: jsonEncode(rePaymentsMap),
+        );
+        print('재결제 성공');
+        print(response.statusCode);
+        print('재결제 응답값 ' + response.body);
+      dataJson = jsonDecode(response.body);
+      callHistory.billingKey = billingKey;
+      bool check = await callHistoryData.addItem(callHistory, dataJson['receipt_id']);
+      if(check){
+        Get.back();
+        Get.back(result: true);
+        Get.snackbar('알림', '호출이 완료되었습니다.');
+        Get.toNamed('/useNotifyView');
+      } else {
+        Get.snackbar('알림', '호출이 실패되었습니다.');
+      }
+    }catch(e){
+      print('에러코드 $e');
+    }
+  }
+  choicePayment(BuildContext context, String pg, int price, String orderName, CallHistory callHistory) async {
+    final db = FirebaseFirestore.instance.collection('billingKey');
+    CarouselSliderController buttonCarouselController = CarouselSliderController();
+    Size size = MediaQuery.of(context).size;
+    QuerySnapshot querySnapshot = await db.where('userDocumentId',isEqualTo : myInfo.documentId).get();
+    List<BillingInfo> billingInfo = [];
+    List<Widget> cardList = [];
+    int currentIndex = 0;
+    if(querySnapshot.docs.isNotEmpty){
+      for (QueryDocumentSnapshot document in querySnapshot.docs) {
+        Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+        billingInfo.add(BillingInfo.fromJson(data));
+        cardList.add(
+            Container(
+              width: size.width*0.6923,
+              height: 500,
+              padding: EdgeInsets.symmetric(vertical: 20,horizontal: 18),
+              decoration: BoxDecoration(
+                color: Color(0xff6974A4),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children:  [
+                  Text(data['card_company'],style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600,color: Colors.white),),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('카드 번호',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w500,color: Colors.white),),
+                      SizedBox(height: 9,),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('**** **** ****'
+                            ,style: TextStyle(fontSize: 22,fontWeight: FontWeight.w400,color: Colors.white),),
+                          Text(' ${data['card_no'].substring(11,15)}'
+                            ,style: TextStyle(fontSize: 16,fontWeight: FontWeight.w400,color: Colors.white),),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            )
+        );
+      }
+    }
+    cardList.add(
+        GestureDetector(
+          onTap: (){
+            bootpayTest(context, pg, price, orderName, callHistory);
+          },
+          child: Container(
+            width: size.width*0.6923,
+            height: size.width*0.3974,
+            decoration: BoxDecoration(
+              color: Color(0xffF6F6F9),
+              border: Border.all(color: Color(0xff848487),),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children:  [
+                  Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color:  Color(0xff848487),),
+                        borderRadius: BorderRadius.circular(90),
+                      ),
+                      child: Icon(Icons.add,color: Color(0xff848487),)
+                  ),
+                  const SizedBox(height: 35),
+                  Text('결제하실 카드를 등록해 주세요.'),
+                ],
+              ),
+            ),
+          ),
+        )
+    );
+    showModalBottomSheet(
+      context: context,
+      isDismissible:false,
+      isScrollControlled: true, // 바텀 시트의 높이 조절을 가능하게 함
+      backgroundColor: Colors.transparent, // 바텀 시트 배경을 투명하게
+      builder: (BuildContext context) {
+        return DraggableScrollableSheet(
+          // initialChildSize: 0.4,
+          // maxChildSize: 0.9,
+          // minChildSize: 0.4,
+          builder: (BuildContext context, ScrollController scrollController) {
+            return Container(
+              padding: EdgeInsets.only(top: 10),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20.0),
+                  topRight: Radius.circular(20.0),
+                ),
+              ),
+              child: Column(
+                children: [
+
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          child: const Text(
+                            '결제 수단',
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        const SizedBox(height: 30),
+                        CarouselSlider(
+                          items: cardList,
+                          carouselController: buttonCarouselController,
+                          options: CarouselOptions(
+                            autoPlay: false,
+                            enableInfiniteScroll:false,
+                            height: size.width*0.42,
+                            enlargeCenterPage: true,
+                            onPageChanged: (index, reason) {
+                              currentIndex = index;
+                            },
+                          ),
+                        ),
+
+                        const SizedBox(height: 20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              '예상 결제 금액',
+                              style: TextStyle(fontSize: 18,fontWeight: FontWeight.w500),
+                            ),
+                            Text(
+                              formatNumber(price),
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+
+                        GestureDetector(
+                          onTap: (){
+                            if(billingInfo.isEmpty || currentIndex == billingInfo.length){
+                              bootpayTest(context, pg, price, orderName, callHistory);
+                            } else {
+                              billingKeyPay(context, price, orderName, callHistory, billingInfo[currentIndex].billingKey);
+                            }
+                          },
+                            child: MainBox(text: '결제하기', color: mainColor)
+                        )
+
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+    // bootpayTest(context, pg, price, orderName, callHistory);
+  }
   void bootpayTest(BuildContext context, String pg, int price, String orderName, CallHistory callHistory) {
     final CallHistoryData  callHistoryData = CallHistoryData();
     Payload payload = getPayload(pg, price, orderName);
@@ -48,13 +285,11 @@ class Payments{
         print('------- onClose');
 
         Bootpay().dismiss(context); //명시적으로 부트페이 뷰 종료 호출p
-        check = await callHistoryData.addItem(callHistory, dataJson['data']['receipt_data']['receipt_id']);
-        print(check);
-        print('결제완료');
         saving(context);
-        await Future.delayed(Duration(seconds: 2), ()async => await setBillingKey(callHistory, dataJson['data']['receipt_data']['receipt_id'], dataJson['data']['receipt_id'], pg));
-        print('Close');
+        bool check = false;
+        await Future.delayed(Duration(seconds: 2), ()async => check = await setBillingKey(callHistory, dataJson['data']['receipt_data']['receipt_id'], dataJson['data']['receipt_id'], pg,dataJson['data']['receipt_data']['card_data']));
         if(check){
+          Get.back();
           Get.back();
           Get.back(result: true);
           Get.snackbar('알림', '호출이 완료되었습니다.');
@@ -98,7 +333,7 @@ class Payments{
       },
     );
   }
-
+  /// 아 빌링키 tq
   Future rePayment(CallHistory callHistory) async{
     String bootPayUrl = 'https://api.bootpay.co.kr/v2/subscribe/payment';
     String tokenUrl = 'https://api.bootpay.co.kr/v2/request/token';
@@ -113,7 +348,11 @@ class Payments{
       "order_id": "가맹점 주문번호",
       "order_name": "딜리버리티 최종결제금액",
       "price": callHistory.price,
+      "user": {
+        "phone": "01000000000",
+      }
     };
+
     Map<String, dynamic> cancelMap = {
       'receipt_id': callHistory.documentId,
     };
@@ -218,23 +457,26 @@ class Payments{
 
   }
 
-  Future setBillingKey(CallHistory callHistory, String docid, String receiptId, String paymentType) async{
+  Future setBillingKey(CallHistory callHistory, String docid, String receiptId, String paymentType,cardData) async{
     try{
       FirebaseFirestore db = FirebaseFirestore.instance;
       DocumentSnapshot snapshot = await db.collection('callHistory').doc(docid).get();
       String billingKey = await getBillingKey(receiptId);
+      callHistory.billingKey = billingKey;
+      await callHistoryData.addItem(callHistory, dataJson['data']['receipt_data']['receipt_id']);
       db.collection('billingKey').doc(docid).set({
         'billingKey': billingKey,
         'createDate': Timestamp.now(),
         'userDocumentId': myInfo.documentId,
         'callHistoryId': snapshot.id,
-      });
-      db.collection('callHistory').doc(docid).update({
-        'paymentType': paymentType
-      });
+        'card_no': cardData['card_no'],
+        'card_company': cardData['card_company'],
 
+      });
+      return true;
     } catch(e){
       print(e);
+      return false;
     }
   }
 
@@ -295,7 +537,7 @@ class Payments{
 
 
     payload.pg = pg;
-    payload.method = '간편자동';
+    payload.method = '카드자동';
     // payload.methods = ['card', 'phone', 'vbank', 'bank', 'kakao'];
     payload.orderName = orderName; //결제할 상품명
     payload.price = price.toDouble(); //정기결제시 0 혹은 주석

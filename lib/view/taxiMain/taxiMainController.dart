@@ -28,7 +28,7 @@ class TaxiMainController extends GetxController {
   RxList<CallHistory> callHistory = <CallHistory>[].obs;
   CallHistoryData callHistoryData = CallHistoryData();
   TextEditingController price = TextEditingController();
-  CallHistory lastCallItem = CallHistory(startingPostcode: '', startingAddress: '', startingAddressDetail: '',startingName: '', startingHp: '', endingPostcode: '', endingAddress: '', endingAddressDetail: '', endingName: '', endingHp: '', selectedOption: '', caution: '', price: 0, userDocumentId: '', paymentType: '', state: '', createDate: Timestamp.now(), documentId: '', taxiDocumentId: '',);
+  CallHistory lastCallItem = CallHistory(startingPostcode: '', startingAddress: '', startingAddressDetail: '',startingName: '', startingHp: '', endingPostcode: '', endingAddress: '', endingAddressDetail: '', endingName: '', endingHp: '', selectedOption: '', caution: '',billingKey: '', price: 0, userDocumentId: '', paymentType: '', state: '', createDate: Timestamp.now(), documentId: '', taxiDocumentId: '',);
   late CallHistory callItem;
   Payments payments = Payments();
   @override

@@ -14,9 +14,10 @@ class CallHistory {
   final String endingAddressDetail;
   final String selectedOption;
   final String caution;
+  String billingKey;
   String userDocumentId;
   String taxiDocumentId;
-  String paymentType; // 카카오 or 네이버
+  final String paymentType; // 카카오 or 네이버
   String state;
   int price;// 가격
   Timestamp createDate;
@@ -35,6 +36,7 @@ class CallHistory {
     required this.endingHp,
     required this.selectedOption,
     required this.caution,
+    required this.billingKey,
     required this.userDocumentId,
     required this.taxiDocumentId,
     required this.paymentType,
@@ -59,6 +61,7 @@ class CallHistory {
       endingHp: map['endingHp'] ?? '',
       selectedOption: map['selectedOption'] ?? '',
       caution: map['caution'] ?? '',
+      billingKey: map['billingKey'] ?? '',
       userDocumentId: map['userDocumentId'] ?? '',
       taxiDocumentId: map['taxiDocumentId'] ?? '',
       paymentType: map['paymentType'] ?? '',
@@ -84,6 +87,7 @@ class CallHistory {
       'endingHp': endingHp,
       'selectedOption': selectedOption,
       'caution': caution,
+      'billingKey': billingKey,
       'userDocumentId': userDocumentId,
       'taxiDocumentId': taxiDocumentId,
       'paymentType': paymentType,
