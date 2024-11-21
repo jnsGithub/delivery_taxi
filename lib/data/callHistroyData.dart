@@ -66,6 +66,7 @@ class CallHistoryData{
     Map<String, dynamic> data = documentSnapshot.data() as Map<String, dynamic>;
     if(check){
       if(data['state'] != '호출중' || data['taxiDocumentId'] != '') {
+        // Get.back();
         Get.snackbar('배차 실패', '배차가 완료된 주문입니다.');
         return;
       }

@@ -43,6 +43,8 @@ class TaxiMainController extends GetxController {
   changeItem(item){
     try{
       if(lastCallItem.documentId == item.documentId){
+        print(item.endingAddress);
+        print(lastCallItem.endingAddress);
         newCall.value = false;
       } else {
         newCall.value = true;
@@ -75,7 +77,9 @@ class TaxiMainController extends GetxController {
         .limit(1) // 최신 문서 하나만 가져옴
         .snapshots()
         .map((snapshot) {
-      if (snapshot.docs.isNotEmpty) {
+      if (snapshot.docs.isNotEmpty){// && snapshot.docs.first.data()['state'] == '호출중') {
+        // print(snapshot.docs.first.data()['endingAddress']);
+        // print(snapshot.docs.first.data()['state']);
         Map<String, dynamic> data = snapshot.docs.first.data();
         data['documentId'] = snapshot.docs.first.id;
         return data;
@@ -85,7 +89,7 @@ class TaxiMainController extends GetxController {
     });
   }
   changeState(size,pay) {
-    bool isDoneDelivery = callItem.state == '배송중'? true : false;
+    bool isDoneDelivery = callItem.state == '배송중' || callItem.state == '배송완료' ? true : false;
     List<String> parts = price.text.split(',');
     String result = parts.join('');
     showDialog(
@@ -100,16 +104,17 @@ class TaxiMainController extends GetxController {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(pay ? '최종 ${formatNumber(int.parse(result))}을\n결제요청 하시겠습니까?':isDoneDelivery ?'화물 전달 후 배송을\n완료하시겠습니까?':'화물 수령후 배송을\n시작하시겠습니까?', style: const TextStyle(
+              SizedBox(height: 20,),
+              Text(pay ? '최종 ${formatNumber(int.parse(result))}을\n\n결제요청 하시겠습니까?':isDoneDelivery ?'화물 전달 후 배송을\n완료하시겠습니까?':'화물 수령후 배송을\n시작하시겠습니까?', style: const TextStyle(
                   fontSize: 18,
-                  fontWeight: FontWeight.w600, color: font3030
-              ),),
+                  fontWeight: FontWeight.w600, color: font3030,
+              ),textAlign: TextAlign.center,),
               const SizedBox(height: 10),
-              isDoneDelivery?Container():const Text(
+              !isDoneDelivery ? const Text(
                 '(배송 시작 이후 미터기를 켜주세요.)', style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w600, color: mainColor
-              ),),
+              ),) : Container(),
             ],
           ),
           actions: [
@@ -423,7 +428,15 @@ class TaxiMainController extends GetxController {
                           ),
                         ),
                         GestureDetector(
-                          onTap: (){
+                          onTap: () async {
+                            final a = await FirebaseFirestore.instance.collection('callHistory').doc(item.documentId).get();
+                            if(a.data()!['state'] != '호출중'){
+                              newCall.value = false;
+                              Get.back();
+                              Get.snackbar('이미 배정된 콜입니다.', '다른 콜을 선택해주세요');
+                              return;
+                            }
+                            print('이거 뜨면 안됨');
                             callItem = item;
                             delivery.value = true;
                             callItem.state ='배정완료';

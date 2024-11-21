@@ -54,7 +54,7 @@ class MyPageView extends GetView<MyPageController> {
                       child: const Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('계좌 등록',style: TextStyle(fontSize: 15),),
+                          Text('계좌등록 및 정산',style: TextStyle(fontSize: 15),),
                           Icon(Icons.navigate_next,color:gray200,)
                         ],
                       ),

@@ -194,7 +194,7 @@ class ConfirmController extends GetxController {
     callHistory.price = taxiFare.value;
     callHistory.userDocumentId = uid;
     callHistory.createDate = Timestamp.now();
-    Payments().choicePayment(Get.context!, 'kiwoom', taxiFare.value, '테스트', callHistory);
+    Payments().choicePayment(Get.context!, 'kiwoom', taxiFare.value, '딜리버리티', callHistory);
     // Payments().bootpayTest(Get.context!, 'kiwoom', taxiFare.value, '테스트', callHistory);
   }
   kakaoPay(BuildContext context) async {

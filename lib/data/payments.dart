@@ -71,9 +71,6 @@ class Payments{
           },
           body: jsonEncode(rePaymentsMap),
         );
-        print('재결제 성공');
-        print(response.statusCode);
-        print('재결제 응답값 ' + response.body);
       dataJson = jsonDecode(response.body);
       callHistory.billingKey = billingKey;
       bool check = await callHistoryData.addItem(callHistory, dataJson['receipt_id']);
@@ -265,6 +262,8 @@ class Payments{
   void bootpayTest(BuildContext context, String pg, int price, String orderName, CallHistory callHistory) {
     final CallHistoryData  callHistoryData = CallHistoryData();
     Payload payload = getPayload(pg, price, orderName);
+    payload.user?.phone = callHistory.startingHp;
+    print(payload.user!.phone);
     late bool check;
     if(kIsWeb) {
       payload.extra?.openType = "iframe";
@@ -334,20 +333,20 @@ class Payments{
     );
   }
   /// 아 빌링키 tq
-  Future rePayment(CallHistory callHistory) async{
+  Future rePayment(CallHistory callHistory, {int? cancel}) async{
     String bootPayUrl = 'https://api.bootpay.co.kr/v2/subscribe/payment';
     String tokenUrl = 'https://api.bootpay.co.kr/v2/request/token';
     String cancelUrl = 'https://api.bootpay.co.kr/v2/cancel';
     print(callHistory.documentId);
-    String billingKey = await FirebaseFirestore.instance.collection('billingKey').doc(callHistory.documentId).get().then((value) => value['billingKey']);
+    String billingKey = callHistory.billingKey;
     // String qq = await FirebaseFirestore.instance.collection('billingKey').doc(callHistory.documentId).get().then((value) => value['billingKey']);
     print('billingKey : $billingKey');
     Map<String, dynamic> rePaymentsMap = {
       "billing_key": billingKey,
       // 'billing_key': '66bc25d5be5ce6894a3b8e31',
       "order_id": "가맹점 주문번호",
-      "order_name": "딜리버리티 최종결제금액",
-      "price": callHistory.price,
+      "order_name": cancel == null ? "딜리버리티 호출취소" : "딜리버리티 최종결제금액",
+      "price": cancel ?? callHistory.price,
       "user": {
         "phone": "01000000000",
       }
@@ -390,9 +389,6 @@ class Payments{
           },
           body: jsonEncode(rePaymentsMap),
         );
-        print('재결제 성공');
-        print(response.statusCode);
-        print('재결제 응답값 ' + response.body);
       } else {
         print('캔슬 실패');
       }
@@ -471,7 +467,6 @@ class Payments{
         'callHistoryId': snapshot.id,
         'card_no': cardData['card_no'],
         'card_company': cardData['card_company'],
-
       });
       return true;
     } catch(e){
@@ -542,9 +537,10 @@ class Payments{
     payload.orderName = orderName; //결제할 상품명
     payload.price = price.toDouble(); //정기결제시 0 혹은 주석
 
+    String id = DateTime.now().millisecondsSinceEpoch.toString();
 
-    payload.orderId = DateTime.now().millisecondsSinceEpoch.toString(); //주문번호, 개발사에서 고유값으로 지정해야함
-    payload.subscriptionId = DateTime.now().millisecondsSinceEpoch.toString(); //주문번호, 개발사에서 고유값으로 지정해야함
+    payload.orderId = id; //주문번호, 개발사에서 고유값으로 지정해야함
+    payload.subscriptionId = id; //주문번호, 개발사에서 고유값으로 지정해야함
 
 
     // payload.metadata = {
@@ -555,6 +551,7 @@ class Payments{
     // }; // 전달할 파라미터, 결제 후 되돌려 주는 값
     // payload.items = itemList.cast<Item>(); // 상품정보 배열
 
+    print(myInfo.hp);
     User user = User(); // 구매자 정보
     user.username = myInfo.documentId;
     user.id = myInfo.documentId;

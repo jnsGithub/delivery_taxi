@@ -18,7 +18,7 @@ class TaxiAccountView extends GetView<TaxiAccountController> {
     Get.lazyPut(() => TaxiAccountController());
     return Scaffold(
       appBar: AppBar(
-        title:const Text('계좌 등록'),
+        title:const Text('계좌등록 및 정산'),
         centerTitle: true,
         actions: [
           TextButton(onPressed:(){
@@ -40,7 +40,7 @@ class TaxiAccountView extends GetView<TaxiAccountController> {
               text: '은행', multi: false, color: Colors.black, typeNumber: false, controller: controller.bankController,
             ),
             SizedBox(height: 50,),
-            Text('계좌 등록 시\n예금주와 계좌번호는 정확히 입력해주세요.\n잘못입력해서 발생한 손해는 책임지지 않습니다.',style: TextStyle(color: Colors.red,fontWeight:FontWeight.w600,fontSize: 17),),
+            Text('계좌 등록 시\n예금주와 계좌번호는 정확히 입력해주세요.\n잘못입력해서 발생한 손해는 책임지지 않습니다.\n\n* 정산일은 매월21일이며, 자동 정산됩니다.',style: TextStyle(color: Colors.red,fontWeight:FontWeight.w600,fontSize: 17),),
           ],
 
         ),

@@ -1,4 +1,5 @@
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:delivery_taxi/data/payments.dart';
 import 'package:delivery_taxi/global.dart';
 import 'package:flutter/cupertino.dart';
@@ -41,10 +42,17 @@ class UsingDetailController extends GetxController {
         CupertinoDialogAction(
           child: const Text('확인',style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),),
           onPressed: () async {
-            await cancel(callHistory);
+            Payments payments = Payments();
+            await payments.rePayment(callHistory, cancel: 1000);
+            // await cancel(callHistory);
+            await FirebaseFirestore.instance.collection('callHistory').doc(callHistory.documentId).update({
+              'price': 1000,
+              'state': '호출취소'
+            });
             callHistory.state = '호출 취소';
             callHistory.price = 1000;
             Get.back();
+            Get.back(result: true);
           },
         ),
         CupertinoDialogAction(

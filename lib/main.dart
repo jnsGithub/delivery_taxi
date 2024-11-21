@@ -176,6 +176,7 @@ void main() async {
   } catch(e){
     print(e);
   }
+  await Future.delayed(const Duration(seconds: 5));
   FlutterNativeSplash.remove();
   if(_auth.currentUser != null) {
     isLogin = true;
