@@ -155,7 +155,7 @@ class MyPageView extends GetView<MyPageController> {
                   GestureDetector(
                     onTap: () async{
                       showDialog(context: context, builder: (context){
-                        return controller.checkDeleteAccount();
+                        return controller.checkDeleteAccount(context);
                       });
                     },
                     child: Container(

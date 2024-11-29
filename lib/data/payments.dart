@@ -282,19 +282,22 @@ class Payments{
       },
       onClose: () async{
         print('------- onClose');
-
-        Bootpay().dismiss(context); //명시적으로 부트페이 뷰 종료 호출p
-        saving(context);
-        bool check = false;
-        await Future.delayed(Duration(seconds: 2), ()async => check = await setBillingKey(callHistory, dataJson['data']['receipt_data']['receipt_id'], dataJson['data']['receipt_id'], pg,dataJson['data']['receipt_data']['card_data']));
-        if(check){
+        try{
+          Bootpay().dismiss(context); //명시적으로 부트페이 뷰 종료 호출p
+          saving(context);
+          bool check = false;
+          await Future.delayed(Duration(seconds: 2), ()async => check = await setBillingKey(callHistory, dataJson['data']['receipt_data']['receipt_id'], dataJson['data']['receipt_id'], pg,dataJson['data']['receipt_data']['card_data']));
+          if(check){
+            Get.back();
+            Get.back();
+            Get.back(result: true);
+            Get.snackbar('알림', '호출이 완료되었습니다.');
+            Get.toNamed('/useNotifyView');
+          } else {
+            Get.snackbar('알림', '호출이 실패되었습니다.');
+          }
+        } catch (e){
           Get.back();
-          Get.back();
-          Get.back(result: true);
-          Get.snackbar('알림', '호출이 완료되었습니다.');
-          Get.toNamed('/useNotifyView');
-        } else {
-          Get.snackbar('알림', '호출이 실패되었습니다.');
         }
         //TODO - 원하시는 라우터로 페이지 이동
       },
@@ -450,7 +453,6 @@ class Payments{
     }catch(e){
       print('에러코드 $e');
     }
-
   }
 
   Future setBillingKey(CallHistory callHistory, String docid, String receiptId, String paymentType,cardData) async{

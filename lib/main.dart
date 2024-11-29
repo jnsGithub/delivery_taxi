@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:delivery_taxi/data/myInfoData.dart';
 import 'package:delivery_taxi/data/socialLogin.dart';
+import 'package:delivery_taxi/splash/splashView.dart';
 import 'package:delivery_taxi/view/confirm/confirmView.dart';
 import 'package:delivery_taxi/view/enter/enterView.dart';
 import 'package:delivery_taxi/view/login/loginView.dart';
@@ -70,6 +71,9 @@ void main() async {
   // await Firebase.initializeApp(
   //   options: DefaultFirebaseOptions.currentPlatform,
   // );
+  // Future.delayed(const Duration(seconds: 1));
+  FlutterNativeSplash.remove();
+
   if (Firebase.apps.isEmpty) {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
@@ -176,8 +180,7 @@ void main() async {
   } catch(e){
     print(e);
   }
-  await Future.delayed(const Duration(seconds: 5));
-  FlutterNativeSplash.remove();
+  // await Future.delayed(const Duration(seconds: 5));
   if(_auth.currentUser != null) {
     isLogin = true;
     print('메인 호출시 불러들이는 uid : $uid');
@@ -197,6 +200,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    bool isiOS = Theme.of(context).platform == TargetPlatform.iOS;
     return GetMaterialApp(
       locale: const Locale('ko', 'KR'),
       color: Colors.white,
@@ -217,8 +221,9 @@ class MyApp extends StatelessWidget {
             ), elevation:0
           )
       ),
-      initialRoute:!isLogin? '/enterView': isTaxiUser? '/taxiMainView':'/userMainView',
+      initialRoute: !isiOS ? 'splashView' : !isLogin? '/enterView': isTaxiUser? '/taxiMainView':'/userMainView',
       getPages: [
+        GetPage(name: '/splashView', page: () => const SplashView()),
         GetPage(name: '/enterView', page: () => const EnterView()),
         GetPage(name: '/loginView', page: ()=> const LoginView()),
         GetPage(name: '/signUpView', page:()=> const SignUpView()),

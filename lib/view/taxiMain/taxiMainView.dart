@@ -173,7 +173,7 @@ class TaxiMainView extends GetView<TaxiMainController> {
                       fontSize: 12,fontWeight: FontWeight.w400,color: Color(0xff757575)
                   ),),
                   const SizedBox(height: 10 ,),
-                  const Text('충청남도 천안시 서북구 불당11로 68, 701동1104호',style: TextStyle(
+                  const Text('충청남도 천안시 서북구 불당36길 63, 304호',style: TextStyle(
                       fontSize: 12,fontWeight: FontWeight.w400,color: Color(0xff757575)
                   ),),
                   const SizedBox(height: 10 ,),

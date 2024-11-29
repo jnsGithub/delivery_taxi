@@ -32,7 +32,7 @@ class UsingDetailController extends GetxController {
     payments.cancelPayments(callHistory);
   }
 
-  Widget checkDialog(){
+  Widget checkDialog(BuildContext context){
     return CupertinoAlertDialog(
       // title: const Text('택시 이용 취소'),
 
@@ -42,6 +42,8 @@ class UsingDetailController extends GetxController {
         CupertinoDialogAction(
           child: const Text('확인',style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),),
           onPressed: () async {
+            Get.back();
+            saving(context);
             Payments payments = Payments();
             await payments.rePayment(callHistory, cancel: 1000);
             // await cancel(callHistory);

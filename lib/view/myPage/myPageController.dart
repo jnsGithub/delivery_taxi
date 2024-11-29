@@ -19,7 +19,7 @@ class MyPageController extends GetxController {
     super.onClose();
   }
 
-  Widget checkDeleteAccount(){
+  Widget checkDeleteAccount(BuildContext context){
     return CupertinoAlertDialog(
       title: const Text('정말로 회원탈퇴를 하시겠습니까?'),
       content: const Text('회원탈퇴시 즉시 회원정보가 삭제되며 복구가 불가능합니다.'),
@@ -33,7 +33,7 @@ class MyPageController extends GetxController {
         CupertinoDialogAction(
           child: const Text('확인',style: TextStyle(color: mainColor)),
           onPressed: () async {
-            SocialLogin().deleteAccount();
+            await SocialLogin().deleteAccount(context);
           },
         ),
       ],

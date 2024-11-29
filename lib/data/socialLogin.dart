@@ -3,6 +3,7 @@ import 'package:delivery_taxi/main.dart';
 import 'package:delivery_taxi/model/myInfo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart' as kakaoAuth;
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
@@ -142,13 +143,15 @@ class SocialLogin{
     }
   }
 
-  Future deleteAccount() async{
+  Future deleteAccount(BuildContext context) async{
     try{
-      await auth.currentUser!.delete();
-      await auth.signOut();
+      saving(context);
+      print(loginType);
       if(loginType == '카카오'){
         await kakaoAuth.UserApi.instance.unlink();
       }
+      await auth.currentUser!.delete();
+      await auth.signOut();
       await FirebaseFirestore.instance.collection('users').doc(uid).delete();
       uid = '';
       myInfo = MyInfo(
@@ -166,6 +169,7 @@ class SocialLogin{
       );
       Get.offAllNamed('/enterView');
     } catch(e){
+      Get.back();
       print(e);
     }
   }
