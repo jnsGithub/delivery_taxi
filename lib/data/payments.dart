@@ -60,9 +60,6 @@ class Payments{
       );
 
       var token = jsonDecode(tokenRespons.body);
-
-
-
         var response = await http.post(
           Uri.parse(bootPayUrl),
           headers: {
@@ -83,7 +80,6 @@ class Payments{
         Get.snackbar('알림', '호출이 실패되었습니다.');
       }
     }catch(e){
-      print('에러코드 $e');
     }
   }
   choicePayment(BuildContext context, String pg, int price, String orderName, CallHistory callHistory) async {
@@ -174,9 +170,6 @@ class Payments{
       backgroundColor: Colors.transparent, // 바텀 시트 배경을 투명하게
       builder: (BuildContext context) {
         return DraggableScrollableSheet(
-          // initialChildSize: 0.4,
-          // maxChildSize: 0.9,
-          // minChildSize: 0.4,
           builder: (BuildContext context, ScrollController scrollController) {
             return Container(
               padding: EdgeInsets.only(top: 10),
@@ -189,7 +182,6 @@ class Payments{
               ),
               child: Column(
                 children: [
-
                   Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
@@ -216,7 +208,6 @@ class Payments{
                             },
                           ),
                         ),
-
                         const SizedBox(height: 20),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -235,7 +226,6 @@ class Payments{
                           ],
                         ),
                         const SizedBox(height: 20),
-
                         GestureDetector(
                           onTap: (){
                             if(billingInfo.isEmpty || currentIndex == billingInfo.length){
@@ -257,13 +247,11 @@ class Payments{
         );
       },
     );
-    // bootpayTest(context, pg, price, orderName, callHistory);
   }
   void bootpayTest(BuildContext context, String pg, int price, String orderName, CallHistory callHistory) {
     final CallHistoryData  callHistoryData = CallHistoryData();
     Payload payload = getPayload(pg, price, orderName);
     payload.user?.phone = callHistory.startingHp;
-    print(payload.user!.phone);
     late bool check;
     if(kIsWeb) {
       payload.extra?.openType = "iframe";
@@ -273,17 +261,13 @@ class Payments{
       context: context,
       payload: payload,
       showCloseButton: false,
-      // closeButton: Icon(Icons.close, size: 35.0, color: Colors.black54),
       onCancel: (String data) {
-        print('------- onCancel: $data');
       },
       onError: (String data) {
-        print('------- onCancel: $data');
       },
       onClose: () async{
-        print('------- onClose');
         try{
-          Bootpay().dismiss(context); //명시적으로 부트페이 뷰 종료 호출p
+          Bootpay().dismiss(context); //명시적으로 부트페이 뷰 종료 호출
           saving(context);
           bool check = false;
           await Future.delayed(Duration(seconds: 2), ()async => check = await setBillingKey(callHistory, dataJson['data']['receipt_data']['receipt_id'], dataJson['data']['receipt_id'], pg,dataJson['data']['receipt_data']['card_data']));
@@ -302,51 +286,24 @@ class Payments{
         //TODO - 원하시는 라우터로 페이지 이동
       },
       onIssued: (String data) {
-        print('------- onIssued: $data');
       },
       onConfirm: (String data) {
         var json = jsonDecode(data);
-
-        /**
-            1. 바로 승인하고자 할 때
-            return true;
-         **/
-        /***
-            2. 비동기 승인 하고자 할 때
-            checkQtyFromServer(data);
-            return false;
-         ***/
-        /***
-            3. 서버승인을 하고자 하실 때 (클라이언트 승인 X)
-            return false; 후에 서버에서 결제승인 수행
-         */
-        // checkQtyFromServer(data);
         return true;
       },
       onDone: (String data) async {
-        print('------- onDone: $data');
         dataJson = jsonDecode(data);
-        // print(dataJson['data']['receipt_data']['receipt_id']);
-        // check = await callHistoryData.addItem(callHistory, dataJson['data']['receipt_data']['receipt_id']);
-        // print(check);
-        // print('결제완료');
-        // await Future.delayed(Duration(seconds: 2), ()async => await setBillingKey(callHistory, dataJson['data']['receipt_data']['receipt_id'], dataJson['data']['receipt_id'], pg));
-        // setBillingKey(callHistory, dataJson['data']['receipt_data']['receipt_id'], dataJson['data']['receipt_id'], pg);
       },
     );
   }
-  /// 아 빌링키 tq
+
   Future rePayment(CallHistory callHistory, {int? cancel}) async{
     String bootPayUrl = 'https://api.bootpay.co.kr/v2/subscribe/payment';
     String tokenUrl = 'https://api.bootpay.co.kr/v2/request/token';
     String cancelUrl = 'https://api.bootpay.co.kr/v2/cancel';
-    print(callHistory.documentId);
     String billingKey = callHistory.billingKey;
-    // String qq = await FirebaseFirestore.instance.collection('billingKey').doc(callHistory.documentId).get().then((value) => value['billingKey']);
-    print('billingKey : $billingKey');
     Map<String, dynamic> rePaymentsMap = {
       "billing_key": billingKey,
-      // 'billing_key': '66bc25d5be5ce6894a3b8e31',
       "order_id": "가맹점 주문번호",
       "order_name": cancel == null ? "딜리버리티 호출취소" : "딜리버리티 최종결제금액",
       "price": cancel ?? callHistory.price,
@@ -380,8 +337,6 @@ class Payments{
             "Authorization": "Bearer ${token['access_token']}"
           },
           body: jsonEncode(cancelMap));
-      print('캔슬 상태 코드 : ${cancelRespons.statusCode}');
-      print('캔슬 응답값 : ${cancelRespons.body}');
 
       if(cancelRespons.statusCode == 200){
         var response = await http.post(
@@ -393,13 +348,11 @@ class Payments{
           body: jsonEncode(rePaymentsMap),
         );
       } else {
-        print('캔슬 실패');
       }
 
 
 
     }catch(e){
-      print('에러코드 $e');
     }
   }
 
@@ -434,8 +387,6 @@ class Payments{
             "Authorization": "Bearer ${token['access_token']}"
           },
           body: jsonEncode(cancelMap));
-      print('캔슬 상태 코드 : ${cancelRespons.statusCode}');
-      print('캔슬 응답값 : ${cancelRespons.body}');
       if(cancelRespons.statusCode == 200){
         await FirebaseFirestore.instance.collection('callHistory').doc(callHistory.documentId).update({
           'price': 1000,
@@ -451,7 +402,6 @@ class Payments{
         Get.snackbar('결제 취소 실패', '관리자에게 문의해주세요.', backgroundColor: mainColor, colorText: Colors.white, onTap: (snack) => Get.toNamed('/contactUs'));
       }
     }catch(e){
-      print('에러코드 $e');
     }
   }
 
@@ -472,7 +422,6 @@ class Payments{
       });
       return true;
     } catch(e){
-      print(e);
       return false;
     }
   }
@@ -496,37 +445,17 @@ class Payments{
         body: tokenBody,
       );
       var tokenReponseData = jsonDecode(tokenReponse.body);
-      print('토큰 조회 결과' + tokenReponse.body);
-      print('hello world!');
-
-      print(receiptId);
       var billingKeyReponse = await http.get(buillingKeyUri,headers: {'Authorization': 'Bearer ${tokenReponseData['access_token']}'});
-      print('빌링키 조회 결과 : ' + billingKeyReponse.body);
       var billingKeyResponseData = jsonDecode(billingKeyReponse.body);
 
-      print('빌링키 : ${billingKeyResponseData['billing_key']}');
       return billingKeyResponseData['billing_key'];
     } catch (e) {
-      print(e);
-      print('캐치당함');
       return '';
     }
   }
 
   Payload getPayload(String pg, int price, String orderName) {
     Payload payload = Payload();
-    // Item item1 = Item();
-    // item1.name = "미키 '마우스"; // 주문정보에 담길 상품명
-    // item1.qty = 1; // 해당 상품의 주문 수량
-    // item1.id = "ITEM_CODE_MOUSE"; // 해당 상품의 고유 키
-    // item1.price = 500; // 상품의 가격
-    //
-    // Item item2 = Item();
-    // item2.name = "키보드"; // 주문정보에 담길 상품명
-    // item2.qty = 1; // 해당 상품의 주문 수량
-    // item2.id = "ITEM_CODE_KEYBOARD"; // 해당 상품의 고유 키
-    // item2.price = 500; // 상품의 가격
-    // List itemList = [item1, item2];
 
     payload.webApplicationId = webApplicationId; // web application id
     payload.androidApplicationId = androidApplicationId; // android application id
@@ -535,7 +464,6 @@ class Payments{
 
     payload.pg = pg;
     payload.method = '카드자동';
-    // payload.methods = ['card', 'phone', 'vbank', 'bank', 'kakao'];
     payload.orderName = orderName; //결제할 상품명
     payload.price = price.toDouble(); //정기결제시 0 혹은 주석
 
@@ -544,16 +472,6 @@ class Payments{
     payload.orderId = id; //주문번호, 개발사에서 고유값으로 지정해야함
     payload.subscriptionId = id; //주문번호, 개발사에서 고유값으로 지정해야함
 
-
-    // payload.metadata = {
-    //   "callbackParam1" : "value12",
-    //   "callbackParam2" : "value34",
-    //   "callbackParam3" : "value56",
-    //   "callbackParam4" : "value78",
-    // }; // 전달할 파라미터, 결제 후 되돌려 주는 값
-    // payload.items = itemList.cast<Item>(); // 상품정보 배열
-
-    print(myInfo.hp);
     User user = User(); // 구매자 정보
     user.username = myInfo.documentId;
     user.id = myInfo.documentId;
@@ -565,16 +483,10 @@ class Payments{
     Extra extra = Extra(); // 결제 옵션
     extra.appScheme = 'bootpayFlutterExample';
     extra.cardQuota = '3';
-    // extra.openType = 'popup';
-
-    // extra.carrier = "SKT,KT,LGT"; //본인인증 시 고정할 통신사명
-    // extra.ageLimit = 20; // 본인인증시 제한할 최소 나이 ex) 20 -> 20살 이상만 인증이 가능
 
     payload.user = user;
     payload.extra = extra;
     return payload;
   }
-
-
 }
 

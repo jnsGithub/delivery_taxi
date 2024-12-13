@@ -44,26 +44,5 @@ class UseNotifyController extends GetxController with GetTickerProviderStateMixi
   init() async{
     callHistory.value = await getUsage.getCallHistory();
     notify.value = await NotifyData().getNotify();
-    // notify.add(Notify(
-    //   documentId: '',
-    //   title: '퀵 배송 택시 호출중',
-    //   content: '결제가 완료되어, 주변 택시를 호출중입니다',
-    //   pay: 0,
-    //   createDate: Timestamp.now(),
-    // ));
-    // notify.add(Notify(
-    //   documentId: '',
-    //   title: '배차 완료',
-    //   content: '택시 배차가 완료되었습니다\n택시번호 : 10가 1234\n전화번호 : 010-xxxx-xxxx',
-    //   pay: 0,
-    //   createDate: Timestamp.now(),
-    // ));
-    // notify.add(Notify(
-    //   documentId: '',
-    //   title: '이용 완료',
-    //   content: '물품 배달이 완료되었습니다',
-    //   pay: 8800,
-    //   createDate: Timestamp.now(),
-    // ));
   }
 }

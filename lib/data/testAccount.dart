@@ -9,7 +9,6 @@ class TestAccount {
       Map<String, dynamic> data = document.data() as Map<String, dynamic>;
       return data['visible'];
     } catch(e){
-      print(e);
       return false;
     }
   }

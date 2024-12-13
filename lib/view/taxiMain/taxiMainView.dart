@@ -25,7 +25,7 @@ class TaxiMainView extends GetView<TaxiMainController> {
     Get.lazyPut(() => TaxiMainController());
     return PopScope(
       canPop: false,
-      onPopInvoked: (d){print(d);},
+      onPopInvoked: (d){},
       child: GestureDetector(
         onTap: (){
           FocusScope.of(context).unfocus();
@@ -74,10 +74,7 @@ class TaxiMainView extends GetView<TaxiMainController> {
                           myInfo.type = 'taxi';
                           Get.toNamed('/taxiMainView');
                         }
-                        print(myInfo.type);
-                        print(myInfo.hp);
                       }
-                      print(controller.inquiryType.value);
                     },
                     items: controller.inquiryTypeList.map<DropdownMenuItem<String>>((String value){
                       return DropdownMenuItem<String>(
@@ -127,21 +124,17 @@ class TaxiMainView extends GetView<TaxiMainController> {
                           return Container();
                         } else {
                           var data = snapshot.data!;
-                          // print(data);
                           CallHistory callHistory = CallHistory.fromMap(data);
                           bool check1 = callHistory.startingAddress.contains(myInfo.address1);
                           bool check2 = callHistory.startingAddress.contains(myInfo.address2);
                           if(snapshot.data!['state'] == '호출중' && check1 && check2){
-                            print(123);
                             if(!controller.newCall.value){
-                              print(321);
                               controller.changeItem(callHistory);
                             }
                           }
-                          // return Container();
                           return Obx(() => controller.delivery.value
                               ? deliveryWidget(size,controller.lastCallItem)
-                              : controller.newCall.value// && snapshot.data!['state'] == '호출중'
+                              : controller.newCall.value
                               ? gotCall(size,controller.lastCallItem)
                               : readyToCall(size));
                         }
@@ -229,7 +222,6 @@ class TaxiMainView extends GetView<TaxiMainController> {
   Widget gotCall(size,CallHistory item){
     String typeEng = item.selectedOption;
     String type =typeEng =='small'? '소형': typeEng == 'medium'? '중형':'대형';
-    // print(item.endingAddress);
     return Container(
       width: size.width,
       height: size.width*1.0256,

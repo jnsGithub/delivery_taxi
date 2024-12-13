@@ -54,7 +54,6 @@ class UserMainView extends GetView<UserMainController> {
                   ),
                   value: controller.inquiryType.value,
                   onChanged: (String? newValue){
-                    print('클릭 시 : ${newValue} ${isTaxiUser}');
                     if (newValue != null) {
                       controller.inquiryType.value = newValue;
 
@@ -62,18 +61,13 @@ class UserMainView extends GetView<UserMainController> {
                         isTaxiUser = false;
                         myInfo.type = 'customer';
                         if(Get.currentRoute != '/userMainView') Get.back();
-                        print('일반유저 : ${!isTaxiUser}');
                       }
                       else{
                         isTaxiUser = true;
                         myInfo.type = 'taxi';
                         Get.toNamed('/taxiMainView');
-                        print('택시유저 : ${isTaxiUser}');
                       }
-                      print(myInfo.type);
-                      print(myInfo.hp);
                     }
-                    print(controller.inquiryType.value);
                   },
                   items: controller.inquiryTypeList.map<DropdownMenuItem<String>>((String value){
                     return DropdownMenuItem<String>(

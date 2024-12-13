@@ -48,32 +48,11 @@ class MyInfomation{
     }
   }
 
-  // Future<MyInfo> getUser(String uid) async {
-  //   final snapshot = await db.collection('users').doc(uid).get();
-  //   if(snapshot.exists){
-  //     return MyInfo.fromFirestore(snapshot);
-  //   }else{
-  //     return MyInfo(
-  //         documentId: '',
-  //         type: '',
-  //         name: '',
-  //         hp: '',
-  //         address1: '',
-  //         address2: '',
-  //         taxiNumber: '',
-  //         taxiType: '',
-  //         taxiImage: '',
-  //         isAuth: false,
-  //         createDate: Timestamp.now());
-  //   }
-  // }
-
   Future setUser(MyInfo a) async {
     try{
       await userCollection.doc(uid).set(a.toMap());
       return true;
     } catch(e){
-      print(e);
       return false;
     }
 
@@ -102,10 +81,8 @@ class MyInfomation{
       final snapshot = await uploadTask.whenComplete(() {});
       final downloadURL = await snapshot.ref.getDownloadURL();
 
-      print('File uploaded successfully: $downloadURL');
       return downloadURL;
     } catch (e) {
-      print('Failed to upload image: $e');
       return '';
     }
   }

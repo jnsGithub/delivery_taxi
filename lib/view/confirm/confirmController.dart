@@ -78,20 +78,9 @@ class ConfirmController extends GetxController {
       await getLoad();
       mapController = controller;
       List<NLatLng> coords = [
-        // NLatLng(37.5666102, 126.9783881),
         NLatLng(startLatitude.value, startLongitude.value),
         NLatLng(endLatitude.value, endLongitude.value),
       ];
-      // List<NLatLng> start = [
-      //   // NLatLng(37.5666102, 126.9783881),
-      //   NLatLng(startLatitude.value, startLongitude.value),
-      //   NLatLng(startLatitude.value + 0.001, startLongitude.value),
-      // ];
-      // List<NLatLng> end = [
-      //   // NLatLng(37.5666102, 126.9783881),
-      //   NLatLng(endLatitude.value, endLongitude.value),
-      //   NLatLng(endLatitude.value + 0.001, endLongitude.value),
-      // ];
 
       NMarker startMarker = NMarker(
         id: "start_marker",
@@ -118,23 +107,18 @@ class ConfirmController extends GetxController {
       // 지도 줌 레벨 설정
 
       mapController.addOverlay(NPathOverlay(id: "test", coords: coords,color: mainColor,outlineWidth:0),);
-      // mapController.addOverlay(NPathOverlay(id: "test1", coords: start,color: mainColor,outlineWidth:0),);
-      // mapController.addOverlay(NPathOverlay(id: "test2", coords: end,color: mainColor,outlineWidth:0),);
       mapController.addOverlay(startMarker);
       mapController.addOverlay(endMarker);
       mapController.updateCamera(NCameraUpdate.withParams(
         zoom: zoomLevel,
         target:midPoint,
       ));
-
-
       update();
     }catch(e){
-      print(e);
     }
 
   }
-  /* 카카오  인증 아디이 바꾸어햐마*/
+
   getLoad() async {
     String url = 'https://dapi.kakao.com/v2/local/search/address.JSON?query=${callHistory.startingAddress}';
     http.Response response = await http.get(
@@ -149,7 +133,6 @@ class ConfirmController extends GetxController {
       var dataJson = jsonDecode(data) ;
       startLongitude.value =  double.parse( dataJson['documents'][0]['road_address']['x']);
       startLatitude.value = double.parse( dataJson['documents'][0]['road_address']['y']);
-
     }
 
 
@@ -195,7 +178,6 @@ class ConfirmController extends GetxController {
     callHistory.userDocumentId = uid;
     callHistory.createDate = Timestamp.now();
     Payments().choicePayment(Get.context!, 'kiwoom', taxiFare.value, '딜리버리티', callHistory);
-    // Payments().bootpayTest(Get.context!, 'kiwoom', taxiFare.value, '테스트', callHistory);
   }
   kakaoPay(BuildContext context) async {
     callHistory.state = '호출중';
@@ -203,13 +185,5 @@ class ConfirmController extends GetxController {
     callHistory.userDocumentId = uid;
     callHistory.createDate = Timestamp.now();
     Payments().bootpayTest(context, '카카오', taxiFare.value, '테스트', callHistory);
-    // bool check = await callHistoryData.addItem(callHistory,'asdf');
-    // if(check){
-    //   Get.snackbar('알림', '호출이 완료되었습니다.');
-    //   Get.offAllNamed('/useNotifyView');
-    //   onClose();
-    // } else {
-    //   Get.snackbar('알림', '호출이 실패되었습니다.');
-    // }
   }
 }

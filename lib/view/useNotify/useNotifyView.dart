@@ -72,7 +72,6 @@ class UseNotifyView extends GetView<UseNotifyController> {
           },
           itemBuilder: (context, index) {
             bool isDone = false ;
-            print(controller.tabIndex.value != 0  && controller.notify.length != 0);
             if(controller.tabIndex.value == 0 )isDone = controller.callHistory[index].state == '배송완료';
             return controller.tabIndex.value == 0 ? callHistory(index,isDone):notify(index);
           },

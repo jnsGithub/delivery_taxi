@@ -22,10 +22,8 @@ class ConfirmView extends GetView<ConfirmController> {
         bottom: true,
         child: GetBuilder<ConfirmController>(
             init: ConfirmController(), // 여기서 컨트롤러를 초기화
-            // dispose: (_) => ConfirmController().dispose(),
             builder: (getController) {
               return Column(
-                // alignment: Alignment.bottomCenter,
                 children: [
                   Expanded(
                     child: NaverMap(
@@ -42,10 +40,6 @@ class ConfirmView extends GetView<ConfirmController> {
                     padding: const EdgeInsets.only(left:  16,right: 16,top: 24),
                     decoration: const BoxDecoration(
                       color: Colors.white,
-                      // borderRadius: BorderRadius.only(
-                      //   topLeft: Radius.circular(20),
-                      //   topRight: Radius.circular(20),
-                      // ),
                     ),
                     child: SingleChildScrollView(
                       child: Column(

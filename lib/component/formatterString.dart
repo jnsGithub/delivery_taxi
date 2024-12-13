@@ -11,11 +11,9 @@ class ThousandsSeparatorInputFormatter extends TextInputFormatter {
       return newValue.copyWith(text: '');
     }
 
-    // Remove any non-digit characters
     String newText = newValue.text.replaceAll(RegExp(r'[^\d]'), '');
     String formattedText = _formatter.format(int.parse(newText));
 
-    // Maintain the cursor position
     return newValue.copyWith(
       text: formattedText,
       selection: TextSelection.collapsed(offset: formattedText.length),

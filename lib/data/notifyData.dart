@@ -27,7 +27,6 @@ class NotifyData{
       );
       await db.doc().set(a.toMap());
     } catch(e){
-      print(e);
     }
 
   }

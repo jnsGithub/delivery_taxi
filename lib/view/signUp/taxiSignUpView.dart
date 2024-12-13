@@ -183,7 +183,6 @@ class TaxiSignUpView extends GetView<TaxiSignUpController> {
                     GestureDetector(
                       onTap: (){
                         if(controller.hpAuthController.text == controller.authNum.value) {
-                          print(controller.authNum.value);
                           controller.sendSms.value = true;
                           controller.hpAuthCheck.value = true;
                         } else {
@@ -288,7 +287,6 @@ class TaxiSignUpView extends GetView<TaxiSignUpController> {
                 ),
                 GestureDetector(
                   onTap: (){
-                    print(controller.authNum.value);
                     if(controller.hpAuthCheck.value == false){
                       Get.snackbar('인증번호 오류', '휴대폰 인증을 완료해주세요.');
                     } else if(controller.city.value == '선택해주세요'){

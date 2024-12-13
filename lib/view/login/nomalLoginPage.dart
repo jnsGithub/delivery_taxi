@@ -73,7 +73,6 @@ class NomalLoginPage extends StatelessWidget {
               SizedBox(height: 10),
               TextButton(
                   onPressed: () async{
-                    print('ㅎㅇ');
                     if(await login.loginCheck(idController.text, pwController.text)){
                       Get.toNamed('/userMainView');
                     }

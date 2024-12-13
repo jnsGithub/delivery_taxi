@@ -43,15 +43,12 @@ class TaxiMainController extends GetxController {
   changeItem(item){
     try{
       if(lastCallItem.documentId == item.documentId){
-        print(item.endingAddress);
-        print(lastCallItem.endingAddress);
         newCall.value = false;
       } else {
         newCall.value = true;
         lastCallItem = item;
       }
     } catch(e){
-      print(e);
     }
   }
   getList() async {
@@ -62,11 +59,6 @@ class TaxiMainController extends GetxController {
   Future requestPayments() async{
     List<String> parts = price.text.split(',');
     String result = parts.join('');
-    print('로그1');
-    print(price.text);
-    print(parts);
-    print(result);
-    print((int.parse(result) * 1.3).toInt());
     await payments.rePayment(callItem);
   }
 
@@ -77,9 +69,7 @@ class TaxiMainController extends GetxController {
         .limit(1) // 최신 문서 하나만 가져옴
         .snapshots()
         .map((snapshot) {
-      if (snapshot.docs.isNotEmpty){// && snapshot.docs.first.data()['state'] == '호출중') {
-        // print(snapshot.docs.first.data()['endingAddress']);
-        // print(snapshot.docs.first.data()['state']);
+      if (snapshot.docs.isNotEmpty){
         Map<String, dynamic> data = snapshot.docs.first.data();
         data['documentId'] = snapshot.docs.first.id;
         return data;
@@ -172,7 +162,6 @@ class TaxiMainController extends GetxController {
                           callHistoryData.updateItem(callItem,false);
                           Get.back();
                         } else {
-                          /// 여가서 callitme db 업데이트 해주세융
                           if(isDoneDelivery){
                             callItem.state = '배송완료';
                             callHistoryData.updateItem(callItem,false);
@@ -436,7 +425,6 @@ class TaxiMainController extends GetxController {
                               Get.snackbar('이미 배정된 콜입니다.', '다른 콜을 선택해주세요');
                               return;
                             }
-                            print('이거 뜨면 안됨');
                             callItem = item;
                             delivery.value = true;
                             callItem.state ='배정완료';

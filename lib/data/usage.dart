@@ -17,9 +17,7 @@ class GetUsage{
       }
       return callHistory;
     } catch(e){
-      print(e);
       return [];
     }
   }
-
 }

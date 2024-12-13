@@ -8,7 +8,7 @@ class MyInfo {
   String address1;
   String address2;
   final String taxiNumber;
-  final String taxiType; // ??
+  final String taxiType;
   String taxiImage;
   bool isAuth;
   final Timestamp createDate;

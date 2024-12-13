@@ -8,7 +8,6 @@ import 'package:get/get.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart' as kakaoAuth;
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
-// import '../global.dart';
 import '../global.dart';
 import 'myInfoData.dart';
 
@@ -39,7 +38,6 @@ class SocialLogin{
 
       //Fcm Token 발급
       FirebaseMessaging.instance.getToken().then((value) {
-        print('token : $value');
         setFcmToken(value ?? '');
       });
       var a = await myInfomation.getUser();
@@ -62,7 +60,6 @@ class SocialLogin{
         }
       }
     } catch(e){
-      print(e);
     }
   }
 
@@ -81,20 +78,16 @@ class SocialLogin{
       User user = await firebaseCredential.user!;
       uid = user.uid;
       loginType = '애플';
-      //Fcm Token 발급
       FirebaseMessaging.instance.getToken().then((value) {
-        print('token : $value');
         setFcmToken(value ?? '');
       });
 
-      print('uid : ' + uid);
       if(isTaxi){
         Get.toNamed('/taxiSignUpView');
       } else {
         Get.toNamed('/signUpView');
       }
     }catch(e){
-      print(e);
     }
   }
 
@@ -109,7 +102,6 @@ class SocialLogin{
        return true;
      }
     } catch(e){
-      print(e);
       return false;
     }
   }
@@ -139,14 +131,12 @@ class SocialLogin{
       );
       Get.offAllNamed('/enterView');
     } catch(e){
-      print(e);
     }
   }
 
   Future deleteAccount(BuildContext context) async{
     try{
       saving(context);
-      print(loginType);
       if(loginType == '카카오'){
         await kakaoAuth.UserApi.instance.unlink();
       }
@@ -170,7 +160,6 @@ class SocialLogin{
       Get.offAllNamed('/enterView');
     } catch(e){
       Get.back();
-      print(e);
     }
   }
 }

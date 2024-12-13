@@ -120,7 +120,7 @@ class SignUpView extends GetView<SignUpController> {
                           children: [
                             Checkbox(value: controller.check3.value,activeColor: mainColor, onChanged: (value){
                               controller.check(3);
-                            }),//
+                            }),
                             GestureDetector(
                                 onTap: (){
                                   controller.check(3);

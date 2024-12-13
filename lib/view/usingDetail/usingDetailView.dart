@@ -155,7 +155,6 @@ class UsingDetailView extends GetView<UsingDetailController> {
               SizedBox(height: 22),
               isTaxiUser ? Container():GestureDetector(
                 onTap: (){
-                  print(controller.callHistory.state);
                   if(controller.callHistory.state == '호출중'){
                     showDialog(context: context, builder: (context){
                       return controller.checkDialog(context);

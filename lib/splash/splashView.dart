@@ -8,7 +8,6 @@ class SplashView extends GetView<SplashController> {
   @override
   Widget build(BuildContext context) {
     Get.lazyPut(() => SplashController());
-    // controller.init();
     return Scaffold(
       body: Center(
         child: Padding(

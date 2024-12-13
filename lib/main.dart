@@ -50,28 +50,11 @@ Future setFcmToken(String token) async{
     'fcmToken': token
   });
 }
-// Future<dynamic> _backGround(RemoteMessage message) async{
-//   print(message.data );
-//   print('여기까진 백그라운드sdfasdfasdfsadfsadfsadfasdfdsafadsfdassfsaf');
-//   // FirebaseMessaging.onBackgroundMessage((message) async {
-//   //   print("onBackgroundMessage: $message");
-//   //   var data = jsonDecode(message.data['data']);
-//   //   print('여기까진 백그라운드');
-//   //   if(message.data['page'] == 'notify'){
-//   //     Get.toNamed('/useNotifyView');
-//   //   }
-//   // });
-// }
 
 
 void main() async {
-  // WidgetsFlutterBinding.ensureInitialized();
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-  // await Firebase.initializeApp(
-  //   options: DefaultFirebaseOptions.currentPlatform,
-  // );
-  // Future.delayed(const Duration(seconds: 1));
   FlutterNativeSplash.remove();
 
   if (Firebase.apps.isEmpty) {
@@ -90,14 +73,11 @@ void main() async {
       SocialLogin().accountCheck(_auth.currentUser!.uid);
       uid = _auth.currentUser!.uid;
       myInfo =  await MyInfomation().getUser();
-      // Fcm Token 발급
       if(FirebaseFirestore.instance.collection('users').doc(uid).get() != null) {
         FirebaseMessaging.instance.getToken().then((value) {
-          print('token : $value');
           setFcmToken(value ?? '');
         });
       }
-      print('메인 호출시 불러들이는 uid : $uid');
       if(myInfo.documentId != ''){
         isTaxiUser = myInfo.type == 'taxi' ? true : false;
         isLogin = true;
@@ -106,19 +86,15 @@ void main() async {
   }
 
   if(await Permission.notification.isGranted) {
-    print('권한이 허용되어 있습니다.');
   } else {
     Permission.notification.request();
-    print('권한이 허용되어 있지 않습니다.');
   }
 
-  // final FlutterLocalNotificationsPlugin _local = FlutterLocalNotificationsPlugin();
 
   const AndroidInitializationSettings initializationSettingsAndroid =
   AndroidInitializationSettings('@drawable/ic_notification');
   final DarwinInitializationSettings initializationSettingsIOS = DarwinInitializationSettings(
     onDidReceiveLocalNotification: (int id, String? title, String? body, String? payload) async {
-      // iOS에서 알림을 클릭했을 때 실행할 동작을 정의합니다.
     },
   );
   final InitializationSettings initializationSettings = InitializationSettings(
@@ -131,10 +107,6 @@ void main() async {
 
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print("onMessage: $message");
-      print(message.data);
-      print('data : ${message.data['page']}');
-      print('여기까진 리슨');
       if(message.data['page'] == 'notify'){
         flutterLocalNotificationsPlugin.show(
             0,
@@ -168,7 +140,6 @@ void main() async {
 
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) async {
-      print('ffpfhpfhpfhpfhdpfhdphfdphfdphfpdhfpdhfasldbvlkasdnvl할ㅇ라ㅣㄴ어라ㅣㄴ얼');
       if(message.data['page'] == 'notify'){
         if(Get.currentRoute == '/useNotifyView'){
           Get.find<UseNotifyController>().init();
@@ -178,16 +149,12 @@ void main() async {
       }
     });
   } catch(e){
-    print(e);
   }
-  // await Future.delayed(const Duration(seconds: 5));
   if(_auth.currentUser != null) {
     isLogin = true;
-    print('메인 호출시 불러들이는 uid : $uid');
   }
 
   myInfo =  await MyInfomation().getUser();
-  print(myInfo.type);
   isTaxiUser = myInfo.type == 'taxi' ? true : false;
 
   runApp(MyApp());
@@ -196,8 +163,6 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     bool isiOS = Theme.of(context).platform == TargetPlatform.iOS;
@@ -242,19 +207,6 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/taxiAreaView', page: () => const TaxiAreaView()),
         GetPage(name: '/taxiAccountView', page: () => const TaxiAccountView()),
         GetPage(name: '/nomalLoginView', page: () => const NomalLoginPage()),
-        // GetPage(name: '/inquiryWrite', page: () => const InquiryWrite()),
-        // GetPage(name:'/storeEdit',page:()=> const StoreEdit()),
-        // GetPage(name:'/shoppingCartPage',page:()=> const ShoppingCartPage()),
-        // GetPage(name:'/itemManagement',page:()=> const ItemManagement()),
-        // GetPage(name:'/itemDetailPage',page:()=> const ItemDetailPage()),
-
-        // GetPage(name:'/reportList',page:()=> const ReportList()),
-        // GetPage(name:'/reportWrite',page:()=> const ReportWrite()),
-        // GetPage(name:'/payPageDetail',page:()=> const PayPageDetail()),
-        // GetPage(name: '/customerInfoDetail', page: () => const CustomerInfoDetail()),
-        // GetPage(name: '/reportRegistration', page: () => const ReportRegistration()),
-        // GetPage(name: '/reportList', page: () => const ReportList()),
-        // GetPage(name: '/login', page: () => const LoginView()),
       ],
 
     );

@@ -27,14 +27,12 @@ class UsingDetailController extends GetxController {
   }
 
   Future cancel(CallHistory callHistory) async {
-    //TODO - 결제 취소 로직
     Payments payments = Payments();
     payments.cancelPayments(callHistory);
   }
 
   Widget checkDialog(BuildContext context){
     return CupertinoAlertDialog(
-      // title: const Text('택시 이용 취소'),
 
       content: Text('결제 취소시 1,000원의\n취소 수수료가 발생합니다\n취소하시겠습니까?', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),),
 
@@ -46,7 +44,6 @@ class UsingDetailController extends GetxController {
             saving(context);
             Payments payments = Payments();
             await payments.rePayment(callHistory, cancel: 1000);
-            // await cancel(callHistory);
             await FirebaseFirestore.instance.collection('callHistory').doc(callHistory.documentId).update({
               'price': 1000,
               'state': '호출취소'

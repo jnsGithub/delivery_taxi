@@ -24,7 +24,6 @@ class LoginExgam{
       });
       return isCheck;
     } catch(e){
-      print(e);
       return false;
     }
 

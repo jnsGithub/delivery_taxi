@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:remedi_kopo/remedi_kopo.dart';
-// import 'package:kpostal/kpostal.dart';
 
 import '../../model/callHistory.dart';
 
@@ -48,12 +47,6 @@ class UserMainController extends GetxController {
         builder: (context) => RemediKopo(),
       ),
     );
-    // Kpostal model = await Navigator.push(
-    //     context,
-    //     MaterialPageRoute(
-    //         builder: (_) => KpostalView()
-    //     )
-    // );
     if(model != null){
       if(starting){
         startingAddress.value = model.address!;
@@ -109,8 +102,6 @@ class UserMainController extends GetxController {
         state: '호출전',
         createDate: Timestamp.now()
     );
-    print(callHistory.startingAddress);
-    print('aㅔ인');
     Get.toNamed('/confirmView',arguments: callHistory)!.then((value) {
       startingPostcode.value = '우편번호를 검색하세요';
       startingAddress.value = '';

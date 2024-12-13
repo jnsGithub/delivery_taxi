@@ -38,7 +38,6 @@ class Charging{
 
   Charging({required this.date, required this.type,required this.price, required this.documentId});
 
-
   factory Charging.fromJson(Map<String, dynamic> json) {
     return Charging(
       documentId: json['documentId'],

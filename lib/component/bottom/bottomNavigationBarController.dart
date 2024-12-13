@@ -7,7 +7,7 @@ import '../../main.dart';
 
 
 class BottomNavigationBarController extends GetxController {
-// 현재 선택된 탭 아이템 번호 저장
+  // 현재 선택된 탭 아이템 번호 저장
   final RxInt selectedIndex = 0.obs;
 
   // 탭 이벤트가 발생할 시 selectedIndex값을 변경해줄 함수
@@ -18,14 +18,8 @@ class BottomNavigationBarController extends GetxController {
         if(pageIndex != 0){
           Get.back();
         }
-        // if(isTaxiUser){
-        //   Get.back();
-        // } else {
-        //   Get.toNamed('/userMainView');
-        // }
         break;
       case 1:
-        print(isTaxiUser);
         if(isTaxiUser){
           Get.toNamed('/taxiNotifyView');
         } else {

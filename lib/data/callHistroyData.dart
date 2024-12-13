@@ -21,7 +21,6 @@ class CallHistoryData{
       await callHistoryCollection.doc(id).set(callHistory.toMap());
       return true;
     } catch(e){
-      print(e);
       return false;
     }
   }
@@ -39,7 +38,6 @@ class CallHistoryData{
       }
       return list;
     } catch (e) {
-      print(e);
       RxList<CallHistory> list = <CallHistory>[].obs;
       return list;
     }
@@ -54,7 +52,6 @@ class CallHistoryData{
       }
       return list;
     } catch (e) {
-      print(e);
       RxList<CallHistory> list = <CallHistory>[].obs;
       return list;
     }
@@ -66,7 +63,6 @@ class CallHistoryData{
     Map<String, dynamic> data = documentSnapshot.data() as Map<String, dynamic>;
     if(check){
       if(data['state'] != '호출중' || data['taxiDocumentId'] != '') {
-        // Get.back();
         Get.snackbar('배차 실패', '배차가 완료된 주문입니다.');
         return;
       }
@@ -128,7 +124,6 @@ class CallHistoryData{
           }
         }
       };
-      // Dio dio = Dio();
       var response = await http.post(
         Uri.parse(url),
         headers: {
@@ -137,19 +132,12 @@ class CallHistoryData{
         },
         body: json.encode(message1),
       );
-      print('token : ${client.credentials.accessToken.data}');
-      print('response : ${response.body}');
-      print('message : $message1');
-      print('url : $url');
 
       if (response.statusCode == 200 && pay != null) {
         NotifyData().setNotify(title, body, uid, pay);
-        print('Push notification sent to all users successfully');
       } else {
-        print('Failed to send push notification. HTTP Status Code: ${response.statusCode}');
       }
     } catch (e) {
-      print('Error sending push notification to all users: $e');
     }
   }
 }

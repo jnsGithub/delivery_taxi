@@ -21,7 +21,6 @@ class LoginController extends GetxController {
       isTaxi = true;
     }
     getTestAccountVisible();
-    print(isTestAccountVisible.value);
   }
   @override
   void onClose(){
@@ -31,21 +30,16 @@ class LoginController extends GetxController {
   getKakaoLogin() async {
     if(isTaxi){
       socialLogin.signInWithKakao(isTaxi);
-      // Get.toNamed('/taxiSignUpView');
     } else {
       socialLogin.signInWithKakao(isTaxi);
-      // Get.toNamed('/signUpView');
     }
   }
   getAppleLogin() async {
     if(isTaxi){
       socialLogin.signInWithApple(isTaxi);
-      // Get.toNamed('/taxiSignUpView');
     } else {
       socialLogin.signInWithApple(isTaxi);
-      // Get.toNamed('/signUpView');
     }
-    // Get.toNamed('/signUpView');
   }
 
   getTestAccountVisible() async {
