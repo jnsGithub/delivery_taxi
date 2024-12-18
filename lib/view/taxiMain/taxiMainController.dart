@@ -102,12 +102,12 @@ class TaxiMainController extends GetxController {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(height: 20,),
-              Text(pay ? '최종 ${formatNumber(int.parse(result))}을\n\n결제요청 하시겠습니까?':isDoneDelivery ?'화물 전달 후 배송을\n완료하시겠습니까?':'화물 수령후 배송을\n시작하시겠습니까?', style: const TextStyle(
+              Text(pay ? '최종 ${formatNumber(int.parse(result))}을\n\n결제요청 하시겠습니까?':isDoneDelivery ?'물품 전달 후 배송을\n완료하시겠습니까?':'물품 수령후 배송을\n시작하시겠습니까?', style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w600, color: font3030,
               ),textAlign: TextAlign.center,),
               const SizedBox(height: 10),
-              !isDoneDelivery ? const Text(
+              !isDoneDelivery && myInfo.type == 'taxi'? const Text(
                 '(배송 시작 이후 미터기를 켜주세요.)', style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w600, color: mainColor
@@ -395,7 +395,7 @@ class TaxiMainController extends GetxController {
                       ],
                     ),
                     const LineContainer(),
-                    const Text('화물 정보',style: TextStyle(fontSize:20,fontWeight: FontWeight.w600),),
+                    const Text('물품 정보',style: TextStyle(fontSize:20,fontWeight: FontWeight.w600),),
                     const SizedBox(height: 18,),
                     Text(type,style: const TextStyle(fontSize:18,fontWeight: FontWeight.w500),),
                     const LineContainer(),

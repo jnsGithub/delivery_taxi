@@ -42,7 +42,7 @@ class NoticeController extends GetxController {
         taxiType: '',
         taxiImage: '',
         isAuth: false,
-        createDate: Timestamp.now()
+        createDate: Timestamp.now(), fcmToken: ''
     );
     myInfomation.setUser(my);
     myInfo = my;

@@ -28,7 +28,7 @@ class MyInfomation{
           taxiType: '',
           taxiImage: '',
           isAuth: false,
-          createDate: Timestamp.now());
+          createDate: Timestamp.now(), fcmToken: '');
     }
     final snapshot = await db.collection('users').doc(uid).get();
 
@@ -46,7 +46,7 @@ class MyInfomation{
           taxiType: '',
           taxiImage: '',
           isAuth: false,
-          createDate: Timestamp.now());
+          createDate: Timestamp.now(), fcmToken: '');
     }
   }
 

@@ -19,6 +19,7 @@ class CallHistoryData{
   Future<bool> addItem(CallHistory callHistory, String id) async {
     try{
       await callHistoryCollection.doc(id).set(callHistory.toMap());
+      pushFcm(myInfo.fcmToken, '딜리버리티 (디티)', '결제가 완료되어, 주변 차량을 호출중입니다.', myInfo.documentId);
       return true;
     } catch(e){
       return false;
@@ -45,6 +46,7 @@ class CallHistoryData{
   Future<RxList<CallHistory>> getTaxiNotify() async {
     try{
       QuerySnapshot querySnapshot = await callHistoryCollection.where('taxiDocumentId', isEqualTo: myInfo.documentId).orderBy('createDate', descending: true).get();
+      print(querySnapshot.docs.length);
       RxList<CallHistory> list = <CallHistory>[].obs;
       for (QueryDocumentSnapshot document in querySnapshot.docs) {
         Map<String, dynamic> data = document.data() as Map<String, dynamic>;

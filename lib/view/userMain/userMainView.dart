@@ -28,9 +28,9 @@ class UserMainView extends GetView<UserMainController> {
         appBar: AppBar(
           title: Row(
             children: [
-              Image(image: AssetImage('images/local_taxi.png'),width: 21, height: 21,),
-              SizedBox(width: 10,),
-              Text('Delivery T',style: TextStyle(
+              const Image(image: AssetImage('images/local_taxi.png'),width: 21, height: 21,),
+              const SizedBox(width: 10,),
+              const Text('Delivery T',style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 19,
                 color: gray500
@@ -39,13 +39,13 @@ class UserMainView extends GetView<UserMainController> {
                 width: 150,
                 height: 50,
                 child: DropdownButton(
-                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
                   menuMaxHeight: 300,
                   isExpanded: true,
-                  dropdownColor: Color(0xffF7F7FA),
+                  dropdownColor: const Color(0xffF7F7FA),
                   itemHeight: 50,
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                  hint: Text(
+                  borderRadius: const BorderRadius.all(Radius.circular(10)),
+                  hint: const Text(
                     "유저타입",
                     style: TextStyle(
                         color: Color(0xff000000),
@@ -263,7 +263,7 @@ class UserMainView extends GetView<UserMainController> {
                   text: '연락처', multi: false, color: Colors.black, typeNumber: false, controller: controller.endingHp,
                 ),
                 const LineContainer(),
-                const Text('화물 정보',style: TextStyle(
+                const Text('물품 정보',style: TextStyle(
                   fontSize: 18,fontWeight: FontWeight.w500
                 ),),
                 controller.radioBox('small','소형','가로+세로+높이의 합 80cm, 2KG 이하'),
@@ -327,7 +327,7 @@ class UserMainView extends GetView<UserMainController> {
                     fontSize: 12,fontWeight: FontWeight.w400,color: Color(0xff757575)
                 ),),
                 const SizedBox(height: 20,),
-                GestureDetector(onTap: (){controller.callTaxi();},child: MainBox(text: '다음으로',color: mainColor,)),
+                GestureDetector(onTap: (){controller.callTaxi();},child: const MainBox(text: '다음으로',color: mainColor,)),
                 const SizedBox(height: 60,),
               ]
             ),

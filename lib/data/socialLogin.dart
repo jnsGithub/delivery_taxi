@@ -33,9 +33,6 @@ class SocialLogin{
       User user = await firebaseCredential.user!;
       uid = user.uid;
       loginType = '카카오';
-
-
-
       //Fcm Token 발급
       FirebaseMessaging.instance.getToken().then((value) {
         setFcmToken(value ?? '');
@@ -44,6 +41,7 @@ class SocialLogin{
       if(a.documentId != ''){
         myInfo = a;
         if(myInfo.type == 'taxi' || myInfo.type == 'userTaxi'){
+          isTaxiUser = myInfo.type == 'taxi' || myInfo.type == 'userTaxi'? true : false;
           if(a.isAuth){
             Get.toNamed('/taxiMainView');
           } else {
@@ -60,6 +58,7 @@ class SocialLogin{
         }
       }
     } catch(e){
+      print(e);
     }
   }
 
@@ -86,6 +85,7 @@ class SocialLogin{
       if(a.documentId != '') {
         myInfo = a;
         if(myInfo.type == 'taxi' || myInfo.type == 'userTaxi'){
+          isTaxiUser = myInfo.type == 'taxi' || myInfo.type == 'userTaxi'? true : false;
           if(a.isAuth){
             Get.toNamed('/taxiMainView');
           } else {
@@ -141,7 +141,7 @@ class SocialLogin{
         taxiType: '',
         taxiImage: '',
         isAuth: false,
-        createDate: Timestamp.now(),
+        createDate: Timestamp.now(), fcmToken: '',
       );
       Get.offAllNamed('/enterView');
     } catch(e){
@@ -154,7 +154,7 @@ class SocialLogin{
       if(loginType == '카카오'){
         await kakaoAuth.UserApi.instance.unlink();
       }
-      await auth.currentUser!.delete();
+      // await auth.currentUser!.delete();
       await auth.signOut();
       await FirebaseFirestore.instance.collection('users').doc(uid).delete();
       uid = '';
@@ -169,10 +169,11 @@ class SocialLogin{
         taxiType: '',
         taxiImage: '',
         isAuth: false,
-        createDate: Timestamp.now(),
+        createDate: Timestamp.now(), fcmToken: '',
       );
       Get.offAllNamed('/enterView');
     } catch(e){
+      print(e);
       Get.back();
     }
   }

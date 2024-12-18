@@ -32,6 +32,7 @@ import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart' as kakao;
+import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'firebase_options.dart';
 import 'global.dart';
 import 'model/myInfo.dart';
@@ -50,13 +51,20 @@ Future setFcmToken(String token) async{
     'fcmToken': token
   });
 }
-
+Future<void> printKeyHash() async {
+  try {
+    final keyHash = await KakaoSdk.origin;
+    print("현재 사용 중인 키 해시: $keyHash");
+  } catch (e) {
+    print("키 해시를 가져오는 중 오류 발생: $e");
+  }
+}
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   FlutterNativeSplash.remove();
-
+  printKeyHash();
   if (Firebase.apps.isEmpty) {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,

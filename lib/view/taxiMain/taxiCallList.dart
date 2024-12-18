@@ -75,7 +75,7 @@ class TaxiCallList extends GetView<TaxiMainController> {
                   children: [
                     const SizedBox(
                       width: 114,
-                      child: Text('화물크기',style: TextStyle(color: gray600,fontSize: 18,fontWeight: FontWeight.w500),),
+                      child: Text('물품크기',style: TextStyle(color: gray600,fontSize: 18,fontWeight: FontWeight.w500),),
                     ),
                     Expanded(
                       child: Text(type,style: const TextStyle(fontSize: 18,fontWeight: FontWeight.w500),),

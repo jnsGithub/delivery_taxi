@@ -10,6 +10,7 @@ class MyInfo {
   final String taxiNumber;
   final String taxiType;
   String taxiImage;
+  String fcmToken;
   bool isAuth;
   final Timestamp createDate;
 
@@ -23,6 +24,7 @@ class MyInfo {
     required this.taxiNumber,
     required this.taxiType,
     required this.taxiImage,
+    required this.fcmToken,
     required this.isAuth,
     required this.createDate,
   });
@@ -40,6 +42,7 @@ class MyInfo {
       taxiNumber: data['taxiNumber'] ?? '',
       taxiType: data['taxiType'] ?? '',
       taxiImage: data['taxiImage'] ?? '',
+      fcmToken: data['fcmToken'] ?? '',
       isAuth: data['isAuth'] ?? false,
       createDate: data['createDate'] ?? Timestamp.now(),
     );
@@ -56,6 +59,7 @@ class MyInfo {
       'taxiNumber': taxiNumber,
       'taxiType': taxiType,
       'taxiImage': taxiImage,
+      'fcmToken': fcmToken,
       'isAuth': isAuth,
       'createDate': createDate,
     };

@@ -357,8 +357,12 @@ class TaxiMainView extends GetView<TaxiMainController> {
                       },
                       child: const MainBox(text: '결제 요청하기', color: mainColor)
                   ),
-                  const SizedBox(height: 30,),
-                  const Text('(※ 산정 요금 기준 : 네이버지도 경로 택시요금)',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w500,color: Color(0xffF10000)),),
+                  myInfo.type == 'userTaxi'?Column(
+                    children: [
+                      const SizedBox(height: 30,),
+                      const Text('(※ 산정 요금 기준 : 네이버지도 경로 택시요금)',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w500,color: Color(0xffF10000)),),
+                    ],
+                  ):Container(),
                   const SizedBox(height: 50,),
                 ],
               )
@@ -385,7 +389,7 @@ class TaxiMainView extends GetView<TaxiMainController> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text('출발지 정보',style: TextStyle(fontSize:20,fontWeight: FontWeight.w600),),
-                  Text('화물 | $type',style:const TextStyle(fontSize: 17),)
+                  Text('물품 | $type',style:const TextStyle(fontSize: 17),)
                 ],
               ),
               const SizedBox(height: 18,),
@@ -478,7 +482,7 @@ class TaxiMainView extends GetView<TaxiMainController> {
                 onTap: (){
                   controller.changeState(size,false);
                 },
-                  child: MainBox(text: item.state=='배정완료'?'배송 시작 (화물 수령 완료)':'배송 완료 (화물 전달 완료)', color: mainColor)
+                  child: MainBox(text: item.state=='배정완료'?'배송 시작 (물품 수령 완료)':'배송 완료 (물품 전달 완료)', color: mainColor)
               )
             ],
           ),

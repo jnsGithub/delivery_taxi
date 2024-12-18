@@ -8,6 +8,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:delivery_taxi/component/main_box.dart';
 import 'package:delivery_taxi/global.dart';
+import 'package:delivery_taxi/view/userMain/userMainController.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
@@ -74,6 +75,7 @@ class Payments{
       if(check){
         Get.back();
         Get.back(result: true);
+
         Get.snackbar('알림', '호출이 완료되었습니다.');
         Get.toNamed('/useNotifyView');
       } else {
@@ -272,10 +274,12 @@ class Payments{
           bool check = false;
           await Future.delayed(Duration(seconds: 2), ()async => check = await setBillingKey(callHistory, dataJson['data']['receipt_data']['receipt_id'], dataJson['data']['receipt_id'], pg,dataJson['data']['receipt_data']['card_data']));
           if(check){
+            CallHistoryData().pushFcm(myInfo.fcmToken, '딜리버리티 (디티)', '결제가 완료되어, 주변 차량을 호출중입니다.', myInfo.documentId);
             Get.back();
             Get.back();
             Get.back(result: true);
             Get.snackbar('알림', '호출이 완료되었습니다.');
+            Get.delete<UserMainController>(force: true);
             Get.toNamed('/useNotifyView');
           } else {
             Get.snackbar('알림', '호출이 실패되었습니다.');
@@ -488,5 +492,6 @@ class Payments{
     payload.extra = extra;
     return payload;
   }
+
 }
 

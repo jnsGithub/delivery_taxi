@@ -6,6 +6,7 @@ import 'package:crypto/crypto.dart';
 import 'package:delivery_taxi/data/myInfoData.dart';
 import 'package:delivery_taxi/model/myInfo.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -103,7 +104,7 @@ class TaxiSignUpController extends GetxController {
         taxiType: selectedOption.value,
         taxiImage: await MyInfomation().licenseUploadImage(XFile(taxiImage.path)),
         isAuth: false,
-        createDate: Timestamp.now()
+        createDate: Timestamp.now(), fcmToken: await FirebaseMessaging.instance.getToken() ?? ''
     );
     myInfomation.setUser(myInfo);
     update();
@@ -208,14 +209,14 @@ class TaxiSignUpController extends GetxController {
                         const SizedBox(height: 9,),
                         Row(
                           children: [
-                            Text(isUserTaxi.value?'자동차운전면허증':'택시운전자격증',style: TextStyle(
+                            Text(isUserTaxi.value?'자동차운전면허증':'택시운전자격증',style: const TextStyle(
                               fontSize: 18,fontWeight: FontWeight.w600,color: font2424
                             ),),
-                            Text('을 업로드 해주세요',style: TextStyle(fontSize: 18,color: font2424),),
+                            const Text('을 업로드 해주세요',style: TextStyle(fontSize: 18,color: font2424),),
                           ],
                         ),
                         const SizedBox(height: 14,),
-                        Text(isUserTaxi.value?'자동차 운전면허증등록':'택시운전자격증명 등록',style: TextStyle(fontSize: 15,color: gray600),),
+                        Text(isUserTaxi.value?'자동차 운전면허증등록':'택시운전자격증명 등록',style: const TextStyle(fontSize: 15,color: gray600),),
                         const SizedBox(height: 14,),
                         GestureDetector(
                           onTap: (){
@@ -255,7 +256,29 @@ class TaxiSignUpController extends GetxController {
                         const SizedBox(height: 50,),
                         SizedBox(
                             width: size.width,
-                            child: const Text('회원가입 승인후\n마이페이지에서 계좌 번호를 등록해주세요\n미등록시 정산이 안될 수 있습니다.',style: TextStyle(color: Colors.red,fontWeight:FontWeight.w600,fontSize: 17,height: 1.3),textAlign: TextAlign.center,)
+                            child: const Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text('회원가입 승인 후,',style: TextStyle(color: Colors.red,fontWeight:FontWeight.w400,fontSize: 17),),
+                                    Text('‘마이페이지’ ',style: TextStyle(color: Colors.red,fontWeight:FontWeight.w600,fontSize: 17),),
+                                    Text('에서 ',style: TextStyle(color: Colors.red,fontWeight:FontWeight.w400,fontSize: 17),),
+                                  ],
+                                ),
+                                SizedBox(height: 4,),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text('‘계좌 정보’',style: TextStyle(color: Colors.red,fontWeight:FontWeight.w600,fontSize: 17),),
+                                    Text('를 등록해 주세요.',style: TextStyle(color: Colors.red,fontWeight:FontWeight.w400,fontSize: 17),),
+                                  ],
+                                ),
+                                SizedBox(height: 4,),
+                                Text('미등록 시 이용 대금 정산에 차질이 있을 수 있습니다.',style: TextStyle(color: Colors.red,fontWeight:FontWeight.w400,fontSize: 17),textAlign: TextAlign.center,),
+                              ],
+                            )
                         ),
                         controller.signUpCheck.value ? const Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -418,7 +441,7 @@ class TaxiSignUpController extends GetxController {
                                   onPressed: (){
                                     launchUrl('https://electric-fortnight-2a5.notion.site/5e251b921e314b1996e86047776a7d64?pvs=4');
                                   },
-                                  icon: Icon(Icons.arrow_forward_ios, size: 15,),color: font2424,),
+                                  icon: const Icon(Icons.arrow_forward_ios, size: 15,),color: font2424,),
                               ],
                             ),
                           ),
@@ -448,7 +471,7 @@ class TaxiSignUpController extends GetxController {
                                   onPressed: (){
                                     launchUrl('https://electric-fortnight-2a5.notion.site/5e251b921e314b1996e86047776a7d64?pvs=4');
                                   },
-                                  icon: Icon(Icons.arrow_forward_ios, size: 15,),color: font2424,),
+                                  icon: const Icon(Icons.arrow_forward_ios, size: 15,),color: font2424,),
                               ],
                             ),
                           ),
@@ -473,7 +496,7 @@ class TaxiSignUpController extends GetxController {
                                   onPressed: (){
                                     launchUrl('https://electric-fortnight-2a5.notion.site/f3c540f6c48b4b0db5f779caae47b768?pvs=4');
                                   },
-                                  icon: Icon(Icons.arrow_forward_ios, size: 15,),color: font2424,),
+                                  icon: const Icon(Icons.arrow_forward_ios, size: 15,),color: font2424,),
                               ],
                             ),
                           ),
@@ -498,7 +521,7 @@ class TaxiSignUpController extends GetxController {
                                   onPressed: (){
                                     launchUrl('https://electric-fortnight-2a5.notion.site/d9032623fa124078832590eafad765cb?pvs=4');
                                   }, 
-                                  icon: Icon(Icons.arrow_forward_ios, size: 15,),color: font2424,),
+                                  icon: const Icon(Icons.arrow_forward_ios, size: 15,),color: font2424,),
                               ],
                             ),
                           ),
@@ -523,7 +546,7 @@ class TaxiSignUpController extends GetxController {
                                   onPressed: (){
                                     launchUrl('https://electric-fortnight-2a5.notion.site/5e251b921e314b1996e86047776a7d64?pvs=4');
                                   },
-                                  icon: Icon(Icons.arrow_forward_ios, size: 15,),color: font2424,),
+                                  icon: const Icon(Icons.arrow_forward_ios, size: 15,),color: font2424,),
                               ],
                             ),
                           ),
