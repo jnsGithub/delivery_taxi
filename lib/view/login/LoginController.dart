@@ -17,7 +17,7 @@ class LoginController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    if(Get.arguments == 'taxi'){
+    if(Get.arguments == 'taxi' || Get.arguments == 'userTaxi'){
       isTaxi = true;
     }
     getTestAccountVisible();
@@ -28,18 +28,10 @@ class LoginController extends GetxController {
   }
 
   getKakaoLogin() async {
-    if(isTaxi){
-      socialLogin.signInWithKakao(isTaxi);
-    } else {
-      socialLogin.signInWithKakao(isTaxi);
-    }
+    socialLogin.signInWithKakao(isTaxi,Get.arguments);
   }
   getAppleLogin() async {
-    if(isTaxi){
-      socialLogin.signInWithApple(isTaxi);
-    } else {
-      socialLogin.signInWithApple(isTaxi);
-    }
+    socialLogin.signInWithApple(isTaxi,Get.arguments);
   }
 
   getTestAccountVisible() async {

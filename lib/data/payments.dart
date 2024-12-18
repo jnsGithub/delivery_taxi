@@ -305,7 +305,7 @@ class Payments{
     Map<String, dynamic> rePaymentsMap = {
       "billing_key": billingKey,
       "order_id": "가맹점 주문번호",
-      "order_name": cancel == null ? "딜리버리티 호출취소" : "딜리버리티 최종결제금액",
+      "order_name": cancel == null ? "딜리버리티 최종결제금액" : "딜리버리티 호출취소" ,
       "price": cancel ?? callHistory.price,
       "user": {
         "phone": "01000000000",
@@ -393,7 +393,7 @@ class Payments{
           'state': '호출취소'
         });
         Get.back(result: true);
-        Get.snackbar('결제 취소', '택시 호출이 취소되었습니다.', backgroundColor: mainColor, colorText: Colors.white);
+        Get.snackbar('결제 취소', '차량 호출이 취소되었습니다.', backgroundColor: mainColor, colorText: Colors.white);
       }
       else if(cancelRespons.statusCode == 400){
         Get.snackbar('결제 취소 실패', '결제 취소가 이미 완료되었습니다.', backgroundColor: mainColor, colorText: Colors.white);

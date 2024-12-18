@@ -77,16 +77,16 @@ class CallHistoryData{
     });
 
     if(callHistory.state == '호출중'){
-      pushFcm(userData['fcmToken'], '딜리버리티 (디티)', '결제가 완료되어, 주변 택시를 호출중입니다.', snapshot.id);
+      pushFcm(userData['fcmToken'], '딜리버리티 (디티)', '결제가 완료되어, 주변 차량을 호출중입니다.', snapshot.id);
     }
     if(callHistory.state == '배정완료'){
-      pushFcm(userData['fcmToken'], '배차완료', '택시 배차가 완료되었습니다\n택시번호 : ${myInfo.taxiNumber}\n전화번호 : ${myInfo.hp}', snapshot.id, pay: callHistory.price);
+      pushFcm(userData['fcmToken'], '배차완료', '차량 배차가 완료되었습니다\n차량번호 : ${myInfo.taxiNumber}\n전화번호 : ${myInfo.hp}', snapshot.id, pay: callHistory.price);
     }
     if(callHistory.state == '배송완료'){
       pushFcm(userData['fcmToken'], '이용 완료', '물품 배달이 완료 되었습니다.', snapshot.id, pay: callHistory.price);
     }
     else if(callHistory.state == '배송중'){
-      pushFcm(userData['fcmToken'], '픽업 완료', '물건 픽업이 완료되었습니다\n택시번호 : ${myInfo.taxiNumber}\n전화번호 : ${myInfo.hp}', snapshot.id, pay: callHistory.price);
+      pushFcm(userData['fcmToken'], '픽업 완료', '물건 픽업이 완료되었습니다\n차량번호 : ${myInfo.taxiNumber}\n전화번호 : ${myInfo.hp}', snapshot.id, pay: callHistory.price);
     }
     else if(callHistory.state == '배차실패'){
       pushFcm(userData['fcmToken'], '배차실패', '배차가 실패되었습니다.', snapshot.id, pay: 0);
@@ -138,6 +138,7 @@ class CallHistoryData{
       } else {
       }
     } catch (e) {
+
     }
   }
 }

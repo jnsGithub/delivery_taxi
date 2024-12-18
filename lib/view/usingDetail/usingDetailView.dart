@@ -35,7 +35,7 @@ class UsingDetailView extends GetView<UsingDetailController> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('퀵 택시 이용 상세',style: TextStyle(fontSize: 22,fontWeight: FontWeight.w600),),
+                      const Text('퀵 이용 상세',style: TextStyle(fontSize: 22,fontWeight: FontWeight.w600),),
                       Text(formatTimestamp(controller.callHistory.createDate),style: const TextStyle(fontSize: 16,color: gray500),),
                     ],
                   )

@@ -16,7 +16,7 @@ class SocialLogin{
   FirebaseFirestore db = FirebaseFirestore.instance;
   FirebaseAuth auth = FirebaseAuth.instance;
   MyInfomation myInfomation = MyInfomation();
-  Future<void> signInWithKakao(bool isTaxi) async{
+  Future<void> signInWithKakao(bool isTaxi,String type) async{
     try{
       var provider = OAuthProvider("oidc.kakao");
 
@@ -42,8 +42,8 @@ class SocialLogin{
       });
       var a = await myInfomation.getUser();
       if(a.documentId != ''){
-        myInfo = a as MyInfo;
-        if(myInfo.type == 'taxi'){
+        myInfo = a;
+        if(myInfo.type == 'taxi' || myInfo.type == 'userTaxi'){
           if(a.isAuth){
             Get.toNamed('/taxiMainView');
           } else {
@@ -54,7 +54,7 @@ class SocialLogin{
         }
       } else {
         if(isTaxi){
-          Get.toNamed('/taxiSignUpView');
+          Get.toNamed('/taxiSignUpView',arguments: type);
         } else {
           Get.toNamed('/signUpView');
         }
@@ -63,7 +63,7 @@ class SocialLogin{
     }
   }
 
-  Future<void> signInWithApple(bool isTaxi) async{
+  Future<void> signInWithApple(bool isTaxi,String type) async{
     try{
       final appleCredential = await SignInWithApple.getAppleIDCredential(scopes: [
         AppleIDAuthorizationScopes.email,
@@ -82,10 +82,24 @@ class SocialLogin{
         setFcmToken(value ?? '');
       });
 
-      if(isTaxi){
-        Get.toNamed('/taxiSignUpView');
+      var a = await myInfomation.getUser();
+      if(a.documentId != '') {
+        myInfo = a;
+        if(myInfo.type == 'taxi' || myInfo.type == 'userTaxi'){
+          if(a.isAuth){
+            Get.toNamed('/taxiMainView');
+          } else {
+            Get.snackbar('로그인', '승인을 위해 검토중입니다');
+          }
+        } else {
+          Get.toNamed('/userMainView');
+        }
       } else {
-        Get.toNamed('/signUpView');
+        if (isTaxi) {
+          Get.toNamed('/taxiSignUpView', arguments: type);
+        } else {
+          Get.toNamed('/signUpView');
+        }
       }
     }catch(e){
     }

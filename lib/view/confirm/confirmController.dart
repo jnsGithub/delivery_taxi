@@ -125,7 +125,7 @@ class ConfirmController extends GetxController {
       Uri.parse(url),
       headers: {
         "Content-Type": "application/json",
-        'Authorization': 'KakaoAK b3cb1c7aa1e076c60ec8156e4995d055'
+        'Authorization': 'KakaoAK 781a3219cc87986ab5533ccebcd62aba'
       },
     );
     if(response.statusCode == 200){
@@ -141,7 +141,7 @@ class ConfirmController extends GetxController {
       Uri.parse(url),
       headers: {
         "Content-Type": "application/json",
-        'Authorization': 'KakaoAK b3cb1c7aa1e076c60ec8156e4995d055'
+        'Authorization': 'KakaoAK 781a3219cc87986ab5533ccebcd62aba'
       },
     );
     if(response2.statusCode == 200){
@@ -171,6 +171,7 @@ class ConfirmController extends GetxController {
       int minutes = duration.inMinutes % 60;
       formatted.value = '예상시간 ${hours == 0?'':"${hours.toString().padLeft(2, '0')}시간"} ${minutes.toString().padLeft(2, '0')}분';
     }
+
   }
   callTaxi() async {
     callHistory.state = '호출중';

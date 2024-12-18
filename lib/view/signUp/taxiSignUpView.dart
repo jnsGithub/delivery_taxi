@@ -23,7 +23,7 @@ class TaxiSignUpView extends GetView<TaxiSignUpController> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('택시기사 회원가입'),
+          title: Text(controller.isUserTaxi.value?'일반 드라이버 회원가입':'택시기사 회원가입'),
           centerTitle: false,
         ),
         body: SingleChildScrollView(
@@ -32,67 +32,74 @@ class TaxiSignUpView extends GetView<TaxiSignUpController> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('소속 선택' ,style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-            ),),
-                const SizedBox(height: 9,),
-                Row(
-                  children: [
-                    GestureDetector(
-                      onTap: (){
-                        controller.option('개인');
-                      },
-                      child: Row(
+               Obx(()=>
+                 controller.isUserTaxi.value? Container(): Column(
+                    children: [
+                      const Text('소속 선택' ,style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                                  ),),
+                      const SizedBox(height: 9,),
+                      Row(
                         children: [
-                          Obx(()=>
-                              Radio<String>(
-                                visualDensity: const VisualDensity(
-                                    horizontal: VisualDensity.minimumDensity,
-                                    vertical: VisualDensity.minimumDensity),
-                                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                value: '개인',
-                                groupValue: controller.selectedOption.value,
-                                onChanged: (String? value) {
-                                  controller.option( value!);
-                                },
-                                activeColor:mainColor,
-                              ),
+                          GestureDetector(
+                            onTap: (){
+                              controller.option('개인');
+                            },
+                            child: Row(
+                              children: [
+                                Obx(()=>
+                                    Radio<String>(
+                                      visualDensity: const VisualDensity(
+                                          horizontal: VisualDensity.minimumDensity,
+                                          vertical: VisualDensity.minimumDensity),
+                                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                      value: '개인',
+                                      groupValue: controller.selectedOption.value,
+                                      onChanged: (String? value) {
+                                        controller.option( value!);
+                                      },
+                                      activeColor:mainColor,
+                                    ),
+                                ),
+                                const SizedBox(width: 8,),
+                                const Text('개인',style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),),
+                              ],
+                            ),
                           ),
-                          const SizedBox(width: 8,),
-                          const Text('개인',style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                          ),),
+                          const SizedBox(width: 20,),
+                          GestureDetector(
+                            onTap: (){
+                              controller.option('법인');
+                            },
+                            child: Row(
+                              children: [
+                                Obx(()=>
+                                    Radio<String>(
+                                      value: '법인',
+                                      groupValue: controller.selectedOption.value,
+                                      onChanged: (String? value) {
+                                        controller.option( value!);
+                                      },
+                                      activeColor:mainColor,
+                                    ),
+                                ),
+                                const Text('법인',style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),),
+                              ],
+                            ),
+                          ),
                         ],
                       ),
-                    ),
-                    const SizedBox(width: 20,),
-                    GestureDetector(
-                      onTap: (){
-                        controller.option('법인');
-                      },
-                      child: Row(
-                        children: [
-                          Obx(()=>
-                              Radio<String>(
-                                value: '법인',
-                                groupValue: controller.selectedOption.value,
-                                onChanged: (String? value) {
-                                  controller.option( value!);
-                                },
-                                activeColor:mainColor,
-                              ),
-                          ),
-                          const Text('법인',style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                          ),),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+                    ],
+                  ),
+               ),
+
                  TextFieldComponent(
                   text: '이름', multi: false, color: Colors.black, typeNumber: false, controller: controller.taxiName,
                 ),
@@ -280,7 +287,7 @@ class TaxiSignUpView extends GetView<TaxiSignUpController> {
                 ),
                 const SizedBox(height: 18,),
                 TextFieldComponent(
-                  text: '택시 번호', multi: false, color: Colors.black, typeNumber: false, controller: controller.taxiNumber,
+                  text: '차량 번호', multi: false, color: Colors.black, typeNumber: false, controller: controller.taxiNumber,
                 ),
                 SizedBox(
                   height: 25,
@@ -294,7 +301,7 @@ class TaxiSignUpView extends GetView<TaxiSignUpController> {
                     } else if(controller.district.value == '선택해주세요'){
                       Get.snackbar('지역선택 오류', '영업지역(구)를 선택해주세요.');
                     } else if(controller.taxiNumber.text == ''){
-                      Get.snackbar('택시번호 오류', '택시번호를 입력해주세요.');
+                      Get.snackbar('차량번호 오류', '차량번호를 입력해주세요.');
                     } else {
                       controller.imageUpload();
                     }

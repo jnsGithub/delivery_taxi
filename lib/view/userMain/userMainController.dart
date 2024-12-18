@@ -1,11 +1,14 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:delivery_taxi/global.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:remedi_kopo/remedi_kopo.dart';
-
+import 'package:http/http.dart' as http;
 import '../../model/callHistory.dart';
 
 
@@ -34,11 +37,52 @@ class UserMainController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    getCurrentUser();
   }
   @override
   void onClose(){
 
     super.onClose();
+  }
+  getCurrentUser() async {
+    try{
+      var position = await determinePosition();
+      if(position.runtimeType == bool ){
+        return;
+      }
+      int dotIndex = position.longitude.toString().indexOf(".");
+      String long =  dotIndex != -1 && dotIndex + 8 <= position.longitude.toString().length
+          ? position.longitude.toString().substring(0, dotIndex + 8)
+          : position.longitude.toString();
+      dotIndex = position.latitude.toString().indexOf(".");
+      String lat = dotIndex != -1 && dotIndex + 8 <= position.latitude.toString().length
+          ? position.latitude.toString().substring(0, dotIndex + 8)
+          : position.latitude.toString();
+      String url = 'https://dapi.kakao.com/v2/local/geo/coord2address.json?x=$long&y=$lat&input_coord=WGS84';
+      http.Response response4 = await http.get(
+        Uri.parse(url),
+        headers: {
+          "Content-Type": "application/json",
+          'Authorization': 'KakaoAK 781a3219cc87986ab5533ccebcd62aba'
+        },
+      );
+
+      if(response4.statusCode == 200){
+        var data = response4.body;
+        var dataJson = jsonDecode(data) ;
+        var documents = dataJson['documents'][0];
+        if(documents['road_address'] != null){
+          startingPostcode.value = documents['road_address']['zone_no'];
+          startingAddress.value = documents['road_address']['address_name'];
+          startingAddressDetailController.text = documents['road_address']['building_name'];
+        } else {
+          startingPostcode.value = '현재위치검색';
+          startingAddress.value = documents['address']['address_name'];
+        }
+      }
+    }catch(e){
+      print(e);
+    }
   }
   Future kopoModel (context,starting) async {
     KopoModel? model = await Navigator.push(
@@ -147,7 +191,7 @@ class UserMainController extends GetxController {
             children: [
               Column(
                 children: [
-                  Text('배송하실 물품은 택시 기사님께',style: TextStyle(fontWeight: FontWeight.w500,fontSize: 24),),
+                  Text('배송하실 물품은 운행 기사님께',style: TextStyle(fontWeight: FontWeight.w500,fontSize: 24),),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

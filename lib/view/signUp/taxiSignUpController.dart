@@ -33,11 +33,12 @@ class TaxiSignUpController extends GetxController {
   RxBool hpAuthCheck = false.obs;
   RxBool signUpCheck = false.obs;
   RxBool getImageCheck = false.obs;
+  RxBool isUserTaxi = false.obs;
   RxString selectedOption = '개인'.obs;
   RxString city = '선택해주세요'.obs;
   RxString district = '선택해주세요'.obs;
   RxString authNum = ''.obs;
-
+  String type = 'taxi';
   XFile taxiImage = XFile('');
   TextEditingController taxiName = TextEditingController();
   TextEditingController taxiNumber = TextEditingController();
@@ -66,6 +67,13 @@ class TaxiSignUpController extends GetxController {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       bottomSet();
     });
+    if(Get.arguments == 'userTaxi'){
+      isUserTaxi.value = true;
+      type = 'userTaxi';
+    } else {
+      isUserTaxi.value = false;
+    }
+
   }
   @override
   void onClose(){
@@ -83,9 +91,10 @@ class TaxiSignUpController extends GetxController {
   signUp() async {
     signUpCheck.value = true;
     MyInfomation myInfomation = MyInfomation();
+
     MyInfo myInfo = MyInfo(
         documentId: uid,
-        type: 'taxi',
+        type: type,
         name: taxiName.text,
         hp: hpController.text,
         address1: city.value,
@@ -168,6 +177,7 @@ class TaxiSignUpController extends GetxController {
     }
   }
   imageUpload(){
+    Size size = MediaQuery.of(Get.context!).size;
     showModalBottomSheet(
         context: Get.context!,
         isScrollControlled:true,
@@ -175,6 +185,7 @@ class TaxiSignUpController extends GetxController {
           return GetBuilder<TaxiSignUpController>(
               builder: (controller) {
               return Container(
+                width: size.width,
                 padding: const EdgeInsets.only(top:40,left: 16,right: 16,bottom: 50),
                 color: Colors.white,
                 child: Column(
@@ -184,7 +195,7 @@ class TaxiSignUpController extends GetxController {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         AppBar(
-                          title: const Text('택시기사 회원가입'),
+                          title: Text(isUserTaxi.value ? '일반 드라이버 회원가입':'택시기사 회원가입'),
                           centerTitle: false,
                           leading: IconButton(
                             icon: const Icon(Icons.arrow_back_ios),
@@ -195,16 +206,16 @@ class TaxiSignUpController extends GetxController {
                         ),
                         const Text('차량에 비치된',style: TextStyle(fontSize: 18,color: font2424),),
                         const SizedBox(height: 9,),
-                        const Row(
+                        Row(
                           children: [
-                            Text('택시운전자격증',style: TextStyle(
+                            Text(isUserTaxi.value?'자동차운전면허증':'택시운전자격증',style: TextStyle(
                               fontSize: 18,fontWeight: FontWeight.w600,color: font2424
                             ),),
                             Text('을 업로드 해주세요',style: TextStyle(fontSize: 18,color: font2424),),
                           ],
                         ),
                         const SizedBox(height: 14,),
-                        const Text('택시운전자격증명 등록'),
+                        Text(isUserTaxi.value?'자동차 운전면허증등록':'택시운전자격증명 등록',style: TextStyle(fontSize: 15,color: gray600),),
                         const SizedBox(height: 14,),
                         GestureDetector(
                           onTap: (){
@@ -242,14 +253,18 @@ class TaxiSignUpController extends GetxController {
                           ),
                         ),
                         const SizedBox(height: 50,),
-                        const Text('회원가입 승인후\n마이페이지에서 계좌 번호를 등록해주세요\n미등록시 정산이 안될 수 있습니다.',style: TextStyle(color: Colors.red,fontWeight:FontWeight.w600,fontSize: 17),),
+                        SizedBox(
+                            width: size.width,
+                            child: const Text('회원가입 승인후\n마이페이지에서 계좌 번호를 등록해주세요\n미등록시 정산이 안될 수 있습니다.',style: TextStyle(color: Colors.red,fontWeight:FontWeight.w600,fontSize: 17,height: 1.3),textAlign: TextAlign.center,)
+                        ),
                         controller.signUpCheck.value ? const Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             SizedBox(height: 26,),
                             Icon(Icons.more_horiz,size: 38,),
                             SizedBox(height: 26,),
-                            Text('현재 기사님의 회원가입이',style: TextStyle(fontSize: 19,fontWeight: FontWeight.w400),),
+                            Text('현재 드라이버님의 회원가입이',style: TextStyle(fontSize: 19,fontWeight: FontWeight.w400),),
+                            SizedBox(height: 10,),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
@@ -258,6 +273,7 @@ class TaxiSignUpController extends GetxController {
                                 Text('입니다',style: TextStyle(fontSize: 19,fontWeight: FontWeight.w400),),
                               ],
                             ),
+                            SizedBox(height: 10,),
                             Text('승인이 완료되면 이용하실 수 있습니다',style: TextStyle(fontSize: 19,fontWeight: FontWeight.w400),),
                           ],
                         ):Container(),

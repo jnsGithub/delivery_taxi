@@ -36,9 +36,9 @@ class TaxiMainView extends GetView<TaxiMainController> {
             backgroundColor: gray100,
             title: Row(
               children: [
-                Image(image: AssetImage('images/local_taxi.png'),width: 21, height: 21,),
-                SizedBox(width: 10,),
-                Text('Delivery T',style: TextStyle(
+                const Image(image: AssetImage('images/local_taxi.png'),width: 21, height: 21,),
+                const SizedBox(width: 10,),
+                const Text('Delivery T',style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 19,
                     color: gray500
@@ -47,13 +47,13 @@ class TaxiMainView extends GetView<TaxiMainController> {
                   width: 150,
                   height: 50,
                   child: DropdownButton(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
                     menuMaxHeight: 300,
                     isExpanded: true,
-                    dropdownColor: Color(0xffF7F7FA),
+                    dropdownColor: const Color(0xffF7F7FA),
                     itemHeight: 50,
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                    hint: Text(
+                    borderRadius: const BorderRadius.all(Radius.circular(10)),
+                    hint: const Text(
                       "유저타입",
                       style: TextStyle(
                           color: Color(0xff000000),
@@ -127,11 +127,15 @@ class TaxiMainView extends GetView<TaxiMainController> {
                           CallHistory callHistory = CallHistory.fromMap(data);
                           bool check1 = callHistory.startingAddress.contains(myInfo.address1);
                           bool check2 = callHistory.startingAddress.contains(myInfo.address2);
-                          if(snapshot.data!['state'] == '호출중' && check1 && check2){
+                          if(snapshot.data!['taxiDocumentId'] == myInfo.documentId && snapshot.data!['state'] != '호출중' && snapshot.data!['state'] != '배송완료'){
+                            controller.getLastCall(callHistory);
+                          }
+                          else if(snapshot.data!['state'] == '호출중' && check1 && check2){
                             if(!controller.newCall.value){
                               controller.changeItem(callHistory);
                             }
                           }
+
                           return Obx(() => controller.delivery.value
                               ? deliveryWidget(size,controller.lastCallItem)
                               : controller.newCall.value
@@ -204,7 +208,7 @@ class TaxiMainView extends GetView<TaxiMainController> {
           children: [
             const Text('콜 대기중',style: TextStyle(fontSize: 30,fontWeight: FontWeight.w500,color: Colors.white),),
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 10),
               width: size.width*0.8,
               height: 53,
               alignment: Alignment.center,
@@ -212,7 +216,7 @@ class TaxiMainView extends GetView<TaxiMainController> {
                   borderRadius: const BorderRadius.all(Radius.circular(30)),
                   border: Border.all(color: mainColor,width: 1)
               ),
-              child: Text('${myInfo.address1} ${myInfo.address2} >',style: TextStyle(fontSize: 20,color: mainColor),),
+              child: Text('${myInfo.address1} ${myInfo.address2} >',style: const TextStyle(fontSize: 20,color: mainColor),),
             )
           ],
         ),
@@ -291,6 +295,7 @@ class TaxiMainView extends GetView<TaxiMainController> {
     return GetBuilder<TaxiMainController>(
         builder: (controller) {
           return Container(
+              margin: const EdgeInsets.only(top: 30),
               padding: const EdgeInsets.symmetric(horizontal: 16,vertical: 20),
               decoration: const BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(14)),
@@ -316,6 +321,7 @@ class TaxiMainView extends GetView<TaxiMainController> {
                         borderRadius: BorderRadius.circular(6),
                         color: const Color(0xfff6f6fa)),
                     child: TextField(
+                      readOnly:  myInfo.type == 'userTaxi',
                       controller: controller.price,
                       keyboardType:  TextInputType.number,
                       inputFormatters: [
@@ -350,7 +356,10 @@ class TaxiMainView extends GetView<TaxiMainController> {
                         }
                       },
                       child: const MainBox(text: '결제 요청하기', color: mainColor)
-                  )
+                  ),
+                  const SizedBox(height: 30,),
+                  const Text('(※ 산정 요금 기준 : 네이버지도 경로 택시요금)',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w500,color: Color(0xffF10000)),),
+                  const SizedBox(height: 50,),
                 ],
               )
           );

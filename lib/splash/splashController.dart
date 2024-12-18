@@ -24,7 +24,7 @@ class SplashController extends GetxController{
   init() async {
     await Future.delayed(Duration(seconds: 2), (){
       if(isLogin){
-        if(myInfo.type == 'taxi'){
+        if(myInfo.type == 'taxi' || myInfo.type == 'userTaxi'){
           Get.offAllNamed('/taxiMainView');
         } else {
           Get.offAllNamed('/userMainView');

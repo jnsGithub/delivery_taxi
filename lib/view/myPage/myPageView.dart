@@ -41,7 +41,7 @@ class MyPageView extends GetView<MyPageController> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  myInfo.type =='taxi' ?GestureDetector(
+                  myInfo.type =='taxi' || myInfo.type == 'userTaxi' ?GestureDetector(
                     onTap: () async{
                       Get.toNamed('/taxiAccountView');
                     },
@@ -78,7 +78,7 @@ class MyPageView extends GetView<MyPageController> {
                   Container(width: size.width, height: 1, decoration: const BoxDecoration(color: gray100),),
                   GestureDetector(
                     onTap: () async{
-                      if(myInfo.type == 'taxi'){
+                      if(myInfo.type == 'taxi' || myInfo.type == 'userTaxi'){
                         launchUrl('https://electric-fortnight-2a5.notion.site/d9032623fa124078832590eafad765cb?pvs=4');
                       } else {
                         launchUrl('https://electric-fortnight-2a5.notion.site/d9032623fa124078832590eafad765cb?pvs=4');
@@ -98,7 +98,7 @@ class MyPageView extends GetView<MyPageController> {
                   Container(width: size.width, height: 1, decoration: const BoxDecoration(color: gray100),),
                   GestureDetector(
                     onTap: () async{
-                      if(myInfo.type == 'taxi'){
+                      if(myInfo.type == 'taxi' || myInfo.type == 'userTaxi'){
                         launchUrl('https://electric-fortnight-2a5.notion.site/5e251b921e314b1996e86047776a7d64?pvs=4');
                       } else {
                         launchUrl('https://electric-fortnight-2a5.notion.site/77b089422d2d4338b7e55cc43fc29f3b?pvs=4');
@@ -118,7 +118,7 @@ class MyPageView extends GetView<MyPageController> {
                   Container(width: size.width, height: 1, decoration: const BoxDecoration(color: gray100),),
                   GestureDetector(
                     onTap: () async{
-                      if(myInfo.type == 'taxi'){
+                      if(myInfo.type == 'taxi' || myInfo.type == 'userTaxi'){
                         launchUrl('https://electric-fortnight-2a5.notion.site/f3c540f6c48b4b0db5f779caae47b768?pvs=4');
                       } else {
                         launchUrl('https://electric-fortnight-2a5.notion.site/f3c540f6c48b4b0db5f779caae47b768?pvs=4');

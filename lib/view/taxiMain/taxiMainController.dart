@@ -40,6 +40,13 @@ class TaxiMainController extends GetxController {
   void onClose() {
     super.onClose();
   }
+  getLastCall (callHistory) {
+    Future.delayed(const Duration(milliseconds: 100), () {
+      callItem = callHistory;
+      delivery.value = true;
+      lastCallItem = callItem;
+    });
+  }
   changeItem(item){
     try{
       if(lastCallItem.documentId == item.documentId){
@@ -166,6 +173,9 @@ class TaxiMainController extends GetxController {
                             callItem.state = '배송완료';
                             callHistoryData.updateItem(callItem,false);
                             nowPay.value = true;
+                            if(myInfo.type == 'userTaxi'){
+                              price.text = (callItem.price - (callItem.price * 23.076923076923077 / 100).toInt()).toString();
+                            }
                             Get.back();
                           } else {
                             callItem.state = '배송중';

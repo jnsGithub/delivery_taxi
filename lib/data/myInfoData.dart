@@ -15,6 +15,7 @@ class MyInfomation{
   final userCollection = FirebaseFirestore.instance.collection('users');
 
   Future<MyInfo> getUser() async {
+    print(uid);
     if(uid == ''){
       return MyInfo(
           documentId: '',
@@ -30,6 +31,7 @@ class MyInfomation{
           createDate: Timestamp.now());
     }
     final snapshot = await db.collection('users').doc(uid).get();
+
     if(snapshot.exists){
       return MyInfo.fromFirestore(snapshot);
     }else{
@@ -80,9 +82,10 @@ class MyInfomation{
 
       final snapshot = await uploadTask.whenComplete(() {});
       final downloadURL = await snapshot.ref.getDownloadURL();
-
+      print(downloadURL);
       return downloadURL;
     } catch (e) {
+      print(e);
       return '';
     }
   }

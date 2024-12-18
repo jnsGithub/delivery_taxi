@@ -79,7 +79,7 @@ void main() async {
         });
       }
       if(myInfo.documentId != ''){
-        isTaxiUser = myInfo.type == 'taxi' ? true : false;
+        isTaxiUser = myInfo.type == 'taxi' || myInfo.type == 'userTaxi'? true : false;
         isLogin = true;
       }
     }
@@ -155,7 +155,7 @@ void main() async {
   }
 
   myInfo =  await MyInfomation().getUser();
-  isTaxiUser = myInfo.type == 'taxi' ? true : false;
+  isTaxiUser = myInfo.type == 'taxi' || myInfo.type == 'userTaxi'? true : false;
 
   runApp(MyApp());
 }
