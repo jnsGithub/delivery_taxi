@@ -1,14 +1,8 @@
 import 'package:delivery_taxi/view/useNotify/taxiNotifyController.dart';
-import 'package:delivery_taxi/view/useNotify/useNotifyController.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import '../../component/bottom/bottomNavi.dart';
 import '../../global.dart';
-import '../../main.dart';
-
-
-
 
 
 class TaxiNotifyView extends GetView<TaxiNotifyController> {
@@ -16,7 +10,6 @@ class TaxiNotifyView extends GetView<TaxiNotifyController> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
     Get.lazyPut(() => TaxiNotifyController());
     return Scaffold(
       appBar: AppBar(

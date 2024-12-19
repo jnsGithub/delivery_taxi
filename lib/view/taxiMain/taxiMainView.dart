@@ -6,11 +6,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-
 import '../../component/bottom/bottomNavi.dart';
 import '../../component/formatterString.dart';
 import '../../component/lineContainer.dart';
-import '../../component/textfield.dart';
 import '../../global.dart';
 
 

@@ -1,7 +1,5 @@
 import 'package:bootpay/bootpay.dart';
-import 'package:bootpay/bootpay_api.dart';
 import 'package:bootpay/model/extra.dart';
-import 'package:bootpay/model/item.dart';
 import 'package:bootpay/model/payload.dart';
 import 'package:bootpay/model/user.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -251,10 +249,8 @@ class Payments{
     );
   }
   void bootpayTest(BuildContext context, String pg, int price, String orderName, CallHistory callHistory) {
-    final CallHistoryData  callHistoryData = CallHistoryData();
     Payload payload = getPayload(pg, price, orderName);
     payload.user?.phone = callHistory.startingHp;
-    late bool check;
     if(kIsWeb) {
       payload.extra?.openType = "iframe";
     }
@@ -292,7 +288,6 @@ class Payments{
       onIssued: (String data) {
       },
       onConfirm: (String data) {
-        var json = jsonDecode(data);
         return true;
       },
       onDone: (String data) async {
@@ -343,7 +338,7 @@ class Payments{
           body: jsonEncode(cancelMap));
 
       if(cancelRespons.statusCode == 200){
-        var response = await http.post(
+       await http.post(
           Uri.parse(bootPayUrl),
           headers: {
             "Content-Type": "application/json",
