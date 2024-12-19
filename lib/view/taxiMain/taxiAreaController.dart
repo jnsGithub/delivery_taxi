@@ -1,6 +1,7 @@
 
 import 'package:delivery_taxi/data/myInfoData.dart';
 import 'package:delivery_taxi/global.dart';
+import 'package:delivery_taxi/view/taxiMain/taxiMainView.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -42,7 +43,11 @@ class TaxiAreaController extends GetxController {
     myInfo.address1 = city.value;
     myInfo.address2 = district.value;
     await myInfoArea.updateArea(city.value, district.value);
+    Get.delete<TaxiMainView>(force: true);
     Get.back();
+    Get.toNamed('/taxiMainView');
+
+
   }
 
   getCityInfo(isCity){

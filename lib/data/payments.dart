@@ -75,7 +75,7 @@ class Payments{
       if(check){
         Get.back();
         Get.back(result: true);
-
+        UserMainController().getCurrentUser();
         Get.snackbar('알림', '호출이 완료되었습니다.');
         Get.toNamed('/useNotifyView');
       } else {
@@ -279,7 +279,7 @@ class Payments{
             Get.back();
             Get.back(result: true);
             Get.snackbar('알림', '호출이 완료되었습니다.');
-            Get.delete<UserMainController>(force: true);
+            UserMainController().getCurrentUser();
             Get.toNamed('/useNotifyView');
           } else {
             Get.snackbar('알림', '호출이 실패되었습니다.');

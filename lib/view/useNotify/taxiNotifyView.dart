@@ -28,7 +28,18 @@ class TaxiNotifyView extends GetView<TaxiNotifyController> {
         leading: Container(),
         leadingWidth: 0,
       ),
-      body: Obx(() => ListView.separated(
+      body: Obx(() =>
+      controller.callHistory.isEmpty?
+      const Center(child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.cancel,color: Color(0xffD4D4D4),size: 37,),
+          SizedBox(height: 10,),
+          Text('이용 내역이 없습니다',style: TextStyle(color: Color(0xff636366)),),
+          SizedBox(height: 50,),
+        ],
+      ))
+         : ListView.separated(
         scrollDirection:Axis.vertical,
         shrinkWrap:true,
         itemCount:  controller.callHistory.length,

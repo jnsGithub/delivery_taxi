@@ -1,3 +1,6 @@
+import 'package:delivery_taxi/view/useNotify/taxiNotifyController.dart';
+import 'package:delivery_taxi/view/useNotify/useNotifyController.dart';
+import 'package:delivery_taxi/view/userMain/userMainController.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
@@ -15,14 +18,19 @@ class BottomNavigationBarController extends GetxController {
     selectedIndex(index);
     switch(index){
       case 0:
-        if(pageIndex != 0){
-          Get.back();
+        if(isTaxiUser){
+          Get.toNamed('/taxiMainView');
+        } else {
+          Get.delete<UserMainController>(force: true);
+          Get.toNamed('/userMainView');
         }
         break;
       case 1:
         if(isTaxiUser){
+          Get.delete<TaxiNotifyController>(force: true);
           Get.toNamed('/taxiNotifyView');
         } else {
+          Get.delete<UseNotifyController>(force: true);
           Get.toNamed('/useNotifyView');
         }
         break;

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:delivery_taxi/component/main_box.dart';
 import 'package:delivery_taxi/model/callHistory.dart';
 import 'package:delivery_taxi/view/taxiMain/taxiMainController.dart';
@@ -130,10 +131,13 @@ class TaxiMainView extends GetView<TaxiMainController> {
                           if(snapshot.data!['taxiDocumentId'] == myInfo.documentId && snapshot.data!['state'] != '호출중' && snapshot.data!['state'] != '배송완료'){
                             controller.getLastCall(callHistory);
                           }
-                          else if(snapshot.data!['state'] == '호출중' && check1 && check2){
+                          if(snapshot.data!['state'] == '호출중' && check1 && check2){
                             if(!controller.newCall.value){
                               controller.changeItem(callHistory);
                             }
+                          } else if(snapshot.data!['state'] != '호출중' && snapshot.data!['taxiDocumentId'] != myInfo.documentId ) {
+                            controller.newCall.value = false;
+                            controller.lastCallItem = CallHistory(startingPostcode: '', startingAddress: '', startingAddressDetail: '',startingName: '', startingHp: '', endingPostcode: '', endingAddress: '', endingAddressDetail: '', endingName: '', endingHp: '', selectedOption: '', caution: '',billingKey: '', price: 0, userDocumentId: '', paymentType: '', state: '', createDate: Timestamp.now(), documentId: '', taxiDocumentId: '',);
                           }
 
                           return Obx(() => controller.delivery.value
@@ -241,7 +245,7 @@ class TaxiMainView extends GetView<TaxiMainController> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(type,style: const TextStyle(fontSize: 24,fontWeight: FontWeight.w500),),
+                Text('물품 $type',style: const TextStyle(fontSize: 24,fontWeight: FontWeight.w500),),
                 const SizedBox(height: 24,),
                 Text(item.startingAddress,style: const TextStyle(fontSize: 24,fontWeight: FontWeight.w500),),
                 const SizedBox(height: 24,),
@@ -307,7 +311,7 @@ class TaxiMainView extends GetView<TaxiMainController> {
                   const SizedBox(
                     height: 25,
                   ),
-                  const Text('운행 금액 입력', style: TextStyle(
+                  Text('운행 금액 ${myInfo.type == 'userTaxi'?'':'입력'}', style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w600,
                   ),),

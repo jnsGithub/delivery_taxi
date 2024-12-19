@@ -159,6 +159,7 @@ class UserMainController extends GetxController {
       endingHp.text = '';
       selectedOption.value = 'small';
       caution.text = '';
+      getCurrentUser();
     });
   }
 
