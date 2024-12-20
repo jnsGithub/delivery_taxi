@@ -17,16 +17,20 @@ import 'package:http/http.dart' as http;
 
 import '../model/billingInfo.dart';
 import '../model/callHistory.dart';
+import '../view/useNotify/useNotifyController.dart';
 import 'callHistroyData.dart';
 
 class Payments{
+
   final CallHistoryData  callHistoryData = CallHistoryData();
   String webApplicationId = '6678ebc6bd077d0720f8768b';
   String androidApplicationId = '6678ebc6bd077d0720f8768c';
   String iosApplicationId = '6678ebc6bd077d0720f8768d';
   String restApplicationId = '6678ebc6bd077d0720f8768e';
   String privateApplicationId = 'nbHljmWEqNX6rp73V14pkSMVxWaqHDT86zc5H/VaAKs=';
+
   var dataJson;
+
   billingKeyPay(context, price, orderName, callHistory,billingKey) async {
     User user = User(); // 구매자 정보
     user.username = myInfo.documentId;
@@ -57,7 +61,6 @@ class Payments{
         },
         body: jsonEncode(tokenMap),
       );
-
       var token = jsonDecode(tokenRespons.body);
         var response = await http.post(
           Uri.parse(bootPayUrl),
@@ -74,12 +77,14 @@ class Payments{
         Get.back();
         Get.back(result: true);
         UserMainController().getCurrentUser();
+        await Get.delete<UseNotifyController>();
         Get.snackbar('알림', '호출이 완료되었습니다.');
         Get.toNamed('/useNotifyView');
       } else {
         Get.snackbar('알림', '호출이 실패되었습니다.');
       }
-    }catch(e){
+    } catch(e){
+      print(e);
     }
   }
   choicePayment(BuildContext context, String pg, int price, String orderName, CallHistory callHistory) async {
@@ -270,12 +275,12 @@ class Payments{
           bool check = false;
           await Future.delayed(Duration(seconds: 2), ()async => check = await setBillingKey(callHistory, dataJson['data']['receipt_data']['receipt_id'], dataJson['data']['receipt_id'], pg,dataJson['data']['receipt_data']['card_data']));
           if(check){
-            CallHistoryData().pushFcm(myInfo.fcmToken, '딜리버리티 (디티)', '결제가 완료되어, 주변 차량을 호출중입니다.', myInfo.documentId);
             Get.back();
             Get.back();
             Get.back(result: true);
             Get.snackbar('알림', '호출이 완료되었습니다.');
             UserMainController().getCurrentUser();
+            await Get.delete<UseNotifyController>();
             Get.toNamed('/useNotifyView');
           } else {
             Get.snackbar('알림', '호출이 실패되었습니다.');

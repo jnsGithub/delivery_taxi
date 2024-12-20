@@ -19,7 +19,7 @@ class CallHistoryData{
   Future<bool> addItem(CallHistory callHistory, String id) async {
     try{
       await callHistoryCollection.doc(id).set(callHistory.toMap());
-      pushFcm(myInfo.fcmToken, '딜리버리티 (디티)', '결제가 완료되어, 주변 차량을 호출중입니다.', myInfo.documentId);
+      pushFcm(myInfo.fcmToken, '딜리버리티 (디티)', '결제가 완료되어, 주변 차량을 호출중입니다.', myInfo.documentId,pay:callHistory.price);
       return true;
     } catch(e){
       return false;

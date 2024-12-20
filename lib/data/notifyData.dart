@@ -13,6 +13,7 @@ class NotifyData{
       Map<String, dynamic> data = document.data() as Map<String, dynamic>;
       notify.add(Notify.fromMap(data, document.id));
     }
+    print('asda');
     return notify;
   }
 
@@ -27,6 +28,7 @@ class NotifyData{
       );
       await db.doc().set(a.toMap());
     } catch(e){
+      print(e);
     }
 
   }
