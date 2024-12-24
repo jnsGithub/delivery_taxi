@@ -60,7 +60,8 @@ class CallHistoryData{
   }
 
 
-  Future updateItem(CallHistory callHistory,bool check) async {
+  Future updateItem(CallHistory callHistory,bool check,{bool? pay}) async {
+    bool payCheck = pay ?? false;
     DocumentSnapshot documentSnapshot = await callHistoryCollection.doc(callHistory.documentId).get();
     Map<String, dynamic> data = documentSnapshot.data() as Map<String, dynamic>;
     if(check){
@@ -77,7 +78,9 @@ class CallHistoryData{
       'taxiDocumentId':myInfo.documentId,
       'price':callHistory.price,
     });
-
+    if(payCheck){
+      pushFcm(userData['fcmToken'], '이용 완료', '이용 금액이 결제되었습니다.', snapshot.id, pay: callHistory.price);
+    }
     if(callHistory.state == '호출중'){
       pushFcm(userData['fcmToken'], '딜리버리티 (디티)', '결제가 완료되어, 주변 차량을 호출중입니다.', snapshot.id);
     }
@@ -85,7 +88,7 @@ class CallHistoryData{
       pushFcm(userData['fcmToken'], '배차완료', '차량 배차가 완료되었습니다\n차량번호 : ${myInfo.taxiNumber}\n전화번호 : ${myInfo.hp}', snapshot.id, pay: callHistory.price);
     }
     if(callHistory.state == '배송완료'){
-      pushFcm(userData['fcmToken'], '이용 완료', '물품 배달이 완료 되었습니다.', snapshot.id, pay: callHistory.price);
+      pushFcm(userData['fcmToken'], '배송완료', '물품 배달이 완료 되었습니다.', snapshot.id);
     }
     else if(callHistory.state == '배송중'){
       pushFcm(userData['fcmToken'], '픽업 완료', '물건 픽업이 완료되었습니다\n차량번호 : ${myInfo.taxiNumber}\n전화번호 : ${myInfo.hp}', snapshot.id, pay: callHistory.price);

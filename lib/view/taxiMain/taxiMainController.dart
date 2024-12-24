@@ -166,7 +166,7 @@ class TaxiMainController extends GetxController {
                           callItem.price = (int.parse(result) * 1.3).toInt();
                           requestPayments();
                           price.text = '';
-                          callHistoryData.updateItem(callItem,false);
+                          callHistoryData.updateItem(callItem,false,pay: true);
                           Get.back();
                         } else {
                           if(isDoneDelivery){
