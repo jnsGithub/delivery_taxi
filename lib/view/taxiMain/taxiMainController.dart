@@ -64,8 +64,6 @@ class TaxiMainController extends GetxController {
   }
 
   Future requestPayments() async{
-    List<String> parts = price.text.split(',');
-    String result = parts.join('');
     await payments.rePayment(callItem);
   }
 
