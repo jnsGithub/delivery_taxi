@@ -272,7 +272,7 @@ class UserMainView extends GetView<UserMainController> {
                 const LineContainer(),
                 const Row(
                   children: [
-                    Text('배송 유의사항', style: TextStyle(
+                    Text('물건 종류', style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
                     ),),

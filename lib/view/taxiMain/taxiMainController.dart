@@ -397,7 +397,7 @@ class TaxiMainController extends GetxController {
                     const SizedBox(height: 18,),
                     Text(type,style: const TextStyle(fontSize:18,fontWeight: FontWeight.w500),),
                     const LineContainer(),
-                    const Text('배송 유의 사항',style: TextStyle(fontSize:20,fontWeight: FontWeight.w600),),
+                    const Text('물건 종류',style: TextStyle(fontSize:20,fontWeight: FontWeight.w600),),
                     const SizedBox(height: 18,),
                     SizedBox(
                       width: size.width,
